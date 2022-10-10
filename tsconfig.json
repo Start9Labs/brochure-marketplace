@@ -18,7 +18,15 @@
     "importHelpers": true,
     "target": "es2017",
     "module": "es2020",
-    "lib": ["es2020", "dom"]
+    "lib": ["es2020", "dom"],
+    "paths": {
+      "@start9labs/marketplace": [
+        "embassy-os/frontend/projects/marketplace/src/public-api"
+      ],
+      "@start9labs/shared": [
+        "embassy-os/frontend/projects/shared/src/public-api"
+      ]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
