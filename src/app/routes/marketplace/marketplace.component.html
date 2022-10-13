@@ -1,0 +1,44 @@
+<ion-content class="ion-padding">
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12">
+        <h1 class="heading montserrat ion-text-center">Marketplace</h1>
+        <marketplace-search [(query)]="query"></marketplace-search>
+      </ion-col>
+    </ion-row>
+    <ion-row class="ion-align-items-center">
+      <ion-col size="12">
+        <ng-container *ngIf="marketplace$ | async as marketplace; else loading">
+          <marketplace-categories
+            [categories]="marketplace.categories"
+            [category]="category"
+            (categoryChange)="onCategoryChange($event)"
+          ></marketplace-categories>
+
+          <div class="divider"></div>
+
+          <ion-grid
+            *ngIf="
+              marketplace.pkgs | filterPackages: query:category as filtered
+            "
+          >
+            <ion-row>
+              <ion-col
+                *ngFor="let pkg of filtered"
+                sizeXs="12"
+                sizeSm="12"
+                sizeMd="6"
+              >
+                <marketplace-item [pkg]="pkg"></marketplace-item>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ng-container>
+
+        <ng-template #loading>
+          <marketplace-skeleton></marketplace-skeleton>
+        </ng-template>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
