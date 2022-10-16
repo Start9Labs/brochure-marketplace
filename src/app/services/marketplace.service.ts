@@ -5,7 +5,6 @@ import {
   MarketplacePkg,
 } from '@start9labs/marketplace'
 import { Observable, of } from 'rxjs'
-import { CATEGORIES, PACKAGES } from './marketplace.mock'
 
 @Injectable()
 export class MarketplaceService extends AbstractMarketplaceService {
@@ -27,7 +26,7 @@ export class MarketplaceService extends AbstractMarketplaceService {
   getMarketplaceInfo$(): Observable<MarketplaceInfo> {
     return of({
       name: '',
-      categories: CATEGORIES,
+      categories: [],
     })
   }
 
@@ -40,6 +39,6 @@ export class MarketplaceService extends AbstractMarketplaceService {
   }
 
   getPackages$(): Observable<MarketplacePkg[]> {
-    return of(PACKAGES)
+    return of([])
   }
 }

@@ -10,7 +10,6 @@ import {
   SkeletonModule,
 } from '@start9labs/marketplace'
 
-import { PackageComponent } from './package/package.component'
 import { MarketplaceComponent } from './marketplace.component'
 
 const routes: Routes = [
@@ -21,7 +20,8 @@ const routes: Routes = [
   },
   {
     path: ':pkgId',
-    component: PackageComponent,
+    loadChildren: () =>
+      import('./package/package.module').then(m => m.MarketplacePackageModule),
   },
 ]
 
@@ -36,7 +36,7 @@ const routes: Routes = [
     SearchModule,
     RouterModule.forChild(routes),
   ],
-  declarations: [MarketplaceComponent, PackageComponent],
-  exports: [MarketplaceComponent, PackageComponent],
+  declarations: [MarketplaceComponent],
+  exports: [MarketplaceComponent],
 })
 export class MarketplaceModule {}
