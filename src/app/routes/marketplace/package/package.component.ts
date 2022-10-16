@@ -1,13 +1,28 @@
 import { Component } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
+import { getPkgId } from '@start9labs/shared'
+import { AbstractMarketplaceService } from '@start9labs/marketplace'
+import { BehaviorSubject } from 'rxjs'
+import { switchMap } from 'rxjs/operators'
 
 @Component({
   selector: 'app-package',
-  template: `Here be package: {{ pkgId }}`,
-  styleUrls: ['./package.component.scss'],
+  templateUrl: './package.component.html',
 })
 export class PackageComponent {
-  readonly pkgId = this.activatedRoute.snapshot.params['pkgId']
+  readonly version = new BehaviorSubject('*')
 
-  constructor(private readonly activatedRoute: ActivatedRoute) {}
+  readonly pkg$ = this.version.pipe(
+    switchMap(version =>
+      this.marketplaceService.getPackage(
+        getPkgId(this.activatedRoute),
+        version,
+      ),
+    ),
+  )
+
+  constructor(
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly marketplaceService: AbstractMarketplaceService,
+  ) {}
 }

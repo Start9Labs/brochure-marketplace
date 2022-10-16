@@ -56,6 +56,26 @@
   --ion-text-color-rgb: var(--ion-color-dark-rgb);
 }
 
+/** Global classes, prefixed with g- **/
+.g-content {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  background: var(--ion-color-medium);
+}
+
+ion-item-divider {
+  text-transform: uppercase;
+  --padding-top: 24px;
+  font-weight: 600;
+  --background: transparent;
+  --color: var(--ion-color-dark);
+  font-size: medium;
+  border-bottom: none;
+}
+
 //$subheader-height: 48px;
 //
 //.btn-128 {
@@ -232,17 +252,6 @@
 //  --background: var(--ion-color-light);
 //  --color: var(--ion-color-dark);
 //}
-//
-//ion-item-divider {
-//  text-transform: uppercase;
-//  --padding-top: 24px;
-//  font-weight: 600;
-//  --background: transparent;
-//  --color: var(--ion-color-dark);
-//  font-size: medium;
-//  border-bottom: none;
-//}
-//
 //ion-item {
 //  --border-radius: 6px;
 //  --ripple-color: transparent;
