@@ -62,12 +62,7 @@
                 "output": "./svg"
               }
             ],
-            "styles": [
-              "embassy-os/frontend/projects/shared/styles/variables.scss",
-              "embassy-os/frontend/projects/shared/styles/global.scss",
-              "embassy-os/frontend/projects/shared/styles/shared.scss",
-              "src/styles.scss"
-            ],
+            "styles": ["src/styles.scss"],
             "scripts": []
           },
           "configurations": {
@@ -148,5 +143,7 @@
       }
     }
   },
-  "defaultProject": "brochure-marketplace"
+  "cli": {
+    "analytics": false
+  }
 }

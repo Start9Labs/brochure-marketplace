@@ -1,3 +1,0 @@
-[submodule "embassy-os"]
-	path = embassy-os
-	url = https://github.com/Start9Labs/embassy-os.git
