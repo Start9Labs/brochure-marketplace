@@ -4,6 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "start:prod": "ng serve --configuration production",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "check": "tsc --project tsconfig.json --noEmit --skipLibCheck"
@@ -20,8 +21,8 @@
     "@ionic/angular": "^6.1.15",
     "@start9labs/argon2": "^0.1.0",
     "@start9labs/emver": "^0.1.5",
-    "@start9labs/marketplace": "^0.2.2",
-    "@start9labs/shared": "^0.2.1",
+    "@start9labs/marketplace": "0.2.2",
+    "@start9labs/shared": "0.2.1",
     "dompurify": "^2.3.6",
     "fuse.js": "^6.4.6",
     "marked": "^4.0.0",
