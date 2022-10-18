@@ -15,7 +15,6 @@ export class MarketplaceMockService extends AbstractMarketplaceService {
     type: string,
     url?: string,
   ): Observable<string> {
-    // @ts-ignore
     return markdown
   }
 
