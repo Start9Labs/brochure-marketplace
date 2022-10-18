@@ -53,7 +53,7 @@
             "assets": [
               {
                 "glob": "**/*",
-                "input": "embassy-os/frontend/assets",
+                "input": "node_modules/@start9labs/shared/assets",
                 "output": "assets"
               },
               {
@@ -62,7 +62,12 @@
                 "output": "./svg"
               }
             ],
-            "styles": ["src/styles.scss"],
+            "styles": [
+              "node_modules/@start9labs/shared/styles/variables.scss",
+              "node_modules/@start9labs/shared/styles/global.scss",
+              "node_modules/@start9labs/shared/styles/shared.scss",
+              "src/styles.scss"
+            ],
             "scripts": []
           },
           "configurations": {

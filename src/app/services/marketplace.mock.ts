@@ -6,7 +6,7 @@ import {
 } from '@start9labs/marketplace'
 import { Observable, of } from 'rxjs'
 import { CATEGORIES, PACKAGES, RELEASE_NOTES } from './mock'
-import markdown from 'raw-loader!../../assets/md-sample.md'
+import markdown from 'raw-loader!@start9labs/shared/assets/markdown/md-sample.md'
 
 @Injectable()
 export class MarketplaceMockService extends AbstractMarketplaceService {
@@ -15,7 +15,8 @@ export class MarketplaceMockService extends AbstractMarketplaceService {
     type: string,
     url?: string,
   ): Observable<string> {
-    return of(markdown)
+    // @ts-ignore
+    return markdown
   }
 
   fetchReleaseNotes(
