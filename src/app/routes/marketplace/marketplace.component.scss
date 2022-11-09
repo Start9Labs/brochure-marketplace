@@ -1,6 +1,16 @@
 .heading {
   font-size: 42px;
   margin-top: 32px;
+
+  &:first-letter {
+    text-transform: uppercase;
+  }
+}
+
+.toggle {
+  display: block;
+  width: min-content;
+  margin: 0 auto;
 }
 
 .divider {

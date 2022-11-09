@@ -1,46 +1,42 @@
 import { Injectable } from '@angular/core'
-import {
-  AbstractMarketplaceService,
-  MarketplaceInfo,
-  MarketplacePkg,
-} from '@start9labs/marketplace'
+import { AbstractMarketplaceService } from '@start9labs/marketplace'
 import { Observable, of } from 'rxjs'
+import { map } from 'rxjs/operators'
 import { CATEGORIES, PACKAGES, RELEASE_NOTES } from './mock'
 import markdown from 'raw-loader!@start9labs/shared/assets/markdown/md-sample.md'
 
 @Injectable()
 export class MarketplaceMockService extends AbstractMarketplaceService {
-  fetchPackageMarkdown(
-    id: string,
-    type: string,
-    url?: string,
-  ): Observable<string> {
-    return markdown
+  getKnownHosts$() {
+    return of({})
   }
 
-  fetchReleaseNotes(
-    id: string,
-    url?: string,
-  ): Observable<Record<string, string>> {
-    return of(RELEASE_NOTES)
+  getSelectedHost$() {
+    return of({ name: 'Start9', url: 'https://marketplace.start9labs.com' })
   }
 
-  getMarketplaceInfo$(): Observable<MarketplaceInfo> {
-    return of({
-      name: '',
-      categories: CATEGORIES,
-    })
+  getMarketplace$() {
+    return of({})
   }
 
-  getPackage(
-    id: string,
-    version: string,
-    url?: string,
-  ): Observable<MarketplacePkg | undefined> {
+  getSelectedStore$() {
+    return this.getSelectedHost$().pipe(
+      map(({ name }) => ({
+        info: { name, categories: CATEGORIES },
+        packages: PACKAGES,
+      })),
+    )
+  }
+
+  getPackage$(id: string, _version: string, _url?: string) {
     return of(PACKAGES.filter(pkg => pkg.manifest.id === id)[0])
   }
 
-  getPackages$(): Observable<MarketplacePkg[]> {
-    return of(PACKAGES)
+  fetchReleaseNotes$(id: string, url?: string) {
+    return of(RELEASE_NOTES)
+  }
+
+  fetchStatic$(id: string, type: string, url?: string): Observable<string> {
+    return markdown
   }
 }

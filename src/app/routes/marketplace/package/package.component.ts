@@ -14,7 +14,7 @@ export class PackageComponent {
 
   readonly pkg$ = this.version.pipe(
     switchMap(version =>
-      this.marketplaceService.getPackage(
+      this.marketplaceService.getPackage$(
         getPkgId(this.activatedRoute),
         version,
       ),

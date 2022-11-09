@@ -1,10 +1,8 @@
-import { Component } from '@angular/core'
-import { combineLatest, Observable } from 'rxjs'
+import { Component, inject } from '@angular/core'
+import { AbstractMarketplaceService, StoreURL } from '@start9labs/marketplace'
 import { map } from 'rxjs/operators'
-import {
-  AbstractMarketplaceService,
-  MarketplacePkg,
-} from '@start9labs/marketplace'
+import { HOSTS } from '../../tokens/hosts'
+import { UrlService } from '../../services/url.service'
 
 @Component({
   selector: 'app-marketplace',
@@ -12,28 +10,29 @@ import {
   styleUrls: ['./marketplace.component.scss'],
 })
 export class MarketplaceComponent {
-  readonly marketplace$: Observable<{
-    pkgs: MarketplacePkg[]
-    categories: Set<string>
-  }> = combineLatest([
-    this.marketplaceService.getPackages$(),
-    this.marketplaceService.getMarketplaceInfo$(),
-  ]).pipe(
-    map(([pkgs, { categories }]) => ({
-      pkgs,
-      categories: new Set(categories),
-    })),
+  private readonly urlService = inject(UrlService)
+
+  readonly hosts = inject(HOSTS)
+  readonly store$ = inject(AbstractMarketplaceService).getSelectedStore$()
+  readonly url$ = this.urlService.getUrl$()
+  readonly alternative$ = this.url$.pipe(
+    map(current => {
+      const urls = Object.keys(this.hosts)
+      const url = urls.find(url => url !== current) || current
+
+      return { url, name: this.hosts[url].name }
+    }),
   )
 
   category = 'featured'
   query = ''
 
-  constructor(
-    private readonly marketplaceService: AbstractMarketplaceService,
-  ) {}
-
   onCategoryChange(category: string): void {
     this.category = category
     this.query = ''
+  }
+
+  toggle(url: StoreURL) {
+    this.urlService.toggle(url)
   }
 }

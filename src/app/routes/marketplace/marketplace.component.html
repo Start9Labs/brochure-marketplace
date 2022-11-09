@@ -1,16 +1,27 @@
 <ion-content>
   <ion-grid class="g-content">
-    <ion-row>
+    <ion-row *ngIf="url$ | async as url">
       <ion-col size="12">
-        <h1 class="heading montserrat ion-text-center">Marketplace</h1>
+        <h1 class="heading montserrat ion-text-center">
+          {{ hosts[url].name }} marketplace
+        </h1>
+        <ion-button
+          *ngIf="alternative$ | async as store"
+          fill="clear"
+          class="toggle"
+          (click)="toggle(store.url)"
+        >
+          Switch to {{ store.name }} marketplace
+        </ion-button>
         <marketplace-search [(query)]="query"></marketplace-search>
       </ion-col>
     </ion-row>
     <ion-row class="ion-align-items-center">
       <ion-col size="12">
-        <ng-container *ngIf="marketplace$ | async as marketplace; else loading">
+        <ng-container *ngIf="store$ | async as store; else loading">
+          <!-- TODO: Remove $any after update to @start9labs/marketplace@0.3.3 -->
           <marketplace-categories
-            [categories]="marketplace.categories"
+            [categories]="$any(store.info.categories)"
             [category]="category"
             (categoryChange)="onCategoryChange($event)"
           ></marketplace-categories>
@@ -18,9 +29,7 @@
           <div class="divider"></div>
 
           <ion-grid
-            *ngIf="
-              marketplace.pkgs | filterPackages: query:category as filtered
-            "
+            *ngIf="store.packages | filterPackages: query:category as filtered"
           >
             <ion-row>
               <ion-col
