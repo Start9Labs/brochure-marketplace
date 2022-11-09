@@ -21,7 +21,7 @@
     "@ionic/angular": "^6.1.15",
     "@start9labs/argon2": "^0.1.0",
     "@start9labs/emver": "^0.1.5",
-    "@start9labs/marketplace": "0.3.2",
+    "@start9labs/marketplace": "0.3.3",
     "@start9labs/shared": "0.2.2",
     "dompurify": "^2.3.6",
     "fuse.js": "^6.4.6",

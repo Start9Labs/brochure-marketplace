@@ -12,7 +12,10 @@ export class MarketplaceMockService extends AbstractMarketplaceService {
   }
 
   getSelectedHost$() {
-    return of({ name: 'Start9', url: 'https://marketplace.start9labs.com' })
+    return of({
+      name: 'Start9 Registry',
+      url: 'https://marketplace.start9labs.com',
+    })
   }
 
   getMarketplace$() {

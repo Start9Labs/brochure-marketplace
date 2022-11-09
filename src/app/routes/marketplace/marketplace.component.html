@@ -1,27 +1,35 @@
-<ion-content>
+<ion-content class="ion-padding ion-text-center">
   <ion-grid class="g-content">
-    <ion-row *ngIf="url$ | async as url">
+    <ion-row *ngIf="url$ | async as url" style="margin-bottom: 42px">
       <ion-col size="12">
-        <h1 class="heading montserrat ion-text-center">
-          {{ hosts[url].name }} marketplace
-        </h1>
+        <div class="heading">
+          <img
+            *ngIf="hosts[url].icon as icon; else noIcon"
+            [src]="'data:image/png;base64,' + icon | trustUrl"
+            alt=""
+          />
+          <ng-template #noIcon>
+            <ion-icon name="storefront-outline"></ion-icon>
+          </ng-template>
+          <h1 class="montserrat">{{ hosts[url].name }}</h1>
+        </div>
         <ion-button
           *ngIf="alternative$ | async as store"
           fill="clear"
-          class="toggle"
+          color="dark"
           (click)="toggle(store.url)"
         >
-          Switch to {{ store.name }} marketplace
+          <ion-icon slot="start" name="repeat"></ion-icon>
+          Switch to {{ store.name }}
         </ion-button>
-        <marketplace-search [(query)]="query"></marketplace-search>
       </ion-col>
     </ion-row>
-    <ion-row class="ion-align-items-center">
+    <ion-row>
       <ion-col size="12">
+        <marketplace-search [(query)]="query"></marketplace-search>
         <ng-container *ngIf="store$ | async as store; else loading">
-          <!-- TODO: Remove $any after update to @start9labs/marketplace@0.3.3 -->
           <marketplace-categories
-            [categories]="$any(store.info.categories)"
+            [categories]="store.info.categories"
             [category]="category"
             (categoryChange)="onCategoryChange($event)"
           ></marketplace-categories>
