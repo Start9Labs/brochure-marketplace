@@ -1,6 +1,11 @@
 <ion-content>
   <div *ngIf="pkg$ | async as pkg; else loading" class="g-content">
-    <ion-button routerLink="/marketplace" fill="clear" color="dark">
+    <ion-button
+      routerLink="/marketplace"
+      fill="clear"
+      color="dark"
+      class="back"
+    >
       <ion-icon slot="start" name="arrow-back"></ion-icon>
       Marketplace
     </ion-button>
@@ -16,6 +21,7 @@
     </ion-item-group>
 
     <marketplace-additional
+      class="additional"
       [pkg]="pkg"
       (version)="version.next($event)"
     ></marketplace-additional>

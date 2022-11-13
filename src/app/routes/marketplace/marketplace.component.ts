@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core'
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core'
 import { AbstractMarketplaceService, StoreURL } from '@start9labs/marketplace'
 import { map } from 'rxjs/operators'
 import { HOSTS } from '../../tokens/hosts'
@@ -8,6 +8,7 @@ import { UrlService } from '../../services/url.service'
   selector: 'app-marketplace',
   templateUrl: './marketplace.component.html',
   styleUrls: ['./marketplace.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MarketplaceComponent {
   private readonly urlService = inject(UrlService)

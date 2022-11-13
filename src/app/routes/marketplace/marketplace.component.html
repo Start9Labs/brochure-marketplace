@@ -1,18 +1,17 @@
 <ion-content class="ion-padding ion-text-center">
   <ion-grid class="g-content">
-    <ion-row *ngIf="url$ | async as url" style="margin-bottom: 42px">
+    <ion-row *ngIf="url$ | async as url" class="heading">
       <ion-col size="12">
-        <div class="heading">
-          <img
-            *ngIf="hosts[url].icon as icon; else noIcon"
-            [src]="'data:image/png;base64,' + icon | trustUrl"
-            alt=""
-          />
-          <ng-template #noIcon>
-            <ion-icon name="storefront-outline"></ion-icon>
-          </ng-template>
-          <h1 class="montserrat">{{ hosts[url].name }}</h1>
-        </div>
+        <img
+          *ngIf="hosts[url].icon as icon; else noIcon"
+          [src]="'data:image/png;base64,' + icon | trustUrl"
+          alt=""
+          class="icon"
+        />
+        <ng-template #noIcon>
+          <ion-icon name="storefront-outline" class="icon"></ion-icon>
+        </ng-template>
+        <h1 class="montserrat">{{ hosts[url].name }}</h1>
         <ion-button
           *ngIf="alternative$ | async as store"
           fill="clear"
