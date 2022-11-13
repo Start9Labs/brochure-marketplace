@@ -1,4 +1,4 @@
-import { Component } from '@angular/core'
+import { ChangeDetectionStrategy, Component } from '@angular/core'
 
 @Component({
   selector: 'app-notes',
@@ -11,5 +11,6 @@ import { Component } from '@angular/core'
       <release-notes></release-notes>
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotesComponent {}

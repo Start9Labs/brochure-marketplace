@@ -1,16 +1,34 @@
-<ion-content>
+<ion-content class="ion-padding ion-text-center">
   <ion-grid class="g-content">
-    <ion-row>
+    <ion-row *ngIf="url$ | async as url" class="heading">
       <ion-col size="12">
-        <h1 class="heading montserrat ion-text-center">Marketplace</h1>
-        <marketplace-search [(query)]="query"></marketplace-search>
+        <img
+          *ngIf="hosts[url].icon as icon; else noIcon"
+          [src]="'data:image/png;base64,' + icon | trustUrl"
+          alt=""
+          class="icon"
+        />
+        <ng-template #noIcon>
+          <ion-icon name="storefront-outline" class="icon"></ion-icon>
+        </ng-template>
+        <h1 class="montserrat">{{ hosts[url].name }}</h1>
+        <ion-button
+          *ngIf="alternative$ | async as store"
+          fill="clear"
+          color="dark"
+          (click)="toggle(store.url)"
+        >
+          <ion-icon slot="start" name="repeat"></ion-icon>
+          Switch to {{ store.name }}
+        </ion-button>
       </ion-col>
     </ion-row>
-    <ion-row class="ion-align-items-center">
+    <ion-row>
       <ion-col size="12">
-        <ng-container *ngIf="marketplace$ | async as marketplace; else loading">
+        <marketplace-search [(query)]="query"></marketplace-search>
+        <ng-container *ngIf="store$ | async as store; else loading">
           <marketplace-categories
-            [categories]="marketplace.categories"
+            [categories]="store.info.categories"
             [category]="category"
             (categoryChange)="onCategoryChange($event)"
           ></marketplace-categories>
@@ -18,9 +36,7 @@
           <div class="divider"></div>
 
           <ion-grid
-            *ngIf="
-              marketplace.pkgs | filterPackages: query:category as filtered
-            "
+            *ngIf="store.packages | filterPackages: query:category as filtered"
           >
             <ion-row>
               <ion-col
