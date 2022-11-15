@@ -5,8 +5,10 @@ export const HOSTS = new InjectionToken<Record<StoreURL, StoreIdentifier>>(
   'Marketplace hosts',
   {
     factory: () => ({
-      'https://marketplace.start9labs.com/api/v1': { name: 'Start9 Registry' },
-      'https://community.start9labs.com/api/v1': { name: 'Community Registry' },
+      'https://registry.start9.com/package/v0/': { name: 'Start9 Registry' },
+      'https://community-registry.start9.com/package/v0/': {
+        name: 'Community Registry',
+      },
     }),
   },
 )
