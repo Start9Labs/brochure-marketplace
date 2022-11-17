@@ -1,3 +1,4 @@
+import { HttpClientModule } from '@angular/common/http'
 import { NgModule } from '@angular/core'
 import { BrowserModule } from '@angular/platform-browser'
 import { RouteReuseStrategy } from '@angular/router'
@@ -12,7 +13,12 @@ import { environment } from '../environments/environment'
 import { MarketplaceMockService } from './services/marketplace.mock'
 
 @NgModule({
-  imports: [BrowserModule, AppRoutingModule, IonicModule.forRoot()],
+  imports: [
+    BrowserModule,
+    HttpClientModule,
+    AppRoutingModule,
+    IonicModule.forRoot(),
+  ],
   providers: [
     {
       provide: AbstractMarketplaceService,
