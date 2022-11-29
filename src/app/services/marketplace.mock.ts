@@ -8,7 +8,7 @@ import markdown from 'raw-loader!@start9labs/shared/assets/markdown/md-sample.md
 @Injectable()
 export class MarketplaceMockService extends AbstractMarketplaceService {
   getKnownHosts$() {
-    return of({})
+    return of([])
   }
 
   getSelectedHost$() {

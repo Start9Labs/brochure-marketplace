@@ -19,8 +19,8 @@ export class MarketplaceService extends AbstractMarketplaceService {
   private readonly url$ = inject(UrlService).getUrl$()
 
   private readonly marketplace$: Observable<Marketplace> = combineLatest(
-    Object.keys(this.hosts).reduce(
-      (acc, url) => ({
+    this.hosts.reduce(
+      (acc, { url }) => ({
         ...acc,
         [url]: combineLatest({
           info: this.http.get<StoreInfo>(url + 'info'),
@@ -37,11 +37,8 @@ export class MarketplaceService extends AbstractMarketplaceService {
 
   getSelectedHost$() {
     return this.url$.pipe(
-      map(url => {
-        const { name, icon } = this.hosts[url]
-
-        return { name, icon, url }
-      }),
+      map(url => this.hosts.find(host => host.url === url)),
+      filter(Boolean),
     )
   }
 
