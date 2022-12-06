@@ -12,14 +12,12 @@ import { switchMap } from 'rxjs/operators'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PackageComponent {
-  readonly version = new BehaviorSubject('*')
+  readonly pkgId = getPkgId(this.activatedRoute)
+  readonly version$ = new BehaviorSubject('*')
 
-  readonly pkg$ = this.version.pipe(
+  readonly pkg$ = this.version$.pipe(
     switchMap(version =>
-      this.marketplaceService.getPackage$(
-        getPkgId(this.activatedRoute),
-        version,
-      ),
+      this.marketplaceService.getPackage$(this.pkgId, version),
     ),
   )
 

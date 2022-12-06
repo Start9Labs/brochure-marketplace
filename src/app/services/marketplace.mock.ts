@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core'
-import { AbstractMarketplaceService } from '@start9labs/marketplace'
+import {
+  AbstractMarketplaceService,
+  MarketplacePkg,
+} from '@start9labs/marketplace'
 import { Observable, of } from 'rxjs'
 import { map } from 'rxjs/operators'
 import { CATEGORIES, PACKAGES, RELEASE_NOTES } from './mock'
@@ -31,8 +34,12 @@ export class MarketplaceMockService extends AbstractMarketplaceService {
     )
   }
 
-  getPackage$(id: string, _version: string, _url?: string) {
-    return of(PACKAGES.filter(pkg => pkg.manifest.id === id)[0])
+  getPackage$(
+    id: string,
+    _version: string,
+    _url?: string,
+  ): Observable<MarketplacePkg> {
+    return of(PACKAGES.filter(pkg => pkg.manifest.id === id)[0] || {})
   }
 
   fetchReleaseNotes$(id: string, url?: string) {
