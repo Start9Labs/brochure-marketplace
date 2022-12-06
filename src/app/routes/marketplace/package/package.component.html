@@ -1,4 +1,4 @@
-<ion-content>
+<ion-content class="ion-padding">
   <div *ngIf="pkg$ | async as pkg; else loading" class="g-content">
     <ion-button
       routerLink="/marketplace"
@@ -7,24 +7,35 @@
       class="back"
     >
       <ion-icon slot="start" name="arrow-back"></ion-icon>
-      Marketplace
+      Back to Marketplace
     </ion-button>
 
-    <marketplace-package [pkg]="pkg"></marketplace-package>
+    <ng-container *ngIf="pkg | empty; else show">
+      <ng-container *ngIf="version$ | async as version">
+        <h2>
+          {{ pkgId }} version {{ version === '*' ? 'latest' : version }} not
+          found in this registry
+        </h2>
+      </ng-container>
+    </ng-container>
 
-    <ion-item-group>
-      <marketplace-about [pkg]="pkg"></marketplace-about>
-      <marketplace-dependencies
-        *ngIf="!(pkg.manifest.dependencies | empty)"
+    <ng-template #show>
+      <marketplace-package [pkg]="pkg"></marketplace-package>
+
+      <ion-item-group>
+        <marketplace-about [pkg]="pkg"></marketplace-about>
+        <marketplace-dependencies
+          *ngIf="!(pkg.manifest.dependencies | empty)"
+          [pkg]="pkg"
+        ></marketplace-dependencies>
+      </ion-item-group>
+
+      <marketplace-additional
+        class="additional"
         [pkg]="pkg"
-      ></marketplace-dependencies>
-    </ion-item-group>
-
-    <marketplace-additional
-      class="additional"
-      [pkg]="pkg"
-      (version)="version.next($event)"
-    ></marketplace-additional>
+        (version)="version$.next($event)"
+      ></marketplace-additional>
+    </ng-template>
   </div>
 
   <ng-template #loading>

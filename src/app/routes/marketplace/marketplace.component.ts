@@ -12,18 +12,14 @@ import { UrlService } from '../../services/url.service'
 })
 export class MarketplaceComponent {
   private readonly urlService = inject(UrlService)
+  private readonly marketplaceService = inject(AbstractMarketplaceService)
 
   readonly hosts = inject(HOSTS)
-  readonly store$ = inject(AbstractMarketplaceService).getSelectedStore$()
-  readonly url$ = this.urlService.getUrl$()
-  readonly alternative$ = this.url$.pipe(
-    map(current => {
-      const urls = Object.keys(this.hosts)
-      const url = urls.find(url => url !== current) || current
-
-      return { url, name: this.hosts[url].name }
-    }),
-  )
+  readonly store$ = this.marketplaceService.getSelectedStore$()
+  readonly selected$ = this.marketplaceService.getSelectedHost$()
+  readonly alternative$ = this.urlService
+    .getUrl$()
+    .pipe(map(current => this.hosts.find(({ url }) => url !== current)))
 
   category = 'featured'
   query = ''

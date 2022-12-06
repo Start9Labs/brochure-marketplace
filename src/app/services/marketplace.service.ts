@@ -7,7 +7,7 @@ import {
   StoreInfo,
 } from '@start9labs/marketplace'
 import { combineLatest, filter, Observable, of, shareReplay } from 'rxjs'
-import { map, switchMap } from 'rxjs/operators'
+import { map, switchMap, tap } from 'rxjs/operators'
 
 import { HOSTS } from '../tokens/hosts'
 import { UrlService } from './url.service'
@@ -19,8 +19,8 @@ export class MarketplaceService extends AbstractMarketplaceService {
   private readonly url$ = inject(UrlService).getUrl$()
 
   private readonly marketplace$: Observable<Marketplace> = combineLatest(
-    Object.keys(this.hosts).reduce(
-      (acc, url) => ({
+    this.hosts.reduce(
+      (acc, { url }) => ({
         ...acc,
         [url]: combineLatest({
           info: this.http.get<StoreInfo>(url + 'info'),
@@ -37,11 +37,8 @@ export class MarketplaceService extends AbstractMarketplaceService {
 
   getSelectedHost$() {
     return this.url$.pipe(
-      map(url => {
-        const { name, icon } = this.hosts[url]
-
-        return { name, icon, url }
-      }),
+      map(url => this.hosts.find(host => host.url === url)),
+      filter(Boolean),
     )
   }
 
@@ -53,15 +50,19 @@ export class MarketplaceService extends AbstractMarketplaceService {
     return combineLatest({
       url: this.url$,
       marketplace: this.getMarketplace$(),
-    }).pipe(map(({ url, marketplace }) => marketplace[url]))
+    }).pipe(
+      map(({ url, marketplace }) => marketplace[url]),
+      filter(Boolean),
+    )
   }
 
   getPackage$(id: string, version: string) {
     if (version === '*') {
       return this.getSelectedStore$().pipe(
-        filter(Boolean),
-        map(({ packages }) =>
-          packages.find(({ manifest }) => manifest.id === id),
+        map(
+          ({ packages }) =>
+            packages.find(({ manifest }) => manifest.id === id) ||
+            ({} as MarketplacePkg),
         ),
       )
     }

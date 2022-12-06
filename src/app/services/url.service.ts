@@ -7,9 +7,7 @@ import { HOSTS } from '../tokens/hosts'
   providedIn: 'root',
 })
 export class UrlService {
-  private readonly url$ = new BehaviorSubject<StoreURL>(
-    Object.keys(inject(HOSTS))[0],
-  )
+  private readonly url$ = new BehaviorSubject<StoreURL>(inject(HOSTS)[0].url)
 
   getUrl$(): Observable<string> {
     return this.url$
