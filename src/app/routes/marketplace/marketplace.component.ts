@@ -15,7 +15,13 @@ export class MarketplaceComponent {
   private readonly marketplaceService = inject(AbstractMarketplaceService)
 
   readonly hosts = inject(HOSTS)
-  readonly store$ = this.marketplaceService.getSelectedStore$()
+  readonly store$ = this.marketplaceService.getSelectedStore$().pipe(
+    map(storeData => {
+      storeData.info.categories.push('all')
+      return storeData
+    }),
+  )
+
   readonly selected$ = this.marketplaceService.getSelectedHost$()
   readonly alternative$ = this.urlService
     .getUrl$()
