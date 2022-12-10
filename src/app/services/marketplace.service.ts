@@ -24,7 +24,9 @@ export class MarketplaceService extends AbstractMarketplaceService {
         ...acc,
         [url]: combineLatest({
           info: this.http.get<StoreInfo>(url + 'info'),
-          packages: this.http.get<MarketplacePkg[]>(url + 'index'),
+          packages: this.http.get<MarketplacePkg[]>(
+            `${url}index?per-page=100&page=1`,
+          ),
         }),
       }),
       {},
