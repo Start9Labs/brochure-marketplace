@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "start:prod": "ng serve --configuration production",
+    "build:prod": "ng build --configuration production",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "check": "tsc --project tsconfig.json --noEmit --skipLibCheck"
