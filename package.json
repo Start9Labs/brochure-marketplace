@@ -1,8 +1,7 @@
 {
   "name": "brochure-marketplace",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "scripts": {
-    "ng": "ng",
     "start": "ng serve",
     "start:prod": "ng serve --configuration production",
     "build:prod": "ng build --configuration production",
@@ -20,6 +19,7 @@
     "@angular/platform-browser-dynamic": "^16.1.4",
     "@angular/router": "^16.1.4",
     "@ionic/angular": "^6.1.15",
+    "@ng-web-apis/resize-observer": "^2.0.0",
     "@start9labs/argon2": "^0.1.0",
     "@start9labs/emver": "^0.1.5",
     "@start9labs/marketplace": "0.3.12",
@@ -47,10 +47,13 @@
     "@types/dompurify": "^2.3.3",
     "@types/marked": "^4.0.3",
     "@types/node": "^18.15.0",
+    "autoprefixer": "^10.4.14",
     "husky": "^4.3.8",
     "lint-staged": "^12.3.7",
+    "postcss": "^8.4.21",
     "prettier": "^2.6.1",
     "raw-loader": "^4.0.2",
+    "tailwindcss": "^3.3.1",
     "tslint": "^6.1.3",
     "typescript": "^5.1.6"
   },

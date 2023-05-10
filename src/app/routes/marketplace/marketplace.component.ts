@@ -18,6 +18,7 @@ export class MarketplaceComponent {
   readonly store$ = this.marketplaceService.getSelectedStore$().pipe(
     map(storeData => {
       storeData.info.categories.push('all')
+      storeData.info.categories.sort((a, b) => (a > b ? 1 : a === b ? 0 : -1))
       return storeData
     }),
   )
