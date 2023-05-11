@@ -30,14 +30,18 @@ export class MarketplaceComponent {
 
   category = 'featured'
   query = ''
-  iconConfig = require('../../../../config.json').marketplace
+  open = false
 
   onCategoryChange(category: string): void {
     this.category = category
     this.query = ''
   }
 
-  toggle(url: StoreURL) {
+  toggleMarketplace(url: StoreURL) {
     this.urlService.toggle(url)
+  }
+
+  toggle(open: boolean): void {
+    this.open = open
   }
 }

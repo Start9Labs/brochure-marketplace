@@ -12,12 +12,17 @@ import { RouteReuseStrategyService } from './services/route-reuse-strategy.servi
 import { environment } from '../environments/environment'
 import { MarketplaceMockService } from './services/marketplace.mock'
 
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { TuiRootModule } from '@taiga-ui/core'
+
 @NgModule({
   imports: [
     BrowserModule,
     HttpClientModule,
     AppRoutingModule,
     IonicModule.forRoot(),
+    BrowserAnimationsModule,
+    TuiRootModule,
   ],
   providers: [
     {
