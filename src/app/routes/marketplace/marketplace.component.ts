@@ -3,12 +3,39 @@ import { AbstractMarketplaceService, StoreURL } from '@start9labs/marketplace'
 import { map } from 'rxjs/operators'
 import { HOSTS } from '../../tokens/hosts'
 import { UrlService } from '../../services/url.service'
+import {
+  animate,
+  query,
+  stagger,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations'
 
 @Component({
   selector: 'app-marketplace',
   templateUrl: './marketplace.component.html',
   styleUrls: ['./marketplace.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  animations: [
+    trigger('itemAnimation', [
+      transition('* => *', [
+        query(
+          ':enter',
+          [
+            style({ opacity: 0, transform: 'translateY(-20px)' }),
+            stagger('100ms', [
+              animate(
+                '300ms ease-in-out',
+                style({ opacity: 1, transform: 'none' }),
+              ),
+            ]),
+          ],
+          { optional: true },
+        ),
+      ]),
+    ]),
+  ],
 })
 export class MarketplaceComponent {
   private readonly urlService = inject(UrlService)
@@ -16,10 +43,18 @@ export class MarketplaceComponent {
 
   readonly hosts = inject(HOSTS)
   readonly store$ = this.marketplaceService.getSelectedStore$().pipe(
-    map(storeData => {
-      storeData.info.categories.push('all')
-      storeData.info.categories.sort((a, b) => (a > b ? 1 : a === b ? 0 : -1))
-      return storeData
+    map(({ info, packages }) => {
+      const categories = new Set<string>()
+      categories.add('all')
+      info.categories.forEach(c => categories.add(c))
+
+      return {
+        info: {
+          ...info,
+          categories: Array.from(categories),
+        },
+        packages,
+      }
     }),
   )
 

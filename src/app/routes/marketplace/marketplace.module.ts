@@ -10,10 +10,10 @@ import {
   SkeletonModule,
   StoreIconComponentModule,
 } from '@start9labs/marketplace'
-import { SharedPipesModule } from '@start9labs/shared'
 import { MarketplaceComponent } from './marketplace.component'
-import { TuiActiveZoneModule } from '@taiga-ui/cdk'
+import { TuiActiveZoneModule, TuiFilterPipeModule } from '@taiga-ui/cdk'
 import { TuiSidebarModule } from '@taiga-ui/addon-mobile'
+import { SharedPipesModule } from '@start9labs/shared'
 
 const routes: Routes = [
   {
@@ -41,6 +41,7 @@ const routes: Routes = [
     SharedPipesModule,
     TuiSidebarModule,
     TuiActiveZoneModule,
+    TuiFilterPipeModule,
   ],
   declarations: [MarketplaceComponent],
   exports: [MarketplaceComponent],
