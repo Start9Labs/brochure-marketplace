@@ -43,12 +43,13 @@ export class MarketplaceComponent {
 
   readonly hosts = inject(HOSTS)
   readonly store$ = this.marketplaceService.getSelectedStore$().pipe(
-    map(({ info, packages }) => {
+    map(({ info, packages, icon }) => {
       const categories = new Set<string>()
       categories.add('all')
       info.categories.forEach(c => categories.add(c))
 
       return {
+        icon,
         info: {
           ...info,
           categories: Array.from(categories),

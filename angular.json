@@ -60,7 +60,7 @@
               },
               {
                 "glob": "**/*.svg",
-                "input": "node_modules/ionicons/dist/ionicons/svg",
+                "input": "node_modules/ionicons/dist/svg",
                 "output": "./svg"
               }
             ],
@@ -151,6 +151,9 @@
     }
   },
   "cli": {
-    "analytics": false
+    "analytics": false,
+    "cache": {
+      "enabled": true
+    }
   }
 }

@@ -1,51 +1,66 @@
 <header
-  class="w-full fixed z-50 sm:w-[34vw] md:w-[28vw] lg:w-[22vw] 2xl:w-[280px] sm:bg-white/10 sm:backdrop-blur-2xl sm:min-h-screen overflow-y-auto flex flex-col sm:py-6 sm:after:block sm:after:absolute sm:after:top-10 sm:after:bottom-10 sm:after:right-0 sm:after:w-px after:h-[calc(100vh - 20px)] sm:after:bg-black sm:after:opacity-[0.09]">
+  class="w-full fixed z-50 sm:w-[34vw] md:w-[28vw] lg:w-[22vw] 2xl:w-[280px] sm:bg-white/10 sm:backdrop-blur-2xl sm:min-h-screen overflow-y-auto flex flex-col sm:py-6 sm:after:block sm:after:absolute sm:after:top-0 sm:after:bottom-0 sm:after:right-0 sm:after:w-0.5 after:h-[calc(100vh - 20px)] sm:after:bg-gradient-to-b from-folly to-lime drop-shadow-md">
   <ng-container *ngIf="store$ | async as store; else loading">
     <div class="hidden sm:flex flex-col mx-6 items-center">
       <a href="/" class="pb-3">
-        <img class="w-16" src="assets/img/logo_transparent.png" />
+        <img
+          alt="Registry Icon"
+          class="w-16 rounded-full"
+          src="assets/img/{{ store.icon }}" />
       </a>
       <h1 class="font-semibold text-2xl text-zinc-100 text-center py-4">
         {{ store.info.name }}
       </h1>
+      <!-- desktop search -->
+      <marketplace-search [(query)]="query"></marketplace-search>
     </div>
     <div class="overflow-x-hidden overflow-y-hidden flex flex-col grow">
       <!-- mobile header -->
       <div
-        class="sm:hidden w-[calc(200vw-50px)] flex flex-col bg-zinc-700/80 backdrop-blur-3xl backdrop-saturate-150 border-b border-black/5"
+        class="sm:hidden flex flex-col bg-white/10 backdrop-blur-3xl backdrop-saturate-150 border-b border-black/5"
         style="transform: translateX(0px) translateZ(0px)">
         <div class="flex">
-          <div class="flex justify-between py-3 px-4 w-[100vw]">
+          <div class="flex justify-between py-4 px-4 w-[100vw]">
+            <!-- mobile search -->
+            <marketplace-search
+              class="max-w-fit"
+              [(query)]="query"></marketplace-search>
             <button
               aria-label="Menu"
               tuiButton
               type="button"
               (click)="toggle(true)"
               (tuiActiveZoneChange)="toggle($event)">
-              <svg
-                class="scale-[0.85]"
-                width="23"
-                height="23"
-                viewBox="0 0 23 23">
-                <path
-                  stroke-width="3"
-                  stroke="rgba(150, 150, 150, 1)"
-                  stroke-linecap="round"
-                  d="M0.00195 15.502L23.002 15.502"></path>
-                <path
-                  stroke-width="3"
-                  stroke="rgba(150, 150, 150, 1)"
-                  stroke-linecap="round"
-                  d="M0.00195 7.49805L23.002 7.49805"></path>
-              </svg>
+              <img
+                alt="Registry Icon"
+                class="w-9 rounded-full"
+                src="assets/img/{{ store.icon }}" />
               <nav
                 *tuiSidebar="open; direction: 'right'; autoWidth: true"
                 class="bg-zinc-800 h-screen">
-                <div class="flex grow flex-col py-6 px-4">
+                <div class="flex grow flex-col p-5">
                   <div class="flex grow flex-col">
-                    <h1 class="font-semibold text-2xl text-zinc-100 pb-2">
-                      Menu
-                    </h1>
+                    <div class="flex pb-3">
+                      <h1 class="font-semibold text-xl text-zinc-200 flex-grow">
+                        {{ store.info.name }}
+                      </h1>
+                      <button
+                        aria-label="Menu"
+                        tuiButton
+                        type="button"
+                        (click)="toggle(false)">
+                        <img
+                          alt=""
+                          loading="lazy"
+                          width="24"
+                          height="24"
+                          decoding="async"
+                          data-nimg="1"
+                          class="transition block opacity-70 invert"
+                          style="color: transparent"
+                          src="svg/close-outline.svg" />
+                      </button>
+                    </div>
                     <marketplace-categories
                       [categories]="store.info.categories"
                       [category]="query ? '' : category"
@@ -98,60 +113,9 @@
                 </div>
               </nav>
             </button>
-            <div class="flex flex-col items-center">
-              <a class="mb-0 font-semibold text-zinc-100" href="/">{{
-                store.info.name
-              }}</a>
-            </div>
-            <div class="block px-3"></div>
-          </div>
-          <!-- mobile search -->
-          <div class="flex flex-grow justify-between items-center">
-            <div
-              class="relative flex items-center translate-x-[calc(-15.3px-1rem)]">
-              <svg
-                class="absolute sm:relative pointer-events-none transition-all duration-400 scale-[0.85] sm:scale-[0.8] opacity-40 rotate-0"
-                width="18"
-                height="21"
-                viewBox="0 0 18 21"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg">
-                <path
-                  class="origin-center transition-transform duration-400 rotate-0"
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
-                  d="M12.5146 15.9941C11.319 16.6359 9.95202 17 8.5 17C3.80558 17 0 13.1944 0 8.5C0 3.80558 3.80558 0 8.5 0C13.1944 0 17 3.80558 17 8.5C17 11.0223 15.9013 13.2881 14.1564 14.8448L17.7809 19.3753C18.1259 19.8066 18.056 20.4359 17.6247 20.7809C17.1934 21.1259 16.5641 21.056 16.2191 20.6247L12.5146 15.9941ZM15 8.5C15 12.0899 12.0899 15 8.5 15C4.91015 15 2 12.0899 2 8.5C2 4.91015 4.91015 2 8.5 2C12.0899 2 15 4.91015 15 8.5Z"
-                  fill="black"></path>
-              </svg>
-              <input
-                type="text"
-                name="search"
-                class="mt-1 bg-transparent placeholder-slate-400 focus:outline-none block w-30 pl-8"
-                placeholder="Search apps"
-                autocomplete="off"
-                value="" />
-            </div>
-            <button
-              class="flex mr-3 w-6 h-6 rounded-full bg-black/5 justify-center items-center"
-              aria-label="Close search">
-              <svg
-                style="
-                  width: 0.8rem;
-                  height: 0.8rem;
-                  vertical-align: middle;
-                  fill: rgba(0, 0, 0, 0.5);
-                "
-                viewBox="0 0 1024 1024"
-                xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M810.66 170.66q18.33 0 30.495 12.165t12.165 30.495q0 18.002-12.33 30.33L572.315 511.98 840.99 780.308q12.329 12.33 12.329 30.331 0 18.33-12.165 30.495T810.66 853.3q-18.002 0-30.331-12.329L512 572.293 243.671 840.97q-12.329 12.33-30.33 12.33-18.33 0-30.496-12.166T170.68 810.64q0-18.002 12.33-30.33l268.676-268.33L183.01 243.652q-12.329-12.33-12.329-30.331 0-18.33 12.165-30.495t30.495-12.165q18.002 0 30.331 12.329L512 451.666l268.329-268.677q12.329-12.33 30.33-12.33z"></path>
-              </svg>
-            </button>
           </div>
         </div>
       </div>
-      <!-- search -->
-      <marketplace-search [(query)]="query"></marketplace-search>
       <!-- desktop nav -->
       <nav class="hidden sm:flex grow flex-col py-3 pr-4">
         <div class="flex grow flex-col justify-between">
@@ -172,15 +136,12 @@
                   class="absolute w-full h-full top-0 left-0 bg-primary rounded-[0.35rem]"
                   style="opacity: 1; transform: none"></div>
                 <img
-                  alt=""
-                  loading="lazy"
+                  alt="Compass icon"
                   width="24"
                   height="24"
-                  decoding="async"
-                  data-nimg="1"
                   class="transition block opacity-70 invert"
                   style="color: transparent"
-                  src="svg/compass.svg" />
+                  src="svg/compass-outline.svg" />
               </div>
               <span
                 class="text-zinc-50 text-ellipsis overflow-hidden whitespace-nowrap"
@@ -199,12 +160,9 @@
               href="https://github.com/Start9Labs/service-pipeline#readme"
               ><div class="relative flex flex-shrink-0">
                 <img
-                  alt=""
-                  loading="lazy"
+                  alt="Rocket Icon"
                   width="24"
                   height="24"
-                  decoding="async"
-                  data-nimg="1"
                   class="transition block opacity-70 invert"
                   style="color: transparent"
                   src="svg/rocket-outline.svg" />
@@ -221,12 +179,9 @@
             (click)="toggleMarketplace(store.url)">
             <div class="relative flex flex-shrink-0">
               <img
-                alt=""
-                loading="lazy"
+                alt="Storefront Icon"
                 width="24"
                 height="24"
-                decoding="async"
-                data-nimg="1"
                 class="transition block opacity-70 invert"
                 style="color: transparent"
                 src="svg/storefront.svg" />
@@ -246,8 +201,7 @@
 <div
   class="sm:pl-[34vw] md:pl-[28vw] lg:pl-[22vw] 2xl:pl-[280px] min-h-screen flex flex-col justify-between overflow-scroll">
   <main
-    class="pt-10 sm:pt-3 md:pb-10 md:px-8"
-    role="main"
+    class="pt-20 sm:pt-3 md:pb-10 md:px-8"
     *ngIf="store$ | async as store; else loading">
     <div class="mt-8 px-6 mb-10">
       <div class="" style="opacity: 1; transform: none">
@@ -279,6 +233,7 @@
                   [src]="'data:image/png;base64,' + pkg.icon | trustUrl"
                   style="color: transparent" />
               </div>
+
               <div class="">
                 <span
                   class="block text-xl font-medium text-zinc-50/80 line-clamp-1"

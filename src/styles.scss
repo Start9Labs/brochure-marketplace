@@ -51,7 +51,13 @@
   src: url('/assets/fonts/Redacted/redacted.regular.ttf');
 }
 
-/** Ionic CSS Variables overrides **/
+@font-face {
+  font-family: 'League Spartan';
+  src: url('/assets/fonts/League_Spartan/LeagueSpartan-VariableFont_wght.ttf') format("truetype-variations");
+  font-weight: 1 900;
+}
+
+/** Ionic CSS Variables overrides **/ 
 :root {
   --ion-font-family: 'Open Sans';
   --ion-background-color: var(--ion-color-medium);
@@ -82,8 +88,4 @@ ion-item-divider {
 
 ion-label {
   white-space: normal !important;
-}
-
-img {
-  border-radius: 100%;
 }
