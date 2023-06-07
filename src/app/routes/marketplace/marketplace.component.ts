@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  inject,
+  ViewChild,
+} from '@angular/core'
 import { AbstractMarketplaceService, StoreURL } from '@start9labs/marketplace'
 import { map } from 'rxjs/operators'
 import { HOSTS } from '../../tokens/hosts'
@@ -38,6 +44,8 @@ import {
   ],
 })
 export class MarketplaceComponent {
+  @ViewChild('shinyBox')
+  private readonly shinyBox?: ElementRef<HTMLElement>
   private readonly urlService = inject(UrlService)
   private readonly marketplaceService = inject(AbstractMarketplaceService)
 
@@ -64,7 +72,7 @@ export class MarketplaceComponent {
     .getUrl$()
     .pipe(map(current => this.hosts.find(({ url }) => url !== current)))
 
-  category = 'featured'
+  category = 'all'
   query = ''
   open = false
 
@@ -79,5 +87,19 @@ export class MarketplaceComponent {
 
   toggle(open: boolean): void {
     this.open = open
+  }
+  shinyHover(e: any) {
+    const { x, y } = this.shinyBox?.nativeElement!.getBoundingClientRect()!
+    const rad = Math.atan2(y, x)
+    const deg = rad * (180 / Math.PI)
+    this.shinyBox?.nativeElement!.style.setProperty(
+      '--x',
+      (e.clientX - x).toString(),
+    )
+    this.shinyBox?.nativeElement!.style.setProperty(
+      '--y',
+      (e.clientY - y).toString(),
+    )
+    this.shinyBox?.nativeElement!.style.setProperty('--deg', deg.toString())
   }
 }

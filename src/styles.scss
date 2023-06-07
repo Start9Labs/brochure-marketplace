@@ -89,3 +89,31 @@ ion-item-divider {
 ion-label {
   white-space: normal !important;
 }
+
+.shiny {
+  --x: 0;
+  --y: 0;
+  --deg: 90;
+  overflow: hidden;
+  position: relative;
+  &:hover {
+    transform: scale(1.02) rotateX(var(--deg)) rotateX(var(--deg));
+    transition: ease-in-out;
+  }
+}
+.shiny::after {
+  --size: 100%;
+  content: '';
+  position: absolute;
+  top: calc(var(--y, 0) - var(--size)/2);
+  left: calc(var(--x, 0) - var(--size)/2);
+  width: var(--size);
+  height: var(--size);
+  opacity: 0;
+  transition: opacity 0.2s;
+  background: radial-gradient(white, #3984ff00 80%); 
+}
+
+.shiny:hover::after {
+  opacity: 0.4;
+}

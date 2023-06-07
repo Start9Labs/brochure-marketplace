@@ -3,6 +3,14 @@ module.exports = {
   content: ['./src/**/*.{html,ts}'],
   theme: {
     extend: {
+      animation: {
+        shine: 'shine 1s',
+      },
+      keyframes: {
+        shine: {
+          '100%': { left: '125%' },
+        },
+      },
       screens: {
         '3xl': '1792px',
         '4xl': '2048px',
