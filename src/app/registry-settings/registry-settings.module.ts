@@ -7,25 +7,29 @@ import {
   TuiComboBoxModule,
   TuiDataListWrapperModule,
   TuiInputModule,
+  TuiSelectModule,
 } from '@taiga-ui/kit'
 import {
   TuiButtonModule,
   TuiDataListModule,
   TuiLoaderModule,
+  TuiTextfieldControllerModule,
 } from '@taiga-ui/core'
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
-    ReactiveFormsModule,
-    TuiComboBoxModule,
+    TuiButtonModule,
+    TuiSelectModule,
+    TuiInputModule,
+    TuiTextfieldControllerModule,
     TuiDataListModule,
     TuiDataListWrapperModule,
+    ReactiveFormsModule,
+    TuiComboBoxModule,
     TuiAvatarModule,
     TuiLoaderModule,
-    TuiInputModule,
-    TuiButtonModule,
   ],
   declarations: [RegistrySettingsComponent],
   exports: [RegistrySettingsComponent],

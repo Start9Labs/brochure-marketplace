@@ -5,10 +5,12 @@ import {
   Inject,
   inject,
   Injector,
-  Self,
   ViewChild,
 } from '@angular/core'
-import { AbstractMarketplaceService } from '@start9labs/marketplace'
+import {
+  AbstractMarketplaceService,
+  StoreIdentity,
+} from '@start9labs/marketplace'
 import { map } from 'rxjs/operators'
 import { HOSTS } from '../../tokens/hosts'
 import { UrlService } from '../../services/url.service'
@@ -60,7 +62,6 @@ export class MarketplaceComponent {
   private readonly shinyBox?: ElementRef<HTMLElement>
   private readonly urlService = inject(UrlService)
   private readonly marketplaceService = inject(AbstractMarketplaceService)
-
   readonly hosts = inject(HOSTS)
   readonly store$ = this.marketplaceService.getSelectedStore$().pipe(
     map(({ info, packages, icon }) => {
@@ -78,8 +79,6 @@ export class MarketplaceComponent {
       }
     }),
   )
-
-  readonly selected$ = this.marketplaceService.getSelectedHost$()
   readonly alternative$ = this.urlService
     .getUrl$()
     .pipe(map(current => this.hosts.find(({ url }) => url !== current)))
@@ -95,8 +94,8 @@ export class MarketplaceComponent {
 
   changeRegistry() {
     this.dialogs
-      .open(
-        new PolymorpheusComponent(RegistrySettingsComponent, this.injector),
+      .open<StoreIdentity>(
+        new PolymorpheusComponent(RegistrySettingsComponent),
         {
           label: 'Change Registry',
           data: this.hosts,
@@ -105,10 +104,7 @@ export class MarketplaceComponent {
       )
       .subscribe({
         next: data => {
-          console.info(`Dialog emitted data = ${data}`)
-        },
-        complete: () => {
-          console.info('Dialog closed')
+          this.urlService.toggle((data as any).url)
         },
       })
   }

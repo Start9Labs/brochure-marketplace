@@ -13,14 +13,7 @@ import {
 import { TuiDialogContext } from '@taiga-ui/core'
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus'
 import { UrlService } from '../services/url.service'
-import {
-  BehaviorSubject,
-  filter,
-  map,
-  Observable,
-  Subject,
-  takeUntil,
-} from 'rxjs'
+import { BehaviorSubject, Subject, takeUntil } from 'rxjs'
 
 @Component({
   selector: 'registry-settings',
@@ -29,13 +22,11 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegistrySettingsComponent implements OnDestroy {
-  search: string | null = ''
   loading$ = new BehaviorSubject(false)
   private destroy$ = new Subject<void>()
   private readonly urlService = inject(UrlService)
   private readonly marketplaceService = inject(AbstractMarketplaceService)
-  open = false
-  control?: any
+  control?: FormControl<StoreIdentity | null>
 
   ngOnInit() {
     this.marketplaceService
@@ -48,7 +39,7 @@ export class RegistrySettingsComponent implements OnDestroy {
 
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT)
-    private readonly context: TuiDialogContext<StoreIdentity[]>,
+    private readonly context: TuiDialogContext<StoreIdentity>,
   ) {}
 
   get data(): StoreIdentity[] {
@@ -61,12 +52,18 @@ export class RegistrySettingsComponent implements OnDestroy {
 
   submit() {
     this.loading$.next(true)
-    this.urlService.toggle(this.control.value?.url!)
-    this.context.completeWith(this.control.value)
-    this.loading$.next(false)
+    setTimeout(() => {
+      this.context.completeWith(this.control?.value!)
+      this.loading$.next(false)
+    }, 800)
   }
 
-  cancel() {}
+  cancel() {
+    setTimeout(() => {
+      this.context.$implicit.complete()
+    }, 100)
+  }
+
   ngOnDestroy(): void {
     this.destroy$.next()
     this.destroy$.complete()
