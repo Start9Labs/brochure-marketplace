@@ -2,10 +2,13 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
+  Inject,
   inject,
+  Injector,
+  Self,
   ViewChild,
 } from '@angular/core'
-import { AbstractMarketplaceService, StoreURL } from '@start9labs/marketplace'
+import { AbstractMarketplaceService } from '@start9labs/marketplace'
 import { map } from 'rxjs/operators'
 import { HOSTS } from '../../tokens/hosts'
 import { UrlService } from '../../services/url.service'
@@ -17,11 +20,16 @@ import {
   transition,
   trigger,
 } from '@angular/animations'
+import { TuiDialogService } from '@taiga-ui/core'
+import { RegistrySettingsComponent } from 'src/app/registry-settings/registry-settings.component'
+import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus'
+import { TuiDestroyService } from '@taiga-ui/cdk'
 
 @Component({
   selector: 'app-marketplace',
   templateUrl: './marketplace.component.html',
   styleUrls: ['./marketplace.component.scss'],
+  providers: [TuiDestroyService],
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('itemAnimation', [
@@ -44,6 +52,10 @@ import {
   ],
 })
 export class MarketplaceComponent {
+  constructor(
+    @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
+    @Inject(Injector) private readonly injector: Injector,
+  ) {}
   @ViewChild('shinyBox')
   private readonly shinyBox?: ElementRef<HTMLElement>
   private readonly urlService = inject(UrlService)
@@ -72,7 +84,7 @@ export class MarketplaceComponent {
     .getUrl$()
     .pipe(map(current => this.hosts.find(({ url }) => url !== current)))
 
-  category = 'all'
+  category = 'featured'
   query = ''
   open = false
 
@@ -81,13 +93,30 @@ export class MarketplaceComponent {
     this.query = ''
   }
 
-  toggleMarketplace(url: StoreURL) {
-    this.urlService.toggle(url)
+  changeRegistry() {
+    this.dialogs
+      .open(
+        new PolymorpheusComponent(RegistrySettingsComponent, this.injector),
+        {
+          label: 'Change Registry',
+          data: this.hosts,
+          dismissible: true,
+        },
+      )
+      .subscribe({
+        next: data => {
+          console.info(`Dialog emitted data = ${data}`)
+        },
+        complete: () => {
+          console.info('Dialog closed')
+        },
+      })
   }
 
-  toggle(open: boolean): void {
+  toggleMenu(open: boolean): void {
     this.open = open
   }
+
   shinyHover(e: any) {
     const { x, y } = this.shinyBox?.nativeElement!.getBoundingClientRect()!
     const rad = Math.atan2(y, x)

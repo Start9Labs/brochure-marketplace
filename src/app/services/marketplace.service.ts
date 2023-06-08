@@ -4,7 +4,6 @@ import {
   AbstractMarketplaceService,
   Marketplace,
   MarketplacePkg,
-  StoreData,
   StoreInfo,
 } from '@start9labs/marketplace'
 import {

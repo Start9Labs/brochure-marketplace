@@ -1,7 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
+    
 @font-face {
   font-family: 'Montserrat';
   font-style: normal;
@@ -116,4 +116,30 @@ ion-label {
 
 .shiny:hover::after {
   opacity: 0.4;
+}
+
+.panel {
+  --c0: rgba(15, 14, 14, 0.2);
+  --c1: rgba(105, 102, 102, 0.2);
+  --c2: rgba(141, 139, 139, 0.2);
+  --c3: rgba(12, 11, 11, 0.2);
+  // --xy:45%;
+  // --b: 52deg;
+  // --a: 88deg;
+
+  background:
+    conic-gradient(from var(--b) at var(--xy),
+      var(--c0) var(--a), var(--c1) 0% 50%,
+      var(--c2) 0% calc(180deg + var(--a)), var(--c3) 0%);
+
+  &:nth-child(1) {
+    --xy: 80% 65%;
+    --b: 31deg;
+    --a: 121deg;
+  }
+  // &:nth-child(odd) {
+  //   --xy: 90% 45%;
+  //   --b: 54deg;
+  //   --a: 145deg;
+  // }
 }

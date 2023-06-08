@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 import { RouterModule, Routes } from '@angular/router'
-import { IonicModule } from '@ionic/angular'
 import {
   CategoriesModule,
   FilterPackagesPipeModule,
@@ -14,6 +13,8 @@ import { MarketplaceComponent } from './marketplace.component'
 import { TuiActiveZoneModule, TuiFilterPipeModule } from '@taiga-ui/cdk'
 import { TuiSidebarModule } from '@taiga-ui/addon-mobile'
 import { SharedPipesModule } from '@start9labs/shared'
+import { TuiLoaderModule } from '@taiga-ui/core'
+import { RegistrySettingsModule } from 'src/app/registry-settings/registry-settings.module'
 
 const routes: Routes = [
   {
@@ -31,7 +32,6 @@ const routes: Routes = [
 @NgModule({
   imports: [
     CommonModule,
-    IonicModule,
     SkeletonModule,
     ItemModule,
     SearchModule,
@@ -42,6 +42,8 @@ const routes: Routes = [
     TuiSidebarModule,
     TuiActiveZoneModule,
     TuiFilterPipeModule,
+    TuiLoaderModule,
+    RegistrySettingsModule,
   ],
   declarations: [MarketplaceComponent],
   exports: [MarketplaceComponent],

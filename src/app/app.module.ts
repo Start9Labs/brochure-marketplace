@@ -13,7 +13,12 @@ import { environment } from '../environments/environment'
 import { MarketplaceMockService } from './services/marketplace.mock'
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
-import { TuiRootModule } from '@taiga-ui/core'
+import {
+  TuiDialogModule,
+  TuiModeModule,
+  TuiRootModule,
+  TuiThemeNightModule,
+} from '@taiga-ui/core'
 
 @NgModule({
   imports: [
@@ -23,6 +28,9 @@ import { TuiRootModule } from '@taiga-ui/core'
     IonicModule.forRoot(),
     BrowserAnimationsModule,
     TuiRootModule,
+    TuiDialogModule,
+    TuiThemeNightModule,
+    TuiModeModule,
   ],
   providers: [
     {

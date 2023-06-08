@@ -62,9 +62,15 @@
                 "glob": "**/*.svg",
                 "input": "node_modules/ionicons/dist/svg",
                 "output": "./svg"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/@taiga-ui/icons/src",
+                "output": "assets/taiga-ui/icons"
               }
             ],
             "styles": [
+              "node_modules/@taiga-ui/core/styles/taiga-ui-theme.less",
               "node_modules/@start9labs/shared/styles/variables.scss",
               "node_modules/@start9labs/shared/styles/global.scss",
               "node_modules/@start9labs/shared/styles/shared.scss",
