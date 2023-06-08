@@ -16,6 +16,8 @@ import {
 
 import { PackageComponent } from './package.component'
 import { NotesComponent } from './notes.component'
+import { TuiCarouselModule, TuiIslandModule } from '@taiga-ui/kit'
+import { TuiButtonModule } from '@taiga-ui/core'
 
 const routes: Routes = [
   {
@@ -41,6 +43,8 @@ const routes: Routes = [
     DependenciesModule,
     AdditionalModule,
     ReleaseNotesModule,
+    TuiCarouselModule,
+    TuiButtonModule,
   ],
   declarations: [PackageComponent, NotesComponent],
   exports: [PackageComponent],

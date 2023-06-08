@@ -1,7 +1,25 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-    
+@import '@taiga-ui/core/styles/taiga-ui-local.scss';
+
+[tuiWrapper][data-appearance='custom'] {
+  background: #9747ff;
+  color: #fff;
+
+  &:hover{
+    background: #9b57f5;
+  };
+
+  &:active{
+    background: #6c40a4;
+  };
+
+  &:disabled{
+    background: #9f92af;
+  };
+}
+
 @font-face {
   font-family: 'Montserrat';
   font-style: normal;
@@ -64,16 +82,9 @@
   --ion-background-color-rgb: var(--ion-color-medium-rgb);
   --ion-text-color: var(--ion-color-dark);
   --ion-text-color-rgb: var(--ion-color-dark-rgb);
-}
 
-/** Global classes, prefixed with g- **/
-.g-content {
-  position: relative;
-  height: 100%;
-  width: 100%;
-  max-width: 1000px;
-  margin: 0 auto;
-  background: var(--ion-color-medium);
+  --tui-base-01: theme('colors.zinc.800')!important;
+  --tui-text-01: theme('colors.zinc.100')!important;
 }
 
 ion-item-divider {

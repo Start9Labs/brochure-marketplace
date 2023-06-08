@@ -19,7 +19,7 @@ module.exports = {
         folly: '#FF4961',
         lime: '#BCFF49',
         cyan: '#49FFE7',
-        veronica: ' #9747ff',
+        veronica: '#9747ff',
         tangerine: '#ff8c49',
         royal: '#4961ff',
       },
