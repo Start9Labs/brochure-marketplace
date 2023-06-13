@@ -4,6 +4,7 @@ import {
   AbstractMarketplaceService,
   Marketplace,
   MarketplacePkg,
+  StoreData,
   StoreInfo,
 } from '@start9labs/marketplace'
 import {
@@ -96,6 +97,25 @@ export class MarketplaceService extends AbstractMarketplaceService {
     }).pipe(
       map(({ url, marketplace }) => marketplace[url]),
       filter(Boolean),
+    )
+  }
+
+  getSelectedStoreWithAllCategories$() {
+    return this.getSelectedStore$().pipe(
+      map(({ info, packages, icon }) => {
+        const categories = new Set<string>()
+        categories.add('all')
+        info.categories.forEach(c => categories.add(c))
+
+        return {
+          icon,
+          info: {
+            ...info,
+            categories: Array.from(categories),
+          },
+          packages,
+        }
+      }),
     )
   }
 

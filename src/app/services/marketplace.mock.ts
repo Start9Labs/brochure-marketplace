@@ -61,6 +61,25 @@ export class MarketplaceMockService extends AbstractMarketplaceService {
     )
   }
 
+  getSelectedStoreWithAllCategories$() {
+    return this.getSelectedStore$().pipe(
+      map(({ info, packages, icon }) => {
+        const categories = new Set<string>()
+        categories.add('all')
+        info.categories.forEach(c => categories.add(c))
+
+        return {
+          icon,
+          info: {
+            ...info,
+            categories: Array.from(categories),
+          },
+          packages,
+        }
+      }),
+    )
+  }
+
   getPackage$(
     id: string,
     _version: string,

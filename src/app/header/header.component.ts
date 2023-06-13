@@ -5,14 +5,21 @@ import {
   Inject,
   inject,
   Input,
+  OnDestroy,
   Output,
 } from '@angular/core'
 import { HOSTS } from '../tokens/hosts'
-import { StoreData, StoreIdentity } from '@start9labs/marketplace'
+import {
+  AbstractMarketplaceService,
+  StoreData,
+  StoreIdentity,
+} from '@start9labs/marketplace'
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus'
 import { RegistrySettingsComponent } from '../registry-settings/registry-settings.component'
 import { UrlService } from '../services/url.service'
 import { TuiDialogService } from '@taiga-ui/core'
+import { CategoryService } from '../services/category.service'
+import { Observable, Subject, takeUntil } from 'rxjs'
 
 @Component({
   selector: 'marketplace-header',
@@ -20,27 +27,16 @@ import { TuiDialogService } from '@taiga-ui/core'
   styleUrls: ['./header.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnDestroy {
+  private destroy$ = new Subject<void>()
   readonly hosts = inject(HOSTS)
   private readonly urlService = inject(UrlService)
-
-  @Input()
-  store?: StoreData | null
-
-  @Input()
-  alt?: StoreIdentity | null
-
-  @Input()
-  query = ''
-
-  @Input()
-  category = ''
-
-  @Output()
-  readonly categoryChange = new EventEmitter<string>()
-
-  @Output()
-  readonly queryChange = new EventEmitter<string>()
+  private readonly marketplaceService = inject(AbstractMarketplaceService)
+  private readonly categoryService = inject(CategoryService)
+  readonly store$ = this.marketplaceService.getSelectedStoreWithAllCategories$()
+  readonly alt$ = this.urlService.getAlt$()
+  category: string = ''
+  query: string = ''
 
   constructor(
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
@@ -48,15 +44,32 @@ export class HeaderComponent {
 
   open = false
 
+  ngOnInit() {
+    this.categoryService
+      .getQuery$()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(val => {
+        this.query = val
+      })
+
+    this.categoryService
+      .getCategory$()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(val => {
+        this.category = val
+      })
+  }
+
   onCategoryChange(category: string): void {
     this.category = category
     this.query = ''
-    this.categoryChange.emit(category)
+    this.categoryService.resetQuery()
+    this.categoryService.changeCategory(category)
   }
 
   onQueryChange(query: string): void {
     this.query = query
-    this.queryChange.emit(query)
+    this.categoryService.setQuery(query)
   }
 
   changeRegistry() {
@@ -75,7 +88,13 @@ export class HeaderComponent {
         },
       })
   }
+
   toggleMenu(open: boolean): void {
     this.open = open
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next()
+    this.destroy$.complete()
   }
 }

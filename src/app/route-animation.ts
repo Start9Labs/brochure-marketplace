@@ -1,6 +1,5 @@
 import {
   animate,
-  animateChild,
   group,
   query,
   style,

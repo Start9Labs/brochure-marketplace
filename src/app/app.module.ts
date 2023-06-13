@@ -19,6 +19,8 @@ import {
   TuiRootModule,
   TuiThemeNightModule,
 } from '@taiga-ui/core'
+import { MarketplaceHeaderModule } from './header/header.component.module'
+import { RegistrySettingsModule } from './registry-settings/registry-settings.module'
 
 @NgModule({
   imports: [
@@ -31,6 +33,8 @@ import {
     TuiDialogModule,
     TuiThemeNightModule,
     TuiModeModule,
+    MarketplaceHeaderModule,
+    RegistrySettingsModule,
   ],
   providers: [
     {

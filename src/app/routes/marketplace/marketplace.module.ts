@@ -7,11 +7,7 @@ import {
   StoreIconComponentModule,
 } from '@start9labs/marketplace'
 import { MarketplaceComponent } from './marketplace.component'
-import { TuiSidebarModule } from '@taiga-ui/addon-mobile'
 import { SharedPipesModule } from '@start9labs/shared'
-import { TuiLoaderModule } from '@taiga-ui/core'
-import { RegistrySettingsModule } from 'src/app/registry-settings/registry-settings.module'
-import { MarketplaceHeaderModule } from 'src/app/header/header.component.module'
 
 const routes: Routes = [
   {
@@ -33,8 +29,6 @@ const routes: Routes = [
     FilterPackagesPipeModule,
     RouterModule.forChild(routes),
     SharedPipesModule,
-    RegistrySettingsModule,
-    MarketplaceHeaderModule,
   ],
   declarations: [MarketplaceComponent],
   exports: [MarketplaceComponent],

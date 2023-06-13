@@ -19,6 +19,7 @@ import {
 } from '@angular/animations'
 import { TuiDestroyService } from '@taiga-ui/cdk'
 import { Observable } from 'rxjs'
+import { CategoryService } from 'src/app/services/category.service'
 
 @Component({
   selector: 'app-marketplace',
@@ -52,6 +53,8 @@ export class MarketplaceComponent {
   private readonly urlService = inject(UrlService)
   private readonly marketplaceService = inject(AbstractMarketplaceService)
   readonly hosts = inject(HOSTS)
+  private readonly categoryService = inject(CategoryService)
+
   readonly store$: Observable<StoreData> = this.marketplaceService
     .getSelectedStore$()
     .pipe(
@@ -70,15 +73,9 @@ export class MarketplaceComponent {
         }
       }),
     )
-  readonly alternative$ = this.urlService
-    .getUrl$()
-    .pipe(map(current => this.hosts.find(({ url }) => url !== current)))
-  category = 'featured'
-  query = ''
-
-  categoryChange(category: string): void {
-    this.category = category
-  }
+  readonly alternative$ = this.urlService.getAlt$()
+  readonly category$ = this.categoryService.getCategory$()
+  readonly query$ = this.categoryService.getQuery$()
 
   shinyHover(e: any) {
     const { x, y } = this.shinyBox?.nativeElement!.getBoundingClientRect()!

@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 import { RouterModule, Routes } from '@angular/router'
-import { IonicModule } from '@ionic/angular'
 import {
   SharedPipesModule,
   TextSpinnerComponentModule,
@@ -16,8 +15,9 @@ import {
 
 import { PackageComponent } from './package.component'
 import { NotesComponent } from './notes.component'
-import { TuiCarouselModule, TuiIslandModule } from '@taiga-ui/kit'
+import { TuiCarouselModule } from '@taiga-ui/kit'
 import { TuiButtonModule } from '@taiga-ui/core'
+import { IonicModule } from '@ionic/angular'
 
 const routes: Routes = [
   {
