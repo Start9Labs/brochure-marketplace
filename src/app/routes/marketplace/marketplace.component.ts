@@ -2,15 +2,10 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
-  Inject,
   inject,
-  Injector,
   ViewChild,
 } from '@angular/core'
-import {
-  AbstractMarketplaceService,
-  StoreIdentity,
-} from '@start9labs/marketplace'
+import { AbstractMarketplaceService, StoreData } from '@start9labs/marketplace'
 import { map } from 'rxjs/operators'
 import { HOSTS } from '../../tokens/hosts'
 import { UrlService } from '../../services/url.service'
@@ -22,10 +17,8 @@ import {
   transition,
   trigger,
 } from '@angular/animations'
-import { TuiDialogService } from '@taiga-ui/core'
-import { RegistrySettingsComponent } from 'src/app/registry-settings/registry-settings.component'
-import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus'
 import { TuiDestroyService } from '@taiga-ui/cdk'
+import { Observable } from 'rxjs'
 
 @Component({
   selector: 'app-marketplace',
@@ -54,63 +47,37 @@ import { TuiDestroyService } from '@taiga-ui/cdk'
   ],
 })
 export class MarketplaceComponent {
-  constructor(
-    @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
-    @Inject(Injector) private readonly injector: Injector,
-  ) {}
   @ViewChild('shinyBox')
   private readonly shinyBox?: ElementRef<HTMLElement>
   private readonly urlService = inject(UrlService)
   private readonly marketplaceService = inject(AbstractMarketplaceService)
   readonly hosts = inject(HOSTS)
-  readonly store$ = this.marketplaceService.getSelectedStore$().pipe(
-    map(({ info, packages, icon }) => {
-      const categories = new Set<string>()
-      categories.add('all')
-      info.categories.forEach(c => categories.add(c))
+  readonly store$: Observable<StoreData> = this.marketplaceService
+    .getSelectedStore$()
+    .pipe(
+      map(({ info, packages, icon }) => {
+        const categories = new Set<string>()
+        categories.add('all')
+        info.categories.forEach(c => categories.add(c))
 
-      return {
-        icon,
-        info: {
-          ...info,
-          categories: Array.from(categories),
-        },
-        packages,
-      }
-    }),
-  )
+        return {
+          icon,
+          info: {
+            ...info,
+            categories: Array.from(categories),
+          },
+          packages,
+        }
+      }),
+    )
   readonly alternative$ = this.urlService
     .getUrl$()
     .pipe(map(current => this.hosts.find(({ url }) => url !== current)))
-
   category = 'featured'
   query = ''
-  open = false
 
-  onCategoryChange(category: string): void {
+  categoryChange(category: string): void {
     this.category = category
-    this.query = ''
-  }
-
-  changeRegistry() {
-    this.dialogs
-      .open<StoreIdentity>(
-        new PolymorpheusComponent(RegistrySettingsComponent),
-        {
-          label: 'Change Registry',
-          data: this.hosts,
-          dismissible: true,
-        },
-      )
-      .subscribe({
-        next: data => {
-          this.urlService.toggle((data as any).url)
-        },
-      })
-  }
-
-  toggleMenu(open: boolean): void {
-    this.open = open
   }
 
   shinyHover(e: any) {

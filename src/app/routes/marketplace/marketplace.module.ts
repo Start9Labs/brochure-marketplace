@@ -2,19 +2,16 @@ import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 import { RouterModule, Routes } from '@angular/router'
 import {
-  CategoriesModule,
   FilterPackagesPipeModule,
-  ItemModule,
-  SearchModule,
   SkeletonModule,
   StoreIconComponentModule,
 } from '@start9labs/marketplace'
 import { MarketplaceComponent } from './marketplace.component'
-import { TuiActiveZoneModule, TuiFilterPipeModule } from '@taiga-ui/cdk'
 import { TuiSidebarModule } from '@taiga-ui/addon-mobile'
 import { SharedPipesModule } from '@start9labs/shared'
 import { TuiLoaderModule } from '@taiga-ui/core'
 import { RegistrySettingsModule } from 'src/app/registry-settings/registry-settings.module'
+import { MarketplaceHeaderModule } from 'src/app/header/header.component.module'
 
 const routes: Routes = [
   {
@@ -33,17 +30,11 @@ const routes: Routes = [
   imports: [
     CommonModule,
     SkeletonModule,
-    ItemModule,
-    SearchModule,
-    CategoriesModule,
     FilterPackagesPipeModule,
     RouterModule.forChild(routes),
     SharedPipesModule,
-    TuiSidebarModule,
-    TuiActiveZoneModule,
-    TuiFilterPipeModule,
-    TuiLoaderModule,
     RegistrySettingsModule,
+    MarketplaceHeaderModule,
   ],
   declarations: [MarketplaceComponent],
   exports: [MarketplaceComponent],

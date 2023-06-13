@@ -33,7 +33,7 @@
             style="transform: none" />
           <!-- header -->
           <div
-            class="flex flex-col h-[35vh] w-[95vw] md:w-[70vw] relative rounded-3xl pt-16 pb-10 px-8 shadow-xl overflow-clip">
+            class="flex flex-col h-[35vh] w-[150%] md:w-[70vw] relative rounded-3xl pt-16 pb-10 px-8 shadow-xl overflow-clip">
             <div
               class="overflow-hidden absolute w-full h-full top-0 left-0 -z-50 rounded-3xl bg-black">
               <div
@@ -63,11 +63,11 @@
                     *tuiItem
                     draggable="false"
                     [class.item_active]="i === index + 1"
-                    class="rounded-xl object-cover p-2 border-2 border-zinc-700 bg-zinc-800">
+                    class="rounded-lg md:rounded-xl object-cover p-2 border-2 border-zinc-700 bg-zinc-800">
                     <img
                       alt="Service Screenshot"
                       src="img/{{ item }}"
-                      class="drop-shadow-xk" />
+                      class="drop-shadow-xl" />
                   </div>
                 </ng-container>
               </tui-carousel>
