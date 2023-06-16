@@ -3,13 +3,13 @@
   class="sm:pl-[34vw] md:pl-[28vw] lg:pl-[22vw] 2xl:pl-[280px] min-h-screen"
   [@tuiFadeIn]="getAnimation(speed)">
   <div class="grid grid-flow-row gap-8 justify-center">
-    <button
+    <!-- <button
       routerLink="/marketplace"
       tuiIconButton
       icon="tuiIconArrowLeftLarge"
       type="button"
       appearance="flat"
-      class="m-2 md:my-8"></button>
+      class="m-2 md:my-8"></button> -->
 
     <ng-container *ngIf="pkg | empty; else show">
       <ng-container *ngIf="version$ | async as version">
@@ -22,28 +22,24 @@
 
     <ng-template #show>
       <!-- <marketplace-package [pkg]="pkg"></marketplace-package> -->
-
-      <div class="container mb-16">
-        <!-- color background -->
-        <!-- <div
-          class="overflow-hidden absolute w-full h-full top-0 left-0 -z-50 rounded-3xl bg-black">
+      <div class="grid grid-flow-row gap-8 mb-16 px-20 mt-20">
+        <!-- header -->
+        <div class="flex gap-5 justify-start mt-10 md:mt-0">
+          <!-- <div
+              class="overflow-hidden absolute w-full h-full top-0 left-0 -z-50 rounded-xl bg-black">
+              <div
+                class="absolute top-0 left-0 w-full h-full bg-center panel"></div>
+              <img
+                [src]="'data:image/png;base64,' + pkg.icon | trustUrl"
+                class="absolute object-cover pointer-events-none w-[200%] h-[200%] max-w-[200%] blur-[100px] saturate-150"
+                alt="{{ pkg.manifest.title }} Icon" />
+            </div> -->
           <div
-            class="absolute top-0 left-0 w-full h-full bg-center panel"></div>
-          <img
-            [src]="'data:image/png;base64,' + pkg.icon | trustUrl"
-            class="absolute object-cover pointer-events-none w-[200%] h-[200%] max-w-[200%] blur-[100px] saturate-150"
-            alt="{{ pkg.manifest.title }} Icon" />
-        </div> -->
-        <div class="mt-10 md:mt-0 flex flex-col items-center relative">
-          <!-- icon -->
-          <img
-            [src]="'data:image/png;base64,' + pkg.icon | trustUrl"
-            class="w-24 h-24 pointer-events-none absolute left-7 -top-9 rounded-full object-cover shadow-xl"
-            alt="{{ pkg.manifest.title }} Icon"
-            style="transform: none" />
-          <!-- header -->
-          <div
-            class="flex flex-col h-fit w-[75vw] relative rounded-3xl pt-16 pb-10 px-8 shadow-xl">
+            class="flex flex-col h-[30vh] w-full relative rounded-3xl pt-16 pb-10 px-8 shadow-xl">
+            <img
+              [src]="'data:image/png;base64,' + pkg.icon | trustUrl"
+              class="w-24 h-24 pointer-events-none rounded-full object-cover shadow-xl absolute -top-9 left-7"
+              alt="{{ pkg.manifest.title }} Icon" />
             <div
               class="overflow-hidden absolute w-full h-full top-0 left-0 -z-50 rounded-3xl bg-black">
               <div
@@ -54,23 +50,25 @@
                 alt="{{ pkg.manifest.title }} Icon" />
             </div>
             <div class="my-3">
-              <span
-                class="block text-2xl font-medium text-zinc-50/90 line-clamp-1 mb-1"
-                >{{ pkg.manifest.title }}</span
-              ><span class="block text-zinc-50/70 h-11 line-clamp-2">{{
-                pkg.manifest.description.short
-              }}</span>
+              <h2
+                class="block text-2xl font-medium text-zinc-50/90 line-clamp-1 mb-1">
+                {{ pkg.manifest.title }}
+              </h2>
+              <p class="block text-base text-zinc-50/70 h-11 line-clamp-2">
+                {{ pkg.manifest.description.short }}
+              </p>
             </div>
+            <!-- screenshots -->
             <div
               *ngIf="pkg.screenshots"
               tuiCarouselButtons
               class="flex items-center">
-              <button
-                tuiIconButton
-                icon="tuiIconChevronLeftLarge"
-                title="Previous"
-                type="button"
-                (click)="carousel.prev()"></button>
+              <!-- <button
+              tuiIconButton
+              icon="tuiIconChevronLeftLarge"
+              title="Previous"
+              type="button"
+              (click)="carousel.prev()"></button> -->
               <tui-carousel
                 #carousel
                 [itemsCount]="2"
@@ -82,7 +80,7 @@
                     *tuiItem
                     draggable="false"
                     [class.item_active]="i === index + 1"
-                    class="rounded-lg md:rounded-xl object-cover p-2 border-2 border-zinc-700 bg-zinc-800 w-full">
+                    class="rounded-lg md:rounded-lg object-cover p-2 border-2 border-zinc-700 bg-zinc-800 w-full shadow-zinc-300 drop-shadow-lg">
                     <img
                       alt="Service Screenshot"
                       src="img/{{ item }}"
@@ -90,23 +88,24 @@
                   </div>
                 </ng-container>
               </tui-carousel>
-              <button
-                tuiIconButton
-                type="button"
-                icon="tuiIconChevronRightLarge"
-                title="Next"
-                (click)="carousel.next()"></button>
+              <!-- <button
+              tuiIconButton
+              type="button"
+              icon="tuiIconChevronRightLarge"
+              title="Next"
+              (click)="carousel.next()"></button> -->
             </div>
           </div>
         </div>
-        <div class="mt-5 grid grid-cols-1 lg:grid-cols-12 gap-x-8">
+
+        <div class="mt-80 grid grid-cols-1 lg:grid-cols-12 gap-x-8">
           <!-- about -->
           <div class="lg:col-span-7 xl:col-span-8">
             <div
-              class="rounded-3xl bg-gradient-to-r from-veronica/75 to-cyan/75 p-px shadow-l">
+              class="rounded-xl bg-gradient-to-bl from-zinc-400/75 to-zinc-600 p-px drop-shadow-2xl">
               <!-- <marketplace-about [pkg]="pkg"></marketplace-about> -->
               <div
-                class="lg:col-span-5 xl:col-span-4 bg-zinc-800 rounded-3xl p-7">
+                class="lg:col-span-5 xl:col-span-4 bg-zinc-800 rounded-xl p-7">
                 <!-- <marketplace-about [pkg]="pkg"></marketplace-about> -->
                 <p class="tui-island__category">About</p>
                 <p class="tui-island__paragraph">
@@ -117,12 +116,12 @@
                   <!-- <marketplace-dependencies
                 *ngIf="!(pkg.manifest.dependencies | empty)"
                 [pkg]="pkg"></marketplace-dependencies> -->
-                  <div class="flex flex-col md:flex-row-auto gap-3">
+                  <div class="grid grid-cols-2 md:grid-row-auto gap-3">
                     <div
                       *ngFor="let dep of pkg.manifest.dependencies | keyvalue">
                       <a [routerLink]="['/marketplace', dep.key]">
                         <div
-                          class="bg-zinc-700 rounded-3xl py-3 px-5 gap-2 shadow-xl">
+                          class="bg-zinc-700 rounded-xl py-3 px-5 gap-2 drop-shadow-xl">
                           <div class="flex items-center gap-6">
                             <img
                               [src]="
@@ -130,7 +129,7 @@
                                   pkg['dependency-metadata'][dep.key].icon
                                   | trustUrl
                               "
-                              class="w-16 pointer-events-none rounded-full object-cover shadow-xl"
+                              class="w-16 pointer-events-none rounded-full object-cover drop-shadow-xl"
                               alt="{{
                                 pkg['dependency-metadata'][dep.key].title
                               }} Icon" />
@@ -174,8 +173,8 @@
           <!-- additional info-->
           <div class="lg:col-span-5 xl:col-span-4 mt-6 lg:mt-0">
             <div
-              class="rounded-3xl bg-gradient-to-r from-lime/75 to-tangerine/75 p-px shadow-lg">
-              <div class="bg-zinc-800 rounded-3xl p-7">
+              class="rounded-xl bg-gradient-to-bl from-zinc-400/75 to-zinc-600 p-px drop-shadow-2xl">
+              <div class="bg-zinc-800 rounded-xl p-7">
                 <p class="tui-island__category">Information</p>
                 <!-- <marketplace-additional
                   class="additional"
@@ -202,8 +201,8 @@
           <!-- release notes -->
           <div class="lg:col-span-7 xl:col-span-8 mt-6">
             <div
-              class="rounded-3xl bg-gradient-to-r from-cyan/75 to-lime/75 p-px shadow-lg">
-              <div class="bg-zinc-800 rounded-3xl p-7">
+              class="rounded-xl bg-gradient-to-bl from-zinc-400/75 to-zinc-600 p-px drop-shadow-2xl">
+              <div class="bg-zinc-800 rounded-xl p-7">
                 <p
                   *ngIf="pkg['published-at'] as published"
                   class="tui-island__category">

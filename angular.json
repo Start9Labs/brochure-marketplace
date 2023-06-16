@@ -56,12 +56,12 @@
               {
                 "glob": "**/*",
                 "input": "node_modules/@start9labs/shared/assets",
-                "output": "assets"
+                "output": "./assets"
               },
               {
                 "glob": "**/*",
                 "input": "src/assets/img",
-                "output": "img"
+                "output": "./img"
               },
               {
                 "glob": "**/*.svg",
