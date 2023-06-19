@@ -7,10 +7,9 @@ export const HOSTS = new InjectionToken<StoreIdentity[]>('Marketplace hosts', {
       url: 'https://registry.start9.com/package/v0/',
       name: 'Start9 Registry',
     },
-    // TODO: add back when Community Registry is ready
-    // {
-    //   url: 'https://community-registry.start9.com/package/v0/',
-    //   name: 'Community Registry',
-    // },
+    {
+      url: 'https://community-registry.start9.com/package/v0/',
+      name: 'Community Registry',
+    },
   ],
 })

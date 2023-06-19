@@ -1,6 +1,11 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  OnInit,
+} from '@angular/core'
 import { AbstractMarketplaceService, StoreURL } from '@start9labs/marketplace'
-import { map } from 'rxjs/operators'
+import { map, tap } from 'rxjs/operators'
 import { HOSTS } from '../../tokens/hosts'
 import { UrlService } from '../../services/url.service'
 

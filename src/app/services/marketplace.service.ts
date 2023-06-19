@@ -4,41 +4,48 @@ import {
   AbstractMarketplaceService,
   Marketplace,
   MarketplacePkg,
-  StoreIdentity,
   StoreInfo,
 } from '@start9labs/marketplace'
-import { combineLatest, filter, Observable, shareReplay } from 'rxjs'
-import {
-  distinctUntilChanged,
-  first,
-  map,
-  switchMap,
-  tap,
-} from 'rxjs/operators'
+import { combineLatest, filter, Observable, shareReplay, Subject } from 'rxjs'
+import { first, map, switchMap, tap } from 'rxjs/operators'
 
 import { HOSTS } from '../tokens/hosts'
 import { UrlService } from './url.service'
-import { ActivatedRoute, Params } from '@angular/router'
+import {
+  ActivatedRoute,
+  Event,
+  NavigationEnd,
+  Params,
+  Router,
+} from '@angular/router'
 
 @Injectable()
 export class MarketplaceService extends AbstractMarketplaceService {
   private readonly http = inject(HttpClient)
   private readonly hosts = inject(HOSTS)
-  private readonly url$ = inject(UrlService).getUrl$()
-  private readonly params$ = inject(QueryParams)
+  private readonly urlService = inject(UrlService)
+  private readonly url$ = this.urlService.getUrl$()
 
-  private readonly hosts$ = this.params$.pipe(
-    tap(params => console.error(params)), // always empty
-    map(params => {
-      const registry = params['api']
-      const name = params['name']
-      if (registry && name) {
+  readonly hosts$ = this.router.events.pipe(
+    filter(
+      (e: Event | NavigationEnd): e is NavigationEnd =>
+        e instanceof NavigationEnd,
+    ),
+    map(route => {
+      // route.url is just the path after route param, so this is a hack to create a proper URL
+      const params = new URL(`https://test.com${route.url}`).searchParams
+      // full path needed for registry
+      const url = `https://${params.get('api')}/package/v0/`
+      const name = params.get('name')
+      if (url && name) {
+        this.urlService.toggle(url)
         return [
+          ...this.hosts,
           {
-            url: `https://${registry}/package/v0/`,
+            url,
             name,
           },
-        ] as StoreIdentity[]
+        ]
       } else {
         return this.hosts
       }
@@ -66,6 +73,10 @@ export class MarketplaceService extends AbstractMarketplaceService {
       first(),
     )
     .pipe(shareReplay(1))
+
+  constructor(private router: Router) {
+    super()
+  }
 
   getKnownHosts$() {
     return this.hosts$
