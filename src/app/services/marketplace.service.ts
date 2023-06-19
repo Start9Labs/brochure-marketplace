@@ -6,8 +6,8 @@ import {
   MarketplacePkg,
   StoreInfo,
 } from '@start9labs/marketplace'
-import { combineLatest, filter, Observable, shareReplay, Subject } from 'rxjs'
-import { first, map, switchMap, tap } from 'rxjs/operators'
+import { combineLatest, filter, Observable, shareReplay } from 'rxjs'
+import { first, map, switchMap } from 'rxjs/operators'
 
 import { HOSTS } from '../tokens/hosts'
 import { UrlService } from './url.service'
@@ -32,7 +32,7 @@ export class MarketplaceService extends AbstractMarketplaceService {
         e instanceof NavigationEnd,
     ),
     map(route => {
-      // route.url is just the path after route param, so this is a hack to create a proper URL
+      // route.url is just information after the origin, so this is a hack to create a proper URL
       const params = new URL(`https://test.com${route.url}`).searchParams
       // full path needed for registry
       const url = `https://${params.get('api')}/package/v0/`
@@ -140,12 +140,5 @@ export class MarketplaceService extends AbstractMarketplaceService {
         this.http.get(`${url}${type}/${id}`, { responseType: 'text' }),
       ),
     )
-  }
-}
-
-@Injectable({ providedIn: 'root' })
-class QueryParams extends Observable<Params> {
-  constructor({ queryParams }: ActivatedRoute) {
-    super(subscriber => queryParams.subscribe(subscriber))
   }
 }
