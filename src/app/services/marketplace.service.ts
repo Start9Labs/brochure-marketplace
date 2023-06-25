@@ -6,18 +6,19 @@ import {
   MarketplacePkg,
   StoreInfo,
 } from '@start9labs/marketplace'
-import { combineLatest, filter, Observable, shareReplay } from 'rxjs'
+import {
+  combineLatest,
+  distinctUntilChanged,
+  filter,
+  Observable,
+  share,
+  shareReplay,
+} from 'rxjs'
 import { first, map, switchMap } from 'rxjs/operators'
 
 import { HOSTS } from '../tokens/hosts'
 import { UrlService } from './url.service'
-import {
-  ActivatedRoute,
-  Event,
-  NavigationEnd,
-  Params,
-  Router,
-} from '@angular/router'
+import { Router } from '@angular/router'
 
 @Injectable()
 export class MarketplaceService extends AbstractMarketplaceService {
@@ -26,18 +27,13 @@ export class MarketplaceService extends AbstractMarketplaceService {
   private readonly urlService = inject(UrlService)
   private readonly url$ = this.urlService.getUrl$()
 
-  readonly hosts$ = this.router.events.pipe(
-    filter(
-      (e: Event | NavigationEnd): e is NavigationEnd =>
-        e instanceof NavigationEnd,
-    ),
-    map(route => {
-      // route.url is just information after the origin, so this is a hack to create a proper URL
-      const params = new URL(`https://test.com${route.url}`).searchParams
+  readonly hosts$ = this.router.routerState.root.queryParams.pipe(
+    distinctUntilChanged(),
+    map(({ api, name }) => {
       // full path needed for registry
-      const url = `https://${params.get('api')}/package/v0/`
-      const name = params.get('name')
-      if (url && name) {
+      const url = `https://${api}/package/v0/`
+
+      if (name) {
         this.urlService.toggle(url)
         return [
           ...this.hosts,
@@ -50,6 +46,7 @@ export class MarketplaceService extends AbstractMarketplaceService {
         return this.hosts
       }
     }),
+    share(),
   )
 
   private readonly marketplace$: Observable<Marketplace> = this.hosts$
