@@ -2,7 +2,12 @@
   <ion-grid class="g-content">
     <ion-row *ngIf="selected$ | async as selected" class="heading">
       <ion-col size="12">
-        <img src="assets/img/icon.png" alt="" class="icon" />
+        <store-icon
+          class="icon"
+          size="80px"
+          [url]="selected.url"
+          [marketplace]="this.iconConfig"
+        ></store-icon>
         <h1 class="montserrat">{{ selected.name }}</h1>
         <ion-button
           *ngIf="alternative$ | async as store"
@@ -28,7 +33,9 @@
           <div class="divider"></div>
 
           <ion-grid
-            *ngIf="store.packages | filterPackages: query:category as filtered"
+            *ngIf="
+              store.packages | filterPackages : query : category as filtered
+            "
           >
             <ion-row>
               <ion-col

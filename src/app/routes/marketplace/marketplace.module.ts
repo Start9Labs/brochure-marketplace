@@ -8,6 +8,7 @@ import {
   ItemModule,
   SearchModule,
   SkeletonModule,
+  StoreIconComponentModule,
 } from '@start9labs/marketplace'
 import { SharedPipesModule } from '@start9labs/shared'
 import { MarketplaceComponent } from './marketplace.component'
@@ -36,6 +37,7 @@ const routes: Routes = [
     SearchModule,
     RouterModule.forChild(routes),
     SharedPipesModule,
+    StoreIconComponentModule,
   ],
   declarations: [MarketplaceComponent],
   exports: [MarketplaceComponent],
