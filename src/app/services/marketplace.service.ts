@@ -34,7 +34,7 @@ export class MarketplaceService extends AbstractMarketplaceService {
     distinctUntilChanged(),
     map(({ api, name }) => {
       // full path needed for registry
-      const url = `https://${api}/package/v0/`
+      const url = `https://${api}/`
 
       if (name) {
         this.urlService.toggle(url)
@@ -60,9 +60,9 @@ export class MarketplaceService extends AbstractMarketplaceService {
             (acc, { url }) => ({
               ...acc,
               [url]: combineLatest({
-                info: this.http.get<StoreInfo>(url + 'info'),
+                info: this.http.get<StoreInfo>(url + 'package/v0/info'),
                 packages: this.http.get<MarketplacePkg[]>(
-                  `${url}index?per-page=100&page=1`,
+                  `${url}package/v0/index?per-page=100&page=1`,
                 ),
               }),
             }),
@@ -112,7 +112,7 @@ export class MarketplaceService extends AbstractMarketplaceService {
 
     return this.url$.pipe(
       switchMap(url =>
-        this.http.get<MarketplacePkg[]>(url + 'index', {
+        this.http.get<MarketplacePkg[]>(url + 'package/v0/index', {
           params: {
             ids: JSON.stringify([{ id, version }]),
           },
@@ -125,7 +125,9 @@ export class MarketplaceService extends AbstractMarketplaceService {
   fetchReleaseNotes$(id: string) {
     return this.url$.pipe(
       switchMap(url =>
-        this.http.get<Record<string, string>>(`${url}release-notes/${id}`),
+        this.http.get<Record<string, string>>(
+          `${url}package/v0/release-notes/${id}`,
+        ),
       ),
     )
   }
@@ -133,7 +135,9 @@ export class MarketplaceService extends AbstractMarketplaceService {
   fetchStatic$(id: string, type: string) {
     return this.url$.pipe(
       switchMap(url =>
-        this.http.get(`${url}${type}/${id}`, { responseType: 'text' }),
+        this.http.get(`${url}package/v0/${type}/${id}`, {
+          responseType: 'text',
+        }),
       ),
     )
   }

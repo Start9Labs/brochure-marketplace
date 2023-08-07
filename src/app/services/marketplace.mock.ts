@@ -1,24 +1,48 @@
-import { Injectable } from '@angular/core'
+import { Injectable, inject } from '@angular/core'
 import {
   AbstractMarketplaceService,
   MarketplacePkg,
 } from '@start9labs/marketplace'
-import { Observable, of } from 'rxjs'
-import { map } from 'rxjs/operators'
+import { Observable, combineLatest, of } from 'rxjs'
+import {
+  distinctUntilChanged,
+  filter,
+  first,
+  map,
+  share,
+  shareReplay,
+  switchMap,
+  tap,
+} from 'rxjs/operators'
 import { CATEGORIES, PACKAGES, RELEASE_NOTES } from './mock'
 import markdown from 'raw-loader!@start9labs/shared/assets/markdown/md-sample.md'
+import { HOSTS } from '../tokens/hosts'
+import { UrlService } from './url.service'
+import { Router } from '@angular/router'
 
 @Injectable()
 export class MarketplaceMockService extends AbstractMarketplaceService {
+  private readonly hosts = inject(HOSTS)
+  private readonly urlService = inject(UrlService)
+  private readonly url$ = this.urlService.getUrl$()
+  constructor(private router: Router) {
+    super()
+  }
+
+  readonly hosts$ = this.router.routerState.root.queryParams.pipe(
+    distinctUntilChanged(),
+    map(() => this.hosts),
+  )
+
   getKnownHosts$() {
-    return of([])
+    return this.hosts$
   }
 
   getSelectedHost$() {
-    return of({
-      name: 'Start9 Registry',
-      url: 'https://marketplace.start9labs.com',
-    })
+    return combineLatest([this.url$, this.hosts$]).pipe(
+      map(([url, hosts]) => hosts.find(host => host.url === url)),
+      filter(Boolean),
+    )
   }
 
   getMarketplace$() {
@@ -28,7 +52,10 @@ export class MarketplaceMockService extends AbstractMarketplaceService {
   getSelectedStore$() {
     return this.getSelectedHost$().pipe(
       map(({ name }) => ({
-        info: { name, categories: CATEGORIES },
+        info: {
+          name: name ? name : 'Unknown Registry',
+          categories: CATEGORIES,
+        },
         packages: PACKAGES,
       })),
     )
