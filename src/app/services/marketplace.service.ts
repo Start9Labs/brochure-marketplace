@@ -22,6 +22,9 @@ import { Router } from '@angular/router'
 
 @Injectable()
 export class MarketplaceService extends AbstractMarketplaceService {
+  constructor(private router: Router) {
+    super()
+  }
   private readonly http = inject(HttpClient)
   private readonly hosts = inject(HOSTS)
   private readonly urlService = inject(UrlService)
@@ -70,10 +73,6 @@ export class MarketplaceService extends AbstractMarketplaceService {
       first(),
     )
     .pipe(shareReplay(1))
-
-  constructor(private router: Router) {
-    super()
-  }
 
   getKnownHosts$() {
     return this.hosts$
