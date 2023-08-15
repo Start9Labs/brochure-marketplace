@@ -6,40 +6,81 @@ import {
   MarketplacePkg,
   StoreInfo,
 } from '@start9labs/marketplace'
-import { combineLatest, filter, Observable, of, shareReplay } from 'rxjs'
-import { map, switchMap, tap } from 'rxjs/operators'
+import {
+  combineLatest,
+  distinctUntilChanged,
+  filter,
+  Observable,
+  share,
+  shareReplay,
+} from 'rxjs'
+import { first, map, switchMap } from 'rxjs/operators'
 
 import { HOSTS } from '../tokens/hosts'
 import { UrlService } from './url.service'
+import { Router } from '@angular/router'
 
 @Injectable()
 export class MarketplaceService extends AbstractMarketplaceService {
+  constructor(private router: Router) {
+    super()
+  }
   private readonly http = inject(HttpClient)
   private readonly hosts = inject(HOSTS)
-  private readonly url$ = inject(UrlService).getUrl$()
+  private readonly urlService = inject(UrlService)
+  private readonly url$ = this.urlService.getUrl$()
 
-  private readonly marketplace$: Observable<Marketplace> = combineLatest(
-    this.hosts.reduce(
-      (acc, { url }) => ({
-        ...acc,
-        [url]: combineLatest({
-          info: this.http.get<StoreInfo>(url + 'info'),
-          packages: this.http.get<MarketplacePkg[]>(
-            `${url}index?per-page=100&page=1`,
+  readonly hosts$ = this.router.routerState.root.queryParams.pipe(
+    distinctUntilChanged(),
+    map(({ api, name }) => {
+      // full path needed for registry
+      const url = `https://${api}/`
+
+      if (name) {
+        this.urlService.toggle(url)
+        return [
+          ...this.hosts,
+          {
+            url,
+            name,
+          },
+        ]
+      } else {
+        return this.hosts
+      }
+    }),
+    share(),
+  )
+
+  private readonly marketplace$: Observable<Marketplace> = this.hosts$
+    .pipe(
+      switchMap(hosts =>
+        combineLatest(
+          hosts.reduce(
+            (acc, { url }) => ({
+              ...acc,
+              [url]: combineLatest({
+                info: this.http.get<StoreInfo>(url + 'package/v0/info'),
+                packages: this.http.get<MarketplacePkg[]>(
+                  `${url}package/v0/index?per-page=100&page=1`,
+                ),
+              }),
+            }),
+            {},
           ),
-        }),
-      }),
-      {},
-    ),
-  ).pipe(shareReplay(1))
+        ),
+      ),
+      first(),
+    )
+    .pipe(shareReplay(1))
 
   getKnownHosts$() {
-    return of(this.hosts)
+    return this.hosts$
   }
 
   getSelectedHost$() {
-    return this.url$.pipe(
-      map(url => this.hosts.find(host => host.url === url)),
+    return combineLatest([this.url$, this.hosts$]).pipe(
+      map(([url, hosts]) => hosts.find(host => host.url === url)),
       filter(Boolean),
     )
   }
@@ -71,7 +112,7 @@ export class MarketplaceService extends AbstractMarketplaceService {
 
     return this.url$.pipe(
       switchMap(url =>
-        this.http.get<MarketplacePkg[]>(url + 'index', {
+        this.http.get<MarketplacePkg[]>(url + 'package/v0/index', {
           params: {
             ids: JSON.stringify([{ id, version }]),
           },
@@ -84,7 +125,9 @@ export class MarketplaceService extends AbstractMarketplaceService {
   fetchReleaseNotes$(id: string) {
     return this.url$.pipe(
       switchMap(url =>
-        this.http.get<Record<string, string>>(`${url}release-notes/${id}`),
+        this.http.get<Record<string, string>>(
+          `${url}package/v0/release-notes/${id}`,
+        ),
       ),
     )
   }
@@ -92,7 +135,9 @@ export class MarketplaceService extends AbstractMarketplaceService {
   fetchStatic$(id: string, type: string) {
     return this.url$.pipe(
       switchMap(url =>
-        this.http.get(`${url}${type}/${id}`, { responseType: 'text' }),
+        this.http.get(`${url}package/v0/${type}/${id}`, {
+          responseType: 'text',
+        }),
       ),
     )
   }

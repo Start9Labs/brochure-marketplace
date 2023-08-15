@@ -29,6 +29,7 @@ export class MarketplaceComponent {
 
   category = 'featured'
   query = ''
+  iconConfig = require('../../../../config.json').marketplace
 
   onCategoryChange(category: string): void {
     this.category = category

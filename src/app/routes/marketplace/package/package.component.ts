@@ -12,6 +12,10 @@ import { switchMap } from 'rxjs/operators'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PackageComponent {
+  constructor(
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly marketplaceService: AbstractMarketplaceService,
+  ) {}
   readonly pkgId = getPkgId(this.activatedRoute)
   readonly version$ = new BehaviorSubject('*')
 
@@ -20,9 +24,4 @@ export class PackageComponent {
       this.marketplaceService.getPackage$(this.pkgId, version),
     ),
   )
-
-  constructor(
-    private readonly activatedRoute: ActivatedRoute,
-    private readonly marketplaceService: AbstractMarketplaceService,
-  ) {}
 }
