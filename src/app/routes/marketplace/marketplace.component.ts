@@ -1,12 +1,15 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  ElementRef,
+  Inject,
   inject,
-  ViewChild,
 } from '@angular/core'
-import { AbstractMarketplaceService, StoreData } from '@start9labs/marketplace'
-import { map } from 'rxjs/operators'
+import {
+  AbstractCategoryService,
+  AbstractMarketplaceService,
+  StoreData,
+} from '@start9labs/marketplace'
+import { map, tap } from 'rxjs/operators'
 import { HOSTS } from '../../tokens/hosts'
 import { UrlService } from '../../services/url.service'
 import {
@@ -20,6 +23,7 @@ import {
 import { TuiDestroyService } from '@taiga-ui/cdk'
 import { Observable } from 'rxjs'
 import { CategoryService } from 'src/app/services/category.service'
+import { MarketplaceService } from 'src/app/services/marketplace.service'
 
 @Component({
   selector: 'app-marketplace',
@@ -48,23 +52,24 @@ import { CategoryService } from 'src/app/services/category.service'
   ],
 })
 export class MarketplaceComponent {
-  @ViewChild('shinyBox')
-  private readonly shinyBox?: ElementRef<HTMLElement>
+  constructor(
+    @Inject(AbstractMarketplaceService)
+    private readonly marketplaceService: MarketplaceService,
+    @Inject(AbstractCategoryService)
+    private readonly categoryService: CategoryService,
+  ) {}
   private readonly urlService = inject(UrlService)
-  private readonly marketplaceService = inject(AbstractMarketplaceService)
   readonly hosts = inject(HOSTS)
-  private readonly categoryService = inject(CategoryService)
 
   readonly store$: Observable<StoreData> = this.marketplaceService
     .getSelectedStore$()
     .pipe(
-      map(({ info, packages, icon }) => {
+      map(({ info, packages }) => {
         const categories = new Set<string>()
         categories.add('all')
         info.categories.forEach(c => categories.add(c))
 
         return {
-          icon,
           info: {
             ...info,
             categories: Array.from(categories),
@@ -76,19 +81,4 @@ export class MarketplaceComponent {
   readonly alternative$ = this.urlService.getAlt$()
   readonly category$ = this.categoryService.getCategory$()
   readonly query$ = this.categoryService.getQuery$()
-
-  shinyHover(e: any) {
-    const { x, y } = this.shinyBox?.nativeElement!.getBoundingClientRect()!
-    const rad = Math.atan2(y, x)
-    const deg = rad * (180 / Math.PI)
-    this.shinyBox?.nativeElement!.style.setProperty(
-      '--x',
-      (e.clientX - x).toString(),
-    )
-    this.shinyBox?.nativeElement!.style.setProperty(
-      '--y',
-      (e.clientY - y).toString(),
-    )
-    this.shinyBox?.nativeElement!.style.setProperty('--deg', deg.toString())
-  }
 }

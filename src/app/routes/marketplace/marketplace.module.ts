@@ -1,34 +1,26 @@
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 import { RouterModule, Routes } from '@angular/router'
-import {
-  FilterPackagesPipeModule,
-  SkeletonModule,
-  StoreIconComponentModule,
-} from '@start9labs/marketplace'
+import { FilterPackagesPipeModule, ItemModule } from '@start9labs/marketplace'
 import { MarketplaceComponent } from './marketplace.component'
 import { SharedPipesModule } from '@start9labs/shared'
+import { MarketplaceSidebarModule } from 'src/app/marketplace-sidebar/marketplace-sidebar.module'
 
 const routes: Routes = [
   {
-    pathMatch: 'full',
     path: '',
     component: MarketplaceComponent,
-  },
-  {
-    path: ':pkgId',
-    loadChildren: () =>
-      import('./package/package.module').then(m => m.MarketplacePackageModule),
   },
 ]
 
 @NgModule({
   imports: [
     CommonModule,
-    SkeletonModule,
     FilterPackagesPipeModule,
     RouterModule.forChild(routes),
     SharedPipesModule,
+    MarketplaceSidebarModule,
+    ItemModule,
   ],
   declarations: [MarketplaceComponent],
   exports: [MarketplaceComponent],

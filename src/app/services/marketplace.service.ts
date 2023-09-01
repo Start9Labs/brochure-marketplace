@@ -4,7 +4,6 @@ import {
   AbstractMarketplaceService,
   Marketplace,
   MarketplacePkg,
-  StoreData,
   StoreInfo,
 } from '@start9labs/marketplace'
 import {
@@ -75,6 +74,11 @@ export class MarketplaceService extends AbstractMarketplaceService {
     )
     .pipe(shareReplay(1))
 
+  private readonly selectedHost$ = this.url$.pipe(
+    map(url => this.hosts.find(host => host.url === url)),
+    filter(Boolean),
+  )
+
   getKnownHosts$() {
     return this.hosts$
   }
@@ -100,22 +104,29 @@ export class MarketplaceService extends AbstractMarketplaceService {
     )
   }
 
-  getSelectedStoreWithAllCategories$() {
-    return this.getSelectedStore$().pipe(
-      map(({ info, packages, icon }) => {
-        const categories = new Set<string>()
-        categories.add('all')
-        info.categories.forEach(c => categories.add(c))
+  getSelectedStoreWithCategories$() {
+    return this.selectedHost$.pipe(
+      switchMap(({ url }) =>
+        this.marketplace$.pipe(
+          map(m => m[url]),
+          filter(Boolean),
+          map(({ info, packages }) => {
+            const categories = new Set<string>()
+            if (info.categories.includes('featured')) categories.add('featured')
+            categories.add('all')
+            info.categories.forEach(c => categories.add(c))
 
-        return {
-          icon,
-          info: {
-            ...info,
-            categories: Array.from(categories),
-          },
-          packages,
-        }
-      }),
+            return {
+              url,
+              info: {
+                ...info,
+                categories: Array.from(categories),
+              },
+              packages,
+            }
+          }),
+        ),
+      ),
     )
   }
 

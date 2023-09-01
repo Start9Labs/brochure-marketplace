@@ -1,24 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import '@taiga-ui/core/styles/taiga-ui-local.scss';
-
-[tuiWrapper][data-appearance='custom'] {
-  background: #9747ff;
-  color: #fff;
-
-  &:hover{
-    background: #9b57f5;
-  };
-
-  &:active{
-    background: #6c40a4;
-  };
-
-  &:disabled{
-    background: #9f92af;
-  };
-}
+@import '@taiga-ui/core/styles/taiga-ui-local';
 
 @font-face {
   font-family: 'Montserrat';
@@ -75,22 +58,17 @@
   font-weight: 1 900;
 }
 
-/** Ionic CSS Variables overrides **/ 
 :root {
-  --ion-font-family: 'Open Sans';
-  // --ion-background-color: var(--ion-color-medium);
-  --ion-background-color-rgb: var(--ion-color-medium-rgb);
-  --ion-text-color: var(--ion-color-dark);
-  --ion-text-color-rgb: var(--ion-color-dark-rgb);
-
   --tui-base-01: theme('colors.zinc.800')!important;
   --tui-text-01: theme('colors.zinc.100')!important;
   --tui-carousel-padding: 0.5rem;
+  --tui-font-heading: 'Open Sans';
+  --tui-font-text: 'Open Sans';
 }
 html,
 body {
   background-color: theme('colors.zinc.800')!important;
-  background: url("./assets/img/background.png") no-repeat center center fixed;
+  background: url("/assets/img/background.png") no-repeat center center fixed;
   background-size: cover;
   -webkit-background-size: cover;
   -moz-background-size: cover;
@@ -98,72 +76,4 @@ body {
   margin: 0;
   background-attachment: fixed;
   max-width: 100%;
-}
-
-ion-item-divider {
-  text-transform: uppercase;
-  --padding-top: 24px;
-  font-weight: 600;
-  --background: transparent;
-  --color: var(--ion-color-dark);
-  font-size: medium;
-  border-bottom: none;
-}
-
-ion-label {
-  white-space: normal !important;
-}
-
-.shiny {
-  --x: 0;
-  --y: 0;
-  --deg: 90;
-  overflow: hidden;
-  position: relative;
-  &:hover {
-    transform: scale(1.02) rotateX(var(--deg)) rotateX(var(--deg));
-    transition: ease-in-out;
-  }
-}
-.shiny::after {
-  --size: 100%;
-  content: '';
-  position: absolute;
-  top: calc(var(--y, 0) - var(--size)/2);
-  left: calc(var(--x, 0) - var(--size)/2);
-  width: var(--size);
-  height: var(--size);
-  opacity: 0;
-  transition: opacity 0.2s;
-  background: radial-gradient(white, #3984ff00 80%); 
-}
-
-.shiny:hover::after {
-  opacity: 0.4;
-}
-
-.panel {
-  --c0: rgba(15, 14, 14, 0.2);
-  --c1: rgba(105, 102, 102, 0.2);
-  --c2: rgba(141, 139, 139, 0.2);
-  --c3: rgba(12, 11, 11, 0.2);
-  // --xy:45%;
-  // --b: 52deg;
-  // --a: 88deg;
-
-  background:
-    conic-gradient(from var(--b) at var(--xy),
-      var(--c0) var(--a), var(--c1) 0% 50%,
-      var(--c2) 0% calc(180deg + var(--a)), var(--c3) 0%);
-
-  &:nth-child(1) {
-    --xy: 80% 65%;
-    --b: 31deg;
-    --a: 121deg;
-  }
-  // &:nth-child(odd) {
-  //   --xy: 90% 45%;
-  //   --b: 54deg;
-  //   --a: 145deg;
-  // }
 }

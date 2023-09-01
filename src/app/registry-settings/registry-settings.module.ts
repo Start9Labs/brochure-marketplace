@@ -15,6 +15,7 @@ import {
   TuiLoaderModule,
   TuiTextfieldControllerModule,
 } from '@taiga-ui/core'
+import { StoreIconComponentModule } from '@start9labs/marketplace'
 
 @NgModule({
   imports: [
@@ -30,6 +31,7 @@ import {
     TuiComboBoxModule,
     TuiAvatarModule,
     TuiLoaderModule,
+    StoreIconComponentModule,
   ],
   declarations: [RegistrySettingsComponent],
   exports: [RegistrySettingsComponent],

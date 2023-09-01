@@ -1,17 +1,18 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['./src/**/*.{html,ts}'],
+  content: [
+    './src/**/*.{html,ts}',
+    './node_modules/@start9labs/marketplace/**/*.mjs',
+  ],
   theme: {
     extend: {
-      animation: {
-        shine: 'shine 1s',
-      },
       keyframes: {
         shine: {
           '100%': { left: '125%' },
         },
       },
       screens: {
+        xs: '370px',
         '3xl': '1792px',
         '4xl': '2048px',
       },

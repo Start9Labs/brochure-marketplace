@@ -14,6 +14,13 @@ const routes: Routes = [
         m => m.MarketplaceModule,
       ),
   },
+  {
+    path: ':pkgId',
+    loadChildren: () =>
+      import('./routes/package/package.module').then(
+        m => m.MarketplacePackageModule,
+      ),
+  },
 ]
 
 @NgModule({

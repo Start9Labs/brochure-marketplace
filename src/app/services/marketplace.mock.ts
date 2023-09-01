@@ -61,22 +61,27 @@ export class MarketplaceMockService extends AbstractMarketplaceService {
     )
   }
 
-  getSelectedStoreWithAllCategories$() {
-    return this.getSelectedStore$().pipe(
-      map(({ info, packages, icon }) => {
-        const categories = new Set<string>()
-        categories.add('all')
-        info.categories.forEach(c => categories.add(c))
+  getSelectedStoreWithCategories$() {
+    return this.getSelectedHost$().pipe(
+      switchMap(({ url }) =>
+        this.getSelectedStore$().pipe(
+          map(({ info, packages }) => {
+            const categories = new Set<string>()
+            if (info.categories.includes('featured')) categories.add('featured')
+            categories.add('all')
+            info.categories.forEach((c: any) => categories.add(c))
 
-        return {
-          icon,
-          info: {
-            ...info,
-            categories: Array.from(categories),
-          },
-          packages,
-        }
-      }),
+            return {
+              url,
+              info: {
+                ...info,
+                categories: Array.from(categories),
+              },
+              packages,
+            }
+          }),
+        ),
+      ),
     )
   }
 

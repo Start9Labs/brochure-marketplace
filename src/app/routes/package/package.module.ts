@@ -14,24 +14,20 @@ import {
 } from '@start9labs/marketplace'
 
 import { PackageComponent } from './package.component'
-import { NotesComponent } from './notes.component'
 import { TuiCarouselModule } from '@taiga-ui/kit'
 import { TuiButtonModule } from '@taiga-ui/core'
 import { IonicModule } from '@ionic/angular'
+import { MarketplaceSidebarModule } from 'src/app/marketplace-sidebar/marketplace-sidebar.module'
 
 const routes: Routes = [
   {
-    pathMatch: 'full',
-    path: '',
+    path: ':pkgId',
     component: PackageComponent,
-  },
-  {
-    path: 'notes',
-    component: NotesComponent,
   },
 ]
 
 @NgModule({
+  // @TODO cleanup unused
   imports: [
     CommonModule,
     IonicModule,
@@ -45,8 +41,9 @@ const routes: Routes = [
     ReleaseNotesModule,
     TuiCarouselModule,
     TuiButtonModule,
+    MarketplaceSidebarModule,
   ],
-  declarations: [PackageComponent, NotesComponent],
+  declarations: [PackageComponent],
   exports: [PackageComponent],
 })
 export class MarketplacePackageModule {}

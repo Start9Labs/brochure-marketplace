@@ -1,13 +1,9 @@
 import { Injectable } from '@angular/core'
-import { BehaviorSubject, Observable } from 'rxjs'
+import { AbstractCategoryService } from '@start9labs/marketplace'
+import { Observable } from 'rxjs'
 
-@Injectable({
-  providedIn: 'root',
-})
-export class CategoryService {
-  private readonly category$ = new BehaviorSubject<string>('featured')
-  private readonly query$ = new BehaviorSubject<string>('')
-
+@Injectable()
+export class CategoryService extends AbstractCategoryService {
   getCategory$(): Observable<string> {
     return this.category$
   }

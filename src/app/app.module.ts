@@ -3,7 +3,11 @@ import { NgModule } from '@angular/core'
 import { BrowserModule } from '@angular/platform-browser'
 import { RouteReuseStrategy } from '@angular/router'
 import { IonicModule } from '@ionic/angular'
-import { AbstractMarketplaceService } from '@start9labs/marketplace'
+import {
+  AbstractCategoryService,
+  AbstractMarketplaceService,
+  PackageModule,
+} from '@start9labs/marketplace'
 
 import { AppRoutingModule } from './app-routing.module'
 import { AppComponent } from './app.component'
@@ -19,8 +23,10 @@ import {
   TuiRootModule,
   TuiThemeNightModule,
 } from '@taiga-ui/core'
-import { MarketplaceHeaderModule } from './header/header.component.module'
 import { RegistrySettingsModule } from './registry-settings/registry-settings.module'
+import { CategoryService } from './services/category.service'
+import { TextSpinnerComponentModule } from '@start9labs/shared'
+import { MarketplaceSidebarModule } from './marketplace-sidebar/marketplace-sidebar.module'
 
 @NgModule({
   imports: [
@@ -33,8 +39,10 @@ import { RegistrySettingsModule } from './registry-settings/registry-settings.mo
     TuiDialogModule,
     TuiThemeNightModule,
     TuiModeModule,
-    MarketplaceHeaderModule,
     RegistrySettingsModule,
+    PackageModule,
+    TextSpinnerComponentModule,
+    MarketplaceSidebarModule,
   ],
   providers: [
     {
@@ -44,6 +52,10 @@ import { RegistrySettingsModule } from './registry-settings/registry-settings.mo
         : MarketplaceMockService,
     },
     { provide: RouteReuseStrategy, useClass: RouteReuseStrategyService },
+    {
+      provide: AbstractCategoryService,
+      useClass: CategoryService,
+    },
   ],
   declarations: [AppComponent],
   bootstrap: [AppComponent],
