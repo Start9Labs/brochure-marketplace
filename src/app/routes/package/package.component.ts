@@ -10,6 +10,7 @@ import { UrlService } from 'src/app/services/url.service'
 @Component({
   selector: 'app-package',
   templateUrl: './package.component.html',
+  styleUrls: ['./package.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [tuiFadeIn],
 })
@@ -26,7 +27,7 @@ export class PackageComponent {
   readonly pkg$ = this.loadVersion$.pipe(
     switchMap(version =>
       this.url$.pipe(
-        map(url => {
+        switchMap(url => {
           return this.marketplaceService.getPackage$(this.pkgId, version, url)
         }),
       ),

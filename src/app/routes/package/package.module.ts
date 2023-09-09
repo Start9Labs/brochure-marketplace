@@ -5,18 +5,9 @@ import {
   SharedPipesModule,
   TextSpinnerComponentModule,
 } from '@start9labs/shared'
-import {
-  AboutModule,
-  AdditionalModule,
-  DependenciesModule,
-  PackageModule,
-  ReleaseNotesModule,
-} from '@start9labs/marketplace'
+import { PackageModule } from '@start9labs/marketplace'
 
 import { PackageComponent } from './package.component'
-import { TuiCarouselModule } from '@taiga-ui/kit'
-import { TuiButtonModule } from '@taiga-ui/core'
-import { IonicModule } from '@ionic/angular'
 import { MarketplaceSidebarModule } from 'src/app/marketplace-sidebar/marketplace-sidebar.module'
 
 const routes: Routes = [
@@ -27,20 +18,12 @@ const routes: Routes = [
 ]
 
 @NgModule({
-  // @TODO cleanup unused
   imports: [
     CommonModule,
-    IonicModule,
+    RouterModule.forChild(routes),
     TextSpinnerComponentModule,
     SharedPipesModule,
     PackageModule,
-    RouterModule.forChild(routes),
-    AboutModule,
-    DependenciesModule,
-    AdditionalModule,
-    ReleaseNotesModule,
-    TuiCarouselModule,
-    TuiButtonModule,
     MarketplaceSidebarModule,
   ],
   declarations: [PackageComponent],

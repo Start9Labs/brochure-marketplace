@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core'
-import { StoreIdentity, StoreURL } from '@start9labs/marketplace'
+import { StoreURL } from '@start9labs/marketplace'
 import { BehaviorSubject, map, Observable } from 'rxjs'
 import { HOSTS } from '../tokens/hosts'
 
