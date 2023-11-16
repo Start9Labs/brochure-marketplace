@@ -26,7 +26,7 @@ import {
 import { RegistrySettingsModule } from './registry-settings/registry-settings.module'
 import { CategoryService } from './services/category.service'
 import { TextSpinnerComponentModule } from '@start9labs/shared'
-import { MarketplaceSidebarModule } from './marketplace-sidebar/marketplace-sidebar.module'
+import { MarketplaceMenuModule } from './marketplace-menu/marketplace-menu.module'
 
 @NgModule({
   imports: [
@@ -42,7 +42,7 @@ import { MarketplaceSidebarModule } from './marketplace-sidebar/marketplace-side
     RegistrySettingsModule,
     PackageModule,
     TextSpinnerComponentModule,
-    MarketplaceSidebarModule,
+    MarketplaceMenuModule,
   ],
   providers: [
     {

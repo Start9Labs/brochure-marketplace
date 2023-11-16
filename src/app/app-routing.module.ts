@@ -3,12 +3,7 @@ import { RouterModule, Routes } from '@angular/router'
 
 const routes: Routes = [
   {
-    redirectTo: 'marketplace',
-    pathMatch: 'full',
     path: '',
-  },
-  {
-    path: 'marketplace',
     loadChildren: () =>
       import('./routes/marketplace/marketplace.module').then(
         m => m.MarketplaceModule,
@@ -17,9 +12,7 @@ const routes: Routes = [
   {
     path: ':pkgId',
     loadChildren: () =>
-      import('./routes/package/package.module').then(
-        m => m.MarketplacePackageModule,
-      ),
+      import('./routes/package/package.module').then(m => m.PackageModule),
   },
 ]
 

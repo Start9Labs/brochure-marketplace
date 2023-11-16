@@ -12,12 +12,12 @@ import { HOSTS } from '../tokens/hosts'
 import { UrlService } from '../services/url.service'
 
 @Component({
-  selector: 'marketplace-sidebar',
-  templateUrl: 'marketplace-sidebar.component.html',
-  styleUrls: ['./marketplace-sidebar.component.scss'],
+  selector: 'marketplace-menu',
+  templateUrl: 'marketplace-menu.component.html',
+  styleUrls: ['./marketplace-menu.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MarketplaceSidebarComponent {
+export class MarketplaceMenuComponent {
   constructor(
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
   ) {}

@@ -1,32 +1,47 @@
+import { RouterModule, Routes } from '@angular/router'
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
-import { RouterModule, Routes } from '@angular/router'
 import {
   SharedPipesModule,
   TextSpinnerComponentModule,
 } from '@start9labs/shared'
-import { PackageModule } from '@start9labs/marketplace'
 
 import { PackageComponent } from './package.component'
-import { MarketplaceSidebarModule } from 'src/app/marketplace-sidebar/marketplace-sidebar.module'
+import { TuiButtonModule } from '@taiga-ui/core'
+import {
+  AboutModule,
+  AdditionalModule,
+  DependenciesModule,
+  MarketplacePackageHeroComponent,
+  MarketplacePackageScreenshotComponent,
+  ReleaseNotesModule,
+} from '@start9labs/marketplace'
+import { MarketplaceMenuModule } from 'src/app/marketplace-menu/marketplace-menu.module'
 
 const routes: Routes = [
   {
-    path: ':pkgId',
+    path: '',
     component: PackageComponent,
   },
 ]
 
 @NgModule({
-  imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
-    TextSpinnerComponentModule,
-    SharedPipesModule,
-    PackageModule,
-    MarketplaceSidebarModule,
-  ],
   declarations: [PackageComponent],
   exports: [PackageComponent],
+  imports: [
+    RouterModule.forChild(routes),
+    CommonModule,
+    SharedPipesModule,
+    TextSpinnerComponentModule,
+    RouterModule,
+    DependenciesModule,
+    AdditionalModule,
+    ReleaseNotesModule,
+    TuiButtonModule,
+    AboutModule,
+    MarketplacePackageScreenshotComponent,
+    MarketplacePackageHeroComponent,
+    MarketplaceMenuModule,
+  ],
 })
-export class MarketplacePackageModule {}
+export class PackageModule {}

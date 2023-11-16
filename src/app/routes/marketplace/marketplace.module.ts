@@ -4,7 +4,7 @@ import { RouterModule, Routes } from '@angular/router'
 import { FilterPackagesPipeModule, ItemModule } from '@start9labs/marketplace'
 import { MarketplaceComponent } from './marketplace.component'
 import { SharedPipesModule } from '@start9labs/shared'
-import { MarketplaceSidebarModule } from 'src/app/marketplace-sidebar/marketplace-sidebar.module'
+import { MarketplaceMenuModule } from 'src/app/marketplace-menu/marketplace-menu.module'
 
 const routes: Routes = [
   {
@@ -19,7 +19,7 @@ const routes: Routes = [
     FilterPackagesPipeModule,
     RouterModule.forChild(routes),
     SharedPipesModule,
-    MarketplaceSidebarModule,
+    MarketplaceMenuModule,
     ItemModule,
   ],
   declarations: [MarketplaceComponent],
