@@ -13,8 +13,9 @@
             height="38px" />
         </a>
         <h2 class="text-xl">
-          {{ pkgId }} @{{ version === '*' ? 'latest' : version }} not found on
-          this registry
+          <!-- &#64; = @ -->
+          {{ pkgId }}&#64;{{ version === '*' ? 'latest' : version }} not found
+          on this registry
         </h2>
       </div>
     </ng-container>

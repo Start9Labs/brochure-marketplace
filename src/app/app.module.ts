@@ -6,7 +6,6 @@ import { IonicModule } from '@ionic/angular'
 import {
   AbstractCategoryService,
   AbstractMarketplaceService,
-  PackageModule,
 } from '@start9labs/marketplace'
 
 import { AppRoutingModule } from './app-routing.module'
@@ -40,7 +39,6 @@ import { MarketplaceMenuModule } from './marketplace-menu/marketplace-menu.modul
     TuiThemeNightModule,
     TuiModeModule,
     RegistrySettingsModule,
-    PackageModule,
     TextSpinnerComponentModule,
     MarketplaceMenuModule,
   ],
