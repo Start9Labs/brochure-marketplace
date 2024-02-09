@@ -67,8 +67,7 @@
 }
 html,
 body {
-  background-color: theme('colors.zinc.800')!important;
-  background: url("/assets/img/background.png") no-repeat center center fixed;
+  background: theme('colors.zinc.800') url('/assets/img/background.png') no-repeat top right !important;
   background-size: cover;
   -webkit-background-size: cover;
   -moz-background-size: cover;

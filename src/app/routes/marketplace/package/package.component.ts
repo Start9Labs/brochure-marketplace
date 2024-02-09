@@ -30,11 +30,6 @@ export class PackageComponent {
     ),
   )
 
-  constructor(
-    private readonly activatedRoute: ActivatedRoute,
-    private readonly marketplaceService: AbstractMarketplaceService,
-  ) {}
-
   @tuiPure
   getAnimation(duration: number): TuiDurationOptions {
     return { value: '', params: { duration } }
