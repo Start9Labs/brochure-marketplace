@@ -56,7 +56,6 @@ export class RegistrySettingsComponent implements OnDestroy {
   submit() {
     this.loading$.next(true)
     setTimeout(() => {
-      console.log(this.control?.value)
       this.context.completeWith(this.control?.value!)
       this.loading$.next(false)
     }, 800)

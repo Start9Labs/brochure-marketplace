@@ -23,7 +23,7 @@
     "@ng-web-apis/resize-observer": "^3.0.2",
     "@start9labs/argon2": "^0.1.0",
     "@start9labs/emver": "^0.1.5",
-    "@start9labs/marketplace": "0.3.16",
+    "@start9labs/marketplace": "0.3.17",
     "@start9labs/shared": "0.3.6",
     "@taiga-ui/addon-mobile": "3.57.0",
     "@taiga-ui/cdk": "3.57.0",
