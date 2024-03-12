@@ -6,21 +6,17 @@
     appearance="icon"
     [pseudoFocus]="false"
     icon="tuiIconRepeatLarge"
-    class="hover:opacity-70 bg-zinc-600 rounded-lg -mt-3"
+    class="settings-button"
     (click)="presentModalMarketplaceSettings()"></button>
   <a
     slot="mobile"
-    class="flex gap-2 relative hover:no-underline p-5"
-    (click)="presentModalMarketplaceSettings()">
+    (click)="presentModalMarketplaceSettings()"
+    class="settings-button-mobile">
     <img
       alt="Change Registry Icon"
       width="24"
       height="24"
-      class="opacity-70 invert"
       src="svg/repeat-outline.svg" />
-    <span
-      class="text-base text-zinc-50 text-ellipsis overflow-hidden whitespace-nowrap">
-      Change Registry
-    </span>
+    <span> Change Registry </span>
   </a>
 </menu>

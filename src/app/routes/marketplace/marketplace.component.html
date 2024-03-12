@@ -1,24 +1,20 @@
-<marketplace-menu></marketplace-menu>
-<div
-  class="background sm:pl-[34vw] md:pl-[28vw] lg:pl-[22vw] 2xl:pl-[280px] min-h-screen flex justify-between overflow-auto scroll-smooth">
-  <main class="pt-20 sm:pt-3 md:pb-10 md:px-8">
-    <div class="mt-8 px-6 mb-10">
-      <h1 class="text-4xl sm:text-5xl font-bold text-zinc-50/80 pb-6">
+<div class="marketplace-wrapper">
+  <main>
+    <div class="category-wrapper">
+      <h1>
         {{ category$ | async | titlecase }}
       </h1>
     </div>
     <ng-container *ngIf="store$ | async as store; else loading">
       <section
-        class="mt-10"
+        class="packages"
         *ngIf="
           store.packages
             | filterPackages
               : (query$ | async)
               : (category$ | async) as filtered
         ">
-        <ul
-          class="px-6 md:px-8 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-16 list-none"
-          [@itemAnimation]="filtered.length">
+        <ul [@itemAnimation]="filtered.length">
           <li *ngFor="let pkg of filtered">
             <a [routerLink]="pkg.manifest.id">
               <marketplace-item [pkg]="pkg"></marketplace-item>
@@ -28,7 +24,7 @@
       </section>
     </ng-container>
     <ng-template #loading>
-      <h1 class="text-xl pl-6">Loading...</h1>
+      <h1 class="loading-header">Loading...</h1>
     </ng-template>
   </main>
 </div>

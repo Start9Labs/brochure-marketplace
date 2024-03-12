@@ -49,7 +49,7 @@ export class MarketplaceService extends AbstractMarketplaceService {
         return this.hosts
       }
     }),
-    share(),
+    shareReplay({ bufferSize: 1, refCount: true }),
   )
 
   private readonly marketplace$: Observable<Marketplace> = this.hosts$

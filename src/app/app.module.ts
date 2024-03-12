@@ -24,14 +24,15 @@ import {
 } from '@taiga-ui/core'
 import { RegistrySettingsModule } from './registry-settings/registry-settings.module'
 import { CategoryService } from './services/category.service'
-import { TextSpinnerComponentModule } from '@start9labs/shared'
 import { MarketplaceMenuModule } from './marketplace-menu/marketplace-menu.module'
+import { CommonModule } from '@angular/common'
 
 @NgModule({
   imports: [
     BrowserModule,
     HttpClientModule,
     AppRoutingModule,
+    CommonModule,
     IonicModule.forRoot(),
     BrowserAnimationsModule,
     TuiRootModule,
@@ -39,7 +40,6 @@ import { MarketplaceMenuModule } from './marketplace-menu/marketplace-menu.modul
     TuiThemeNightModule,
     TuiModeModule,
     RegistrySettingsModule,
-    TextSpinnerComponentModule,
     MarketplaceMenuModule,
   ],
   providers: [

@@ -1,13 +1,10 @@
 import { RouterModule, Routes } from '@angular/router'
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
-import {
-  SharedPipesModule,
-  TextSpinnerComponentModule,
-} from '@start9labs/shared'
+import { SharedPipesModule } from '@start9labs/shared'
 
 import { PackageComponent } from './package.component'
-import { TuiButtonModule } from '@taiga-ui/core'
+import { TuiButtonModule, TuiLoaderModule } from '@taiga-ui/core'
 import {
   AboutModule,
   AdditionalModule,
@@ -32,7 +29,6 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     CommonModule,
     SharedPipesModule,
-    TextSpinnerComponentModule,
     RouterModule,
     DependenciesModule,
     AdditionalModule,
@@ -42,6 +38,7 @@ const routes: Routes = [
     MarketplacePackageScreenshotComponent,
     MarketplacePackageHeroComponent,
     MarketplaceMenuModule,
+    TuiLoaderModule,
   ],
 })
 export class PackageModule {}

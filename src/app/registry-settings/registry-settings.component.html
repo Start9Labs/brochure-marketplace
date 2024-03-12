@@ -1,15 +1,13 @@
-<div class="flex flex-col">
-  <h3 class="pb-4">Connect to another registry to explore more services.</h3>
+<div class="registry-settings">
+  <h3>Connect to another registry to explore more services.</h3>
   <tui-combo-box
     *ngIf="control"
-    class="pb-4"
     [formControl]="control"
     [stringify]="getName()">
     Options
     <input tuiTextfield placeholder="Select a registry" />
     <ng-template #value let-item>
       <store-icon
-        class="mr-2"
         size="24px"
         [url]="item.url"
         [marketplace]="marketplace"></store-icon>
@@ -19,7 +17,6 @@
       <tui-data-list>
         <button *ngFor="let item of data" tuiOption [value]="item">
           <store-icon
-            class="mr-2"
             size="24px"
             [url]="item.url"
             [marketplace]="marketplace"></store-icon>
@@ -28,7 +25,7 @@
       </tui-data-list>
     </ng-template>
   </tui-combo-box>
-  <div class="flex justify-between">
+  <div class="action-buttons">
     <button
       tuiButton
       size="l"
