@@ -3,12 +3,7 @@
     <ng-container *ngIf="pkg | empty; else show">
       <div *ngIf="version$ | async as version">
         <a [routerLink]="'/'">
-          <img
-            alt="Close circle outline"
-            src="/svg/close-circle-outline.svg"
-            class="button-close"
-            width="38px"
-            height="38px" />
+          <tui-icon tuiAppearance="icon" icon="tuiIconCloseLarge"></tui-icon>
         </a>
         <h2>
           <!-- &#64; = @ -->
@@ -21,11 +16,7 @@
     <ng-template #show>
       <div [@tuiFadeIn]="getAnimation(speed)" class="package-container">
         <a [routerLink]="'/'" class="button-back">
-          <img
-            alt="Close circle outline"
-            src="/svg/arrow-back-circle-outline.svg"
-            width="38px"
-            height="38px" />
+          <tui-icon tuiAppearance="icon" icon="tuiIconCloseLarge"></tui-icon>
         </a>
         <marketplace-package-hero [pkg]="pkg"></marketplace-package-hero>
         <marketplace-package-screenshots
