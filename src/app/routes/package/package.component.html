@@ -1,7 +1,7 @@
 <div class="package-wrapper">
   <ng-container *ngIf="pkg$ | async as pkg; else loading">
     <ng-container *ngIf="pkg | empty; else show">
-      <div *ngIf="version$ | async as version">
+      <div class="not-found" *ngIf="version$ | async as version">
         <a [routerLink]="'/'">
           <tui-icon tuiAppearance="icon" icon="tuiIconCloseLarge"></tui-icon>
         </a>
@@ -53,6 +53,6 @@
   </ng-container>
 
   <ng-template #loading>
-    <tui-loader>Loading Package...</tui-loader>
+    <tui-loader [textContent]="'Loading Package...'"></tui-loader>
   </ng-template>
 </div>

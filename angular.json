@@ -157,9 +157,6 @@
     }
   },
   "cli": {
-    "analytics": false,
-    "cache": {
-      "enabled": true
-    }
+    "analytics": false
   }
 }

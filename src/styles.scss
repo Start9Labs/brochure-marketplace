@@ -56,8 +56,8 @@
 }
 
 :root {
-  --tui-base-01: theme('colors.zinc.800')!important;
-  --tui-text-01: theme('colors.zinc.100')!important;
+  --tui-base-01: rgb(var(--tw-color-zinc-800)) !important;
+  --tui-text-01: rgb(var(--tw-color-zinc-100)) !important;
   --tui-carousel-padding: 0.5rem;
   --tui-font-heading: 'Open Sans';
   --tui-font-text: 'Open Sans';
@@ -65,7 +65,7 @@
 }
 
 html, body {
-  background: theme('colors.zinc.800') url('/assets/img/background.png') no-repeat top right fixed !important;
+  background: rgb(var(--tw-color-zinc-800)) url('/assets/img/background.png') no-repeat top right fixed !important;
   background-size: cover !important;
   -webkit-background-size: cover !important;
   -moz-background-size: cover !important;
