@@ -1,0 +1,153 @@
+.package-wrapper {
+  min-height: 100vh;
+  display: grid;
+  justify-content: center;
+}
+
+.not-found {
+  display: grid;
+  justify-content: center;
+  align-content: center;
+  text-align: center;
+}
+
+img {
+  opacity: 0.7;
+  filter: invert(100%);
+}
+
+a {
+  cursor: pointer;
+}
+
+.button-close {
+  margin: auto;
+  margin-bottom: 0.5rem;
+}
+
+h2 {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+.package-container {
+  width: 100vw;
+  display: grid;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 4rem;
+  padding: 1.5rem;
+  margin-top: var(--mobile-header-height);
+}
+
+.button-back {
+  justify-self: start;
+  margin-bottom: 2.5rem;
+}
+
+.package-details {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+.package-details {
+  -moz-column-gap: 2rem;
+  column-gap: 2rem;
+  &-main {
+    grid-column: span 12 / span 12;
+  }
+
+  &-additional {
+    grid-column: span 12 / span 12;
+  }
+}
+
+.dep-box-outline {
+  border-radius: 0.75rem;
+  background-image: linear-gradient(
+    to bottom left,
+    rgb(var(--tw-color-zinc-400) / 0.75),
+    rgb(var(--tw-color-zinc-600) / 1)
+  );
+  padding: 1px;
+  box-shadow: 0 0 #0000, 0 0 #0000, 0 10px 15px -3px rgb(0 0 0 / 0.1),
+    0 4px 6px -4px rgb(0 0 0 / 0.1);
+  margin-top: 1.5rem;
+}
+
+.dep-box {
+  background-color: rgb(var(--tw-color-zinc-800) / 1);
+  border-radius: 0.75rem;
+  padding: 1.75rem;
+  h2 {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+    font-weight: 700;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.75rem;
+    font-variant: all-small-caps;
+  }
+}
+
+.dep-item {
+  display: grid;
+  gap: 0.75rem;
+}
+
+@media (max-width: 500px) {
+  tui-carousel {
+    --tui-carousel-padding: 0rem;
+  }
+}
+@media (min-width: 640px) {
+  .package-wrapper {
+    padding-left: 34vw;
+  }
+  .package-container {
+    width: 65vw;
+  }
+}
+
+@media (min-width: 768px) {
+  .package-wrapper {
+    padding-left: 28vw;
+  }
+}
+
+@media (min-width: 1024px) {
+  .package-wrapper {
+    padding-left: 22vw;
+  }
+  .dep-box {
+    grid-column: span 5 / span 5;
+  }
+  .package-container {
+    padding: 2rem 4rem 2rem 4rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .dep-box {
+    grid-column: span 4 / span 4;
+  }
+}
+
+@media (min-width: 1536px) {
+  .package-wrapper {
+    padding-left: 280px;
+  }
+  .package-container {
+    width: 75vw;
+  }
+  .package-details {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    &-main {
+      grid-column: span 8 / span 8;
+    }
+    &-additional {
+      grid-column: span 4 / span 4;
+      margin-top: 0px;
+    }
+  }
+}

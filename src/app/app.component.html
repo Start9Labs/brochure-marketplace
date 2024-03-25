@@ -1,1 +1,10 @@
-<ion-router-outlet></ion-router-outlet>
+<tui-theme-night></tui-theme-night>
+<tui-root tuiMode="onDark" class="h-screen overflow-y-scroll">
+  <marketplace-menu></marketplace-menu>
+  <div
+    [@routeAnimations]="
+      o && o.activatedRouteData && o.activatedRouteData['animation']
+    ">
+    <router-outlet #o="outlet"></router-outlet>
+  </div>
+</tui-root>

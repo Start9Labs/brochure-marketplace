@@ -1,59 +1,30 @@
-<ion-content class="ion-padding ion-text-center">
-  <ion-grid class="g-content">
-    <ion-row *ngIf="selected$ | async as selected" class="heading">
-      <ion-col size="12">
-        <store-icon
-          class="icon"
-          size="80px"
-          [url]="selected.url"
-          [marketplace]="this.iconConfig"
-        ></store-icon>
-        <h1 class="montserrat">{{ selected.name }}</h1>
-        <ion-button
-          *ngIf="alternative$ | async as store"
-          fill="clear"
-          color="dark"
-          (click)="toggle(store.url)"
-        >
-          <ion-icon slot="start" name="repeat"></ion-icon>
-          Switch to {{ store.name }}
-        </ion-button>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col size="12">
-        <marketplace-search [(query)]="query"></marketplace-search>
-        <ng-container *ngIf="store$ | async as store; else loading">
-          <marketplace-categories
-            [categories]="store.info.categories"
-            [category]="query ? '' : category"
-            (categoryChange)="onCategoryChange($event)"
-          ></marketplace-categories>
-
-          <div class="divider"></div>
-
-          <ion-grid
-            *ngIf="
-              store.packages | filterPackages : query : category as filtered
-            "
-          >
-            <ion-row>
-              <ion-col
-                *ngFor="let pkg of filtered"
-                sizeXs="12"
-                sizeSm="12"
-                sizeMd="6"
-              >
-                <marketplace-item [pkg]="pkg"></marketplace-item>
-              </ion-col>
-            </ion-row>
-          </ion-grid>
-        </ng-container>
-
-        <ng-template #loading>
-          <marketplace-skeleton></marketplace-skeleton>
-        </ng-template>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-</ion-content>
+<div class="marketplace-wrapper">
+  <main>
+    <div class="category-wrapper">
+      <h1>
+        {{ category$ | async | titlecase }}
+      </h1>
+    </div>
+    <ng-container *ngIf="store$ | async as store; else loading">
+      <section
+        class="packages"
+        *ngIf="
+          store.packages
+            | filterPackages
+              : (query$ | async)
+              : (category$ | async) as filtered
+        ">
+        <ul [@itemAnimation]="filtered.length">
+          <li *ngFor="let pkg of filtered">
+            <a [routerLink]="pkg.manifest.id">
+              <marketplace-item [pkg]="pkg"></marketplace-item>
+            </a>
+          </li>
+        </ul>
+      </section>
+    </ng-container>
+    <ng-template #loading>
+      <h1 class="loading-header">Loading...</h1>
+    </ng-template>
+  </main>
+</div>

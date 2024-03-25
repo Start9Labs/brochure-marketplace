@@ -1,0 +1,49 @@
+<div class="registry-settings">
+  <h3>Connect to another registry to explore more services.</h3>
+  <tui-combo-box
+    *ngIf="control"
+    [formControl]="control"
+    [stringify]="getName()">
+    Options
+    <input tuiTextfield placeholder="Select a registry" />
+    <ng-template #value let-item>
+      <store-icon
+        size="24px"
+        [url]="item.url"
+        [marketplace]="marketplace"></store-icon>
+      <span>{{ item.name }}</span>
+    </ng-template>
+    <ng-template tuiDataList>
+      <tui-data-list>
+        <button *ngFor="let item of data" tuiOption [value]="item">
+          <store-icon
+            size="24px"
+            [url]="item.url"
+            [marketplace]="marketplace"></store-icon>
+          <span>{{ item.name }}</span>
+        </button>
+      </tui-data-list>
+    </ng-template>
+  </tui-combo-box>
+  <div class="action-buttons">
+    <button
+      tuiButton
+      size="l"
+      type="button"
+      appearance="flat"
+      class="tui-form__button"
+      (click)="cancel()">
+      Cancel
+    </button>
+    <button
+      tuiButton
+      size="l"
+      type="submit"
+      class="tui-form__button"
+      [disabled]="!control?.dirty"
+      [showLoader]="!!(loading$ | async)"
+      (click)="submit()">
+      Submit
+    </button>
+  </div>
+</div>

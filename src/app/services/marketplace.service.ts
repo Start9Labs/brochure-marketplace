@@ -49,7 +49,7 @@ export class MarketplaceService extends AbstractMarketplaceService {
         return this.hosts
       }
     }),
-    share(),
+    shareReplay({ bufferSize: 1, refCount: true }),
   )
 
   private readonly marketplace$: Observable<Marketplace> = this.hosts$
@@ -74,6 +74,11 @@ export class MarketplaceService extends AbstractMarketplaceService {
     )
     .pipe(shareReplay(1))
 
+  private readonly selectedHost$ = this.url$.pipe(
+    map(url => this.hosts.find(host => host.url === url)),
+    filter(Boolean),
+  )
+
   getKnownHosts$() {
     return this.hosts$
   }
@@ -96,6 +101,32 @@ export class MarketplaceService extends AbstractMarketplaceService {
     }).pipe(
       map(({ url, marketplace }) => marketplace[url]),
       filter(Boolean),
+    )
+  }
+
+  getSelectedStoreWithCategories$() {
+    return this.selectedHost$.pipe(
+      switchMap(({ url }) =>
+        this.marketplace$.pipe(
+          map(m => m[url]),
+          filter(Boolean),
+          map(({ info, packages }) => {
+            const categories = new Set<string>()
+            if (info.categories.includes('featured')) categories.add('featured')
+            categories.add('all')
+            info.categories.forEach(c => categories.add(c))
+
+            return {
+              url,
+              info: {
+                ...info,
+                categories: Array.from(categories),
+              },
+              packages,
+            }
+          }),
+        ),
+      ),
     )
   }
 

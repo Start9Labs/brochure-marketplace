@@ -1,0 +1,19 @@
+.registry-settings {
+  display: flex;
+  flex-direction: column;
+  h3 {
+    padding-bottom: 1.25rem;
+  }
+  tui-combo-box {
+    padding-bottom: 1.25rem;
+  }
+}
+
+store-icon {
+  margin-right: 0.5rem;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: space-between;
+}

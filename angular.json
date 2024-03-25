@@ -55,15 +55,22 @@
               {
                 "glob": "**/*",
                 "input": "node_modules/@start9labs/shared/assets",
-                "output": "assets"
+                "output": "./assets"
               },
               {
-                "glob": "**/*.svg",
-                "input": "node_modules/ionicons/dist/ionicons/svg",
-                "output": "./svg"
+                "glob": "**/*",
+                "input": "src/assets/img",
+                "output": "./img"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/@taiga-ui/icons/src",
+                "output": "assets/taiga-ui/icons"
               }
             ],
             "styles": [
+              "node_modules/@taiga-ui/core/styles/taiga-ui-theme.less",
+              "node_modules/@taiga-ui/styles/taiga-ui-global.less",
               "node_modules/@start9labs/shared/styles/variables.scss",
               "node_modules/@start9labs/shared/styles/global.scss",
               "node_modules/@start9labs/shared/styles/shared.scss",
@@ -77,7 +84,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumError": "2mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -108,10 +115,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "brochure-marketplace:build:production"
+              "buildTarget": "brochure-marketplace:build:production"
             },
             "development": {
-              "browserTarget": "brochure-marketplace:build:development"
+              "buildTarget": "brochure-marketplace:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -119,7 +126,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "brochure-marketplace:build"
+            "buildTarget": "brochure-marketplace:build"
           }
         },
         "ionic-cordova-serve": {
@@ -138,11 +145,11 @@
         "ionic-cordova-build": {
           "builder": "@ionic/angular-toolkit:cordova-build",
           "options": {
-            "browserTarget": "brochure-marketplace:build"
+            "buildTarget": "brochure-marketplace:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "brochure-marketplace:build:production"
+              "buildTarget": "brochure-marketplace:build:production"
             }
           }
         }

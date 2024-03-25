@@ -1,0 +1,58 @@
+<div class="package-wrapper">
+  <ng-container *ngIf="pkg$ | async as pkg; else loading">
+    <ng-container *ngIf="pkg | empty; else show">
+      <div class="not-found" *ngIf="version$ | async as version">
+        <a [routerLink]="'/'">
+          <tui-icon tuiAppearance="icon" icon="tuiIconCloseLarge"></tui-icon>
+        </a>
+        <h2>
+          <!-- &#64; = @ -->
+          {{ pkgId }}&#64;{{ version === '*' ? 'latest' : version }} not found
+          on this registry
+        </h2>
+      </div>
+    </ng-container>
+
+    <ng-template #show>
+      <div [@tuiFadeIn]="getAnimation(speed)" class="package-container">
+        <a [routerLink]="'/'" class="button-back">
+          <tui-icon tuiAppearance="icon" icon="tuiIconCloseLarge"></tui-icon>
+        </a>
+        <marketplace-package-hero [pkg]="pkg"></marketplace-package-hero>
+        <marketplace-package-screenshots
+          [pkg]="pkg"></marketplace-package-screenshots>
+        <div class="package-details">
+          <div class="package-details-main">
+            <marketplace-about [pkg]="pkg"></marketplace-about>
+            <div
+              *ngIf="!(pkg.manifest.dependencies | empty)"
+              class="dep-box-outline">
+              <div class="dep-box">
+                <h2>Dependencies</h2>
+                <div class="dep-item">
+                  <div *ngFor="let dep of pkg.manifest.dependencies | keyvalue">
+                    <a [routerLink]="['/', dep.key]">
+                      <marketplace-dependencies
+                        [dep]="dep"
+                        [pkg]="pkg"></marketplace-dependencies>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <release-notes [pkg]="pkg"></release-notes>
+          </div>
+          <div class="package-details-additional">
+            <marketplace-additional
+              [pkg]="pkg"
+              (version)="version$.next($event)"></marketplace-additional>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </ng-container>
+
+  <ng-template #loading>
+    <tui-loader [textContent]="'Loading Package...'"></tui-loader>
+  </ng-template>
+</div>

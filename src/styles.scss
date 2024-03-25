@@ -1,3 +1,5 @@
+@import '@taiga-ui/core/styles/taiga-ui-local';
+
 @font-face {
   font-family: 'Montserrat';
   font-style: normal;
@@ -47,39 +49,59 @@
   src: url('/assets/fonts/Redacted/redacted.regular.ttf');
 }
 
-/** Ionic CSS Variables overrides **/
+@font-face {
+  font-family: 'League Spartan';
+  src: url('/assets/fonts/League_Spartan/LeagueSpartan-VariableFont_wght.ttf') format("truetype-variations");
+  font-weight: 1 900;
+}
+
 :root {
-  --ion-font-family: 'Open Sans';
-  --ion-background-color: var(--ion-color-medium);
-  --ion-background-color-rgb: var(--ion-color-medium-rgb);
-  --ion-text-color: var(--ion-color-dark);
-  --ion-text-color-rgb: var(--ion-color-dark-rgb);
+  --tui-base-01: rgb(var(--tw-color-zinc-800)) !important;
+  --tui-text-01: rgb(var(--tw-color-zinc-100)) !important;
+  --tui-carousel-padding: 0.5rem;
+  --tui-font-heading: 'Open Sans';
+  --tui-font-text: 'Open Sans';
+  --portal-header-height: 0px;
+  --mobile-header-height: 88px;
 }
 
-/** Global classes, prefixed with g- **/
-.g-content {
-  position: relative;
+html, body {
+  background: rgb(var(--tw-color-zinc-800)) url('/assets/img/background.png') no-repeat top right fixed !important;
+  background-size: cover !important;
+  -webkit-background-size: cover !important;
+  -moz-background-size: cover !important;
+  -o-background-size: cover !important;
+  background-attachment: fixed;
+  margin: 0;
   height: 100%;
-  width: 100%;
-  max-width: 1000px;
-  margin: 0 auto;
-  background: var(--ion-color-medium);
+  overflow: hidden;
 }
 
-ion-item-divider {
-  text-transform: uppercase;
-  --padding-top: 24px;
-  font-weight: 600;
-  --background: transparent;
-  --color: var(--ion-color-dark);
-  font-size: medium;
-  border-bottom: none;
+.externalLink {
+  color: #3dc2ff;
 }
 
-ion-label {
-  white-space: normal !important;
+ul {
+  padding-left: 40px;
+  list-style-type: disc;
 }
 
-img {
-  border-radius: 100%;
+.small-caps {
+  font-variant: all-small-caps;
+}
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+p {
+  margin: 0;
 }

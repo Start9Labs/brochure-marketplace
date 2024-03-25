@@ -19,7 +19,12 @@
     "target": "es2020",
     "module": "es2020",
     "lib": ["es2020", "dom"],
-    "types": ["node"]
+    "types": ["node"],
+    "preserveSymlinks": true,
+    "paths": {
+      "@start9labs/shared": ["./node_modules/@start9labs/shared"],
+      "@start9labs/marketplace": ["./node_modules/@start9labs/marketplace"]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
