@@ -5,10 +5,37 @@
 }
 
 .not-found {
-  display: grid;
-  justify-content: center;
-  align-content: center;
-  text-align: center;
+  &-wrapper {
+    display: grid;
+    justify-content: center;
+    align-content: center;
+    text-align: center;
+  }
+
+  &-inner {
+    border: 1px solid rgb(var(--tw-color-zinc-600));
+    padding: 1.75rem;
+    background-color: rgb(var(--tw-color-zinc-800));
+    border-radius: 0.75rem;
+    position: relative;
+
+    a {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+    }
+
+    code {
+      padding-top: 0.75rem;
+      font-size: 1rem;
+      line-height: 1.75rem;
+    }
+
+    p {
+      font-size: 1.25rem;
+      line-height: 1.75rem;
+    }
+  }
 }
 
 img {

@@ -1,15 +1,17 @@
 <div class="package-wrapper">
   <ng-container *ngIf="pkg$ | async as pkg; else loading">
     <ng-container *ngIf="pkg | empty; else show">
-      <div class="not-found" *ngIf="version$ | async as version">
-        <a [routerLink]="'/'">
-          <tui-icon tuiAppearance="icon" icon="tuiIconCloseLarge"></tui-icon>
-        </a>
-        <h2>
+      <div class="not-found-wrapper" *ngIf="version$ | async as version">
+        <div class="not-found-inner">
+          <a [routerLink]="'/'">
+            <tui-icon tuiAppearance="icon" icon="tuiIconClose"></tui-icon>
+          </a>
           <!-- &#64; = @ -->
-          {{ pkgId }}&#64;{{ version === '*' ? 'latest' : version }} not found
-          on this registry
-        </h2>
+          <code
+            >{{ pkgId }}&#64;{{ version === '*' ? 'latest' : version }}</code
+          >
+          <p>not found on this registry</p>
+        </div>
       </div>
     </ng-container>
 
