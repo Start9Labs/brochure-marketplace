@@ -14,6 +14,7 @@ import { TuiDialogContext } from '@taiga-ui/core'
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus'
 import { BehaviorSubject, Subject, takeUntil, tap } from 'rxjs'
 import { MarketplaceConfig } from '@start9labs/shared'
+import { Router } from '@angular/router'
 
 @Component({
   selector: 'registry-settings',
@@ -25,6 +26,7 @@ export class RegistrySettingsComponent implements OnDestroy {
   loading$ = new BehaviorSubject(false)
   private destroy$ = new Subject<void>()
   private readonly marketplaceService = inject(AbstractMarketplaceService)
+  private readonly router = inject(Router)
   control?: FormControl<StoreIdentity | null>
   readonly marketplace: MarketplaceConfig = {
     start9: 'https://registry.start9.com/',
@@ -58,6 +60,7 @@ export class RegistrySettingsComponent implements OnDestroy {
     setTimeout(() => {
       this.context.completeWith(this.control?.value!)
       this.loading$.next(false)
+      this.router.navigate(['/'])
     }, 800)
   }
 
