@@ -42,4 +42,5 @@ testem.log
 Thumbs.db
 
 deploy.sh
+deploy_stage.sh
 .vscode/

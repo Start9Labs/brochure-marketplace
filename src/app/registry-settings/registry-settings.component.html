@@ -1,9 +1,6 @@
 <div class="registry-settings">
   <h3>Connect to another registry to explore more services.</h3>
-  <tui-combo-box
-    *ngIf="control"
-    [formControl]="control"
-    [stringify]="getName()">
+  <tui-select *ngIf="control" [formControl]="control" [stringify]="getName()">
     Options
     <input tuiTextfield placeholder="Select a registry" />
     <ng-template #value let-item>
@@ -24,7 +21,7 @@
         </button>
       </tui-data-list>
     </ng-template>
-  </tui-combo-box>
+  </tui-select>
   <div class="action-buttons">
     <button
       tuiButton
