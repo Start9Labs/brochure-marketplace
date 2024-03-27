@@ -112,10 +112,10 @@ export class MarketplaceService extends AbstractMarketplaceService {
           filter(Boolean),
           map(({ info, packages }) => {
             const categories = new Set<string>()
+            categories.add('all')
             if (info.categories.includes('featured')) {
               categories.add('featured')
             }
-            categories.add('all')
             info.categories.forEach(c => categories.add(c))
 
             return {
