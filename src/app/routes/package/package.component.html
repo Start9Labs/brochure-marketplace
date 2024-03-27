@@ -4,7 +4,7 @@
       <div class="not-found-wrapper" *ngIf="version$ | async as version">
         <div class="not-found-inner">
           <a [routerLink]="'/'">
-            <tui-icon tuiAppearance="icon" icon="tuiIconClose"></tui-icon>
+            <tui-icon tuiAppearance="icon" icon="tuiIconClose" />
           </a>
           <!-- &#64; = @ -->
           <code
@@ -18,36 +18,20 @@
     <ng-template #show>
       <div [@tuiFadeIn]="getAnimation(speed)" class="package-container">
         <a [routerLink]="'/'" class="button-back">
-          <tui-icon tuiAppearance="icon" icon="tuiIconCloseLarge"></tui-icon>
+          <tui-icon tuiAppearance="icon" icon="tuiIconCloseLarge" />
         </a>
-        <marketplace-package-hero [pkg]="pkg"></marketplace-package-hero>
-        <marketplace-package-screenshots
-          [pkg]="pkg"></marketplace-package-screenshots>
+        <marketplace-package-hero [pkg]="pkg" />
+        <marketplace-package-screenshots [pkg]="pkg" />
         <div class="package-details">
           <div class="package-details-main">
-            <marketplace-about [pkg]="pkg"></marketplace-about>
-            <div
-              *ngIf="!(pkg.manifest.dependencies | empty)"
-              class="dep-box-outline">
-              <div class="dep-box">
-                <h2>Dependencies</h2>
-                <div class="dep-item">
-                  <div *ngFor="let dep of pkg.manifest.dependencies | keyvalue">
-                    <a [routerLink]="['/', dep.key]">
-                      <marketplace-dependencies
-                        [dep]="dep"
-                        [pkg]="pkg"></marketplace-dependencies>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <marketplace-about [pkg]="pkg" />
+            @if (!(pkg.manifest.dependencies | empty)) {
+            <marketplace-dependencies [pkg]="pkg" (open)="open($event)" />
+            }
             <release-notes [pkg]="pkg"></release-notes>
           </div>
           <div class="package-details-additional">
-            <marketplace-additional
-              [pkg]="pkg"
-              (version)="version$.next($event)"></marketplace-additional>
+            <marketplace-additional [pkg]="pkg" />
           </div>
         </div>
       </div>
@@ -55,6 +39,6 @@
   </ng-container>
 
   <ng-template #loading>
-    <tui-loader [textContent]="'Loading Package...'"></tui-loader>
+    <tui-loader [textContent]="'Loading Package...'" />
   </ng-template>
 </div>

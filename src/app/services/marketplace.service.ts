@@ -11,14 +11,13 @@ import {
   distinctUntilChanged,
   filter,
   Observable,
-  share,
   shareReplay,
 } from 'rxjs'
 import { first, map, switchMap } from 'rxjs/operators'
 
 import { HOSTS } from '../tokens/hosts'
 import { UrlService } from './url.service'
-import { Router } from '@angular/router'
+import { Event, NavigationEnd, Router } from '@angular/router'
 
 @Injectable()
 export class MarketplaceService extends AbstractMarketplaceService {
@@ -30,11 +29,17 @@ export class MarketplaceService extends AbstractMarketplaceService {
   private readonly urlService = inject(UrlService)
   private readonly url$ = this.urlService.getUrl$()
 
-  readonly hosts$ = this.router.routerState.root.queryParams.pipe(
-    distinctUntilChanged(),
-    map(({ api, name }) => {
+  readonly hosts$ = this.router.events.pipe(
+    filter(
+      (e: Event | NavigationEnd): e is NavigationEnd =>
+        e instanceof NavigationEnd,
+    ),
+    map(route => {
+      // route.url is just information after the origin, so this is a hack to create a proper URL
+      const params = new URL(`https://test.com${route.url}`).searchParams
       // full path needed for registry
-      const url = `https://${api}/`
+      const url = `https://${params.get('api')}/`
+      const name = params.get('name')
 
       if (name) {
         this.urlService.toggle(url)
@@ -74,11 +79,6 @@ export class MarketplaceService extends AbstractMarketplaceService {
     )
     .pipe(shareReplay(1))
 
-  private readonly selectedHost$ = this.url$.pipe(
-    map(url => this.hosts.find(host => host.url === url)),
-    filter(Boolean),
-  )
-
   getKnownHosts$() {
     return this.hosts$
   }
@@ -105,14 +105,16 @@ export class MarketplaceService extends AbstractMarketplaceService {
   }
 
   getSelectedStoreWithCategories$() {
-    return this.selectedHost$.pipe(
+    return this.getSelectedHost$().pipe(
       switchMap(({ url }) =>
         this.marketplace$.pipe(
           map(m => m[url]),
           filter(Boolean),
           map(({ info, packages }) => {
             const categories = new Set<string>()
-            if (info.categories.includes('featured')) categories.add('featured')
+            if (info.categories.includes('featured')) {
+              categories.add('featured')
+            }
             categories.add('all')
             info.categories.forEach(c => categories.add(c))
 

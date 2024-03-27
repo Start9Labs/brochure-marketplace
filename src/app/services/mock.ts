@@ -48,7 +48,7 @@ const MockManifestBitcoinProxy: Manifest = {
 const MockManifestBitcoind: Manifest = {
   id: 'bitcoind',
   title: 'Bitcoin Core',
-  version: '0.21.0',
+  version: '0.21.0.1',
   'os-version': '0.3.4',
   description: {
     short: 'A Bitcoin full node by Bitcoin Core.',
@@ -79,6 +79,8 @@ const MockManifestLnd: Manifest = {
   title: 'Lightning Network Daemon',
   version: '0.11.1',
   'os-version': '0.3.4',
+  'git-hash':
+    '2328e866d5ae75aaf3fdf6f441eaadd1c8d65aacbee50078e99986edc5415b0d',
   description: {
     short: 'A bolt spec compliant client.',
     long: 'More info about LND. More info about LND. More info about LND.',
@@ -137,6 +139,9 @@ export const RELEASE_NOTES = {
     'Contrary to popular belief, Lorem Ipsum is not simply random text.',
   '0.19.1': 'release notes for Bitcoin 0.19.1',
   '0.19.0': 'release notes for Bitcoin 0.19.0',
+  '0.19.0.1': 'release notes for Bitcoin 0.19.0.1',
+  '0.20.0': 'release notes for Bitcoin 0.20.0',
+  '0.21.0.1': 'release notes for Bitcoin 0.21.0',
 }
 
 export const PACKAGES: MarketplacePkg[] = [

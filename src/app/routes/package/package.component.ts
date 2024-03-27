@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core'
-import { ActivatedRoute } from '@angular/router'
+import { ActivatedRoute, Router } from '@angular/router'
 import { getPkgId } from '@start9labs/shared'
 import { AbstractMarketplaceService } from '@start9labs/marketplace'
 import { BehaviorSubject } from 'rxjs'
@@ -21,6 +21,7 @@ export class PackageComponent {
     private readonly route: ActivatedRoute,
   ) {}
   private readonly urlService = inject(UrlService)
+  private readonly router = inject(Router)
   readonly version$ = new BehaviorSubject<string>('*')
   readonly pkgId = getPkgId(this.route)
   readonly url$ = this.urlService.getUrl$().pipe(map(x => x))
@@ -40,4 +41,8 @@ export class PackageComponent {
       ),
     ),
   )
+
+  open(id: string) {
+    this.router.navigate(['/', id])
+  }
 }

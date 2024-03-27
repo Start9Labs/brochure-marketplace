@@ -8,7 +8,7 @@ import { TuiButtonModule, TuiLoaderModule } from '@taiga-ui/core'
 import {
   AboutModule,
   AdditionalModule,
-  DependenciesModule,
+  MarketplaceDependenciesComponent,
   MarketplacePackageHeroComponent,
   MarketplacePackageScreenshotComponent,
   ReleaseNotesModule,
@@ -31,7 +31,7 @@ const routes: Routes = [
     CommonModule,
     SharedPipesModule,
     RouterModule,
-    DependenciesModule,
+    MarketplaceDependenciesComponent,
     AdditionalModule,
     ReleaseNotesModule,
     TuiButtonModule,
