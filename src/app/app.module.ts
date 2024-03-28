@@ -22,9 +22,9 @@ import {
   TuiRootModule,
   TuiThemeNightModule,
 } from '@taiga-ui/core'
-import { RegistrySettingsModule } from './registry-settings/registry-settings.module'
+import { RegistrySettingsComponent } from './components/registry-settings.component'
 import { CategoryService } from './services/category.service'
-import { MarketplaceMenuModule } from './marketplace-menu/marketplace-menu.module'
+import { MarketplaceMenuComponent } from './components/marketplace-menu.component'
 import { CommonModule } from '@angular/common'
 
 @NgModule({
@@ -39,8 +39,8 @@ import { CommonModule } from '@angular/common'
     TuiDialogModule,
     TuiThemeNightModule,
     TuiModeModule,
-    RegistrySettingsModule,
-    MarketplaceMenuModule,
+    RegistrySettingsComponent,
+    MarketplaceMenuComponent,
   ],
   providers: [
     {
