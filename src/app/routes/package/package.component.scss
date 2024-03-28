@@ -70,28 +70,24 @@ h2 {
   display: grid;
   justify-content: center;
   gap: 1rem;
+  margin-top: var(--mobile-header-height);
   margin-bottom: 4rem;
   padding: 1.5rem;
 
-  @media (max-width: 500px) {
-    margin-top: var(--mobile-header-height);
-  }
-
-  @media (min-width: 640px) {
-    width: 65vw;
-  }
-
-  @media (min-width: 1024px) {
-    padding: 2rem 4rem 2rem 4rem;
-  }
-
-  @media (min-width: 1536px) {
+  @media (min-width: 768px) {
+    margin-top: 0;
     width: 75vw;
+    padding: 2rem 4rem 2rem 4rem;
   }
 }
 
 .button-back {
   justify-self: start;
+  margin-bottom: 2rem;
+
+  @media (max-width: 768px) {
+    margin-bottom: 0;
+  }
 }
 
 .package-details {
