@@ -13,7 +13,6 @@ import {
   MarketplacePackageScreenshotComponent,
   ReleaseNotesModule,
 } from '@start9labs/marketplace'
-import { MarketplaceMenuModule } from 'src/app/marketplace-menu/marketplace-menu.module'
 import { TuiAppearanceModule, TuiIconModule } from '@taiga-ui/experimental'
 
 const routes: Routes = [
@@ -38,7 +37,6 @@ const routes: Routes = [
     AboutModule,
     MarketplacePackageScreenshotComponent,
     MarketplacePackageHeroComponent,
-    MarketplaceMenuModule,
     TuiLoaderModule,
     TuiIconModule,
     TuiAppearanceModule,
