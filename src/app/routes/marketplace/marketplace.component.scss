@@ -4,16 +4,14 @@
   scroll-behavior: smooth;
 
   main {
-    padding-top: 2rem;
+    padding-top: 7rem;
   }
 
   @media (min-width: 768px) {
     padding-left: 17rem;
 
     main {
-      padding-bottom: 2.5rem;
-      padding-left: 2rem;
-      padding-right: 2rem;
+      padding: 3rem 2rem 2.5rem 2rem;
     }
   }
 
@@ -23,10 +21,7 @@
 }
 
 .category-wrapper {
-  margin-top: 2rem;
   padding-left: 1.5rem;
-  padding-right: 1.5rem;
-  margin-bottom: 2.5rem;
 
   h1 {
     font-size: 2.25rem;
