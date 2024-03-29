@@ -58,6 +58,10 @@ import { TuiAppearanceModule, TuiIconModule } from '@taiga-ui/experimental'
         padding: 0;
       }
 
+      :host ::ng-deep .nav-desktop-container div a {
+        justify-content: unset;
+      }
+
       ::ng-deep button {
         background-color: transparent;
         background-image: none;
@@ -110,6 +114,7 @@ import { TuiAppearanceModule, TuiIconModule } from '@taiga-ui/experimental'
         transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
         transition-delay: 75ms;
         transition-duration: 300ms;
+        font-weight: 400;
 
         @media (max-width: 768px) {
           border: 1px solid rgb(114, 133, 255, 1);
