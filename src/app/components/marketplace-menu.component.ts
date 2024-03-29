@@ -33,6 +33,22 @@ import { TuiAppearanceModule, TuiIconModule } from '@taiga-ui/experimental'
         <tui-icon tuiAppearance="icon" icon="tuiIconRepeatLarge"></tui-icon>
         <span> Change Registry </span>
       </a>
+      <a
+        slot="store"
+        target="_blank"
+        rel="noreferrer"
+        href="https://store.start9.com"
+        class="store-button">
+        <span class="store-detail">Get a Start9 Server</span>
+      </a>
+      <a
+        slot="store-mobile"
+        target="_blank"
+        rel="noreferrer"
+        href="https://store.start9.com"
+        class="store-button">
+        <span class="store-detail">Get a Start9 Server</span>
+      </a>
     </menu>
   `,
   styles: [
@@ -66,11 +82,6 @@ import { TuiAppearanceModule, TuiIconModule } from '@taiga-ui/experimental'
           text-decoration-line: none;
         }
 
-        img {
-          opacity: 0.7;
-          filter: invert(100%);
-        }
-
         span {
           font-size: 1rem;
           line-height: 1.5rem;
@@ -78,6 +89,34 @@ import { TuiAppearanceModule, TuiIconModule } from '@taiga-ui/experimental'
           text-overflow: ellipsis;
           overflow: hidden;
           white-space: nowrap;
+          opacity: 0.8;
+        }
+      }
+
+      .store-button {
+        padding: 0 !important;
+        margin-bottom: 0.6rem;
+
+        @media (max-width: 768px) {
+          margin: 0;
+          padding: 1.3rem 0 0 0.5rem !important;
+        }
+      }
+
+      .store-detail {
+        border-radius: 80px;
+        border: 1px solid rgb(114, 133, 255, 0.7);
+        padding: 0.6rem 1rem;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        transition-delay: 75ms;
+        transition-duration: 300ms;
+
+        @media (max-width: 768px) {
+          border: 1px solid rgb(114, 133, 255, 1);
+        }
+
+        &:hover {
+          border: 1px solid rgb(114, 133, 255, 1);
         }
       }
     `,
