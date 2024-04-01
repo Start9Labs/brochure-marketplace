@@ -26,6 +26,7 @@ import { RegistrySettingsComponent } from './components/registry-settings.compon
 import { CategoryService } from './services/category.service'
 import { MarketplaceMenuComponent } from './components/marketplace-menu.component'
 import { CommonModule } from '@angular/common'
+import { ScrollerDirective } from './scroller.directive'
 
 @NgModule({
   imports: [
@@ -41,6 +42,7 @@ import { CommonModule } from '@angular/common'
     TuiModeModule,
     RegistrySettingsComponent,
     MarketplaceMenuComponent,
+    ScrollerDirective,
   ],
   providers: [
     {
