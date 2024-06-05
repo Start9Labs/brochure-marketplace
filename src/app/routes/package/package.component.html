@@ -3,21 +3,22 @@
     <ng-container *ngIf="pkg | empty; else show">
       <div class="not-found-wrapper" *ngIf="version$ | async as version">
         <div class="not-found-inner">
-          <a [routerLink]="'/'">
+          <a [routerLink]="'/'" queryParamsHandling="merge">
             <tui-icon tuiAppearance="icon" icon="tuiIconClose" />
           </a>
+          <h2>Not Found</h2>
           <!-- &#64; = @ -->
-          <code
-            >{{ pkgId }}&#64;{{ version === '*' ? 'latest' : version }}</code
-          >
-          <p>not found on this registry</p>
+          <p>
+            {{ version === '*' ? 'Latest version' : 'Version ' + version }} of
+            {{ pkgId }} does not exist on this registry.
+          </p>
         </div>
       </div>
     </ng-container>
 
     <ng-template #show>
       <div [@tuiFadeIn]="getAnimation(speed)" class="package-container">
-        <a [routerLink]="'/'" class="button-back">
+        <a [routerLink]="'..'" queryParamsHandling="merge" class="button-back">
           <tui-icon tuiAppearance="icon" icon="tuiIconCloseLarge" />
         </a>
         <marketplace-package-hero [pkg]="pkg" />

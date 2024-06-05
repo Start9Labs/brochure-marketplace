@@ -4,20 +4,16 @@ import {
   AbstractMarketplaceService,
   Marketplace,
   MarketplacePkg,
+  StoreData,
   StoreInfo,
 } from '@start9labs/marketplace'
-import {
-  combineLatest,
-  distinctUntilChanged,
-  filter,
-  Observable,
-  shareReplay,
-} from 'rxjs'
+import { combineLatest, filter, Observable, shareReplay } from 'rxjs'
 import { first, map, switchMap } from 'rxjs/operators'
 
 import { HOSTS } from '../tokens/hosts'
 import { UrlService } from './url.service'
 import { Event, NavigationEnd, Router } from '@angular/router'
+import { recursiveToCamel } from './marketplace_interium'
 
 @Injectable()
 export class MarketplaceService extends AbstractMarketplaceService {
@@ -101,6 +97,13 @@ export class MarketplaceService extends AbstractMarketplaceService {
     }).pipe(
       map(({ url, marketplace }) => marketplace[url]),
       filter(Boolean),
+      map(m => {
+        const p = recursiveToCamel(m.packages)
+        return {
+          ...m,
+          packages: p,
+        } as StoreData
+      }),
     )
   }
 
@@ -117,14 +120,14 @@ export class MarketplaceService extends AbstractMarketplaceService {
               categories.add('featured')
             }
             info.categories.forEach(c => categories.add(c))
-
+            const p = recursiveToCamel(packages) as MarketplacePkg[]
             return {
               url,
               info: {
                 ...info,
                 categories: Array.from(categories),
               },
-              packages,
+              packages: p,
             }
           }),
         ),

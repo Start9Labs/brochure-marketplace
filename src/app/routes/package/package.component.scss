@@ -2,14 +2,6 @@
   min-height: 100vh;
   display: grid;
   justify-content: center;
-
-  @media (min-width: 768px) {
-    padding-left: 17rem;
-  }
-
-  @media (min-width: 1536px) {
-    padding-left: 18rem;
-  }
 }
 
 .not-found {
@@ -17,7 +9,7 @@
     display: grid;
     justify-content: center;
     align-content: center;
-    text-align: center;
+    padding: 2rem;
   }
 
   &-inner {
@@ -26,6 +18,10 @@
     background-color: rgb(var(--tw-color-zinc-800));
     border-radius: 0.75rem;
     position: relative;
+
+    h2 {
+      padding-bottom: 2rem;
+    }
 
     a {
       position: absolute;
@@ -40,7 +36,7 @@
     }
 
     p {
-      font-size: 1.25rem;
+      font-size: 1.1rem;
       line-height: 1.75rem;
     }
   }
@@ -66,23 +62,21 @@ h2 {
 }
 
 .package-container {
-  width: 100vw;
   display: grid;
   justify-content: center;
   gap: 1rem;
   margin-top: var(--mobile-header-height);
-  margin-bottom: 4rem;
   padding: 1.5rem;
 
   @media (min-width: 768px) {
     margin-top: 0;
-    width: 75vw;
+    width: 60vw;
     padding: 2rem 4rem 2rem 4rem;
   }
 }
 
 .button-back {
-  justify-self: start;
+  justify-self: end;
   margin-bottom: 2rem;
 
   @media (max-width: 768px) {

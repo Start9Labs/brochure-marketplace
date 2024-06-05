@@ -1,30 +1,33 @@
-<div class="marketplace-wrapper">
-  <main>
-    <div class="category-wrapper">
-      <h1>
-        {{ category$ | async | titlecase }}
+<div class="marketplace-content-wrapper">
+  <div class="marketplace-content-inner">
+    <div class="title-wrapper">
+      <h1 *ngIf="category$ | async as cat">
+        {{
+          cat === 'ai'
+            ? (cat | uppercase)
+            : (cat | titlecase) || 'Loading category...'
+        }}
       </h1>
     </div>
     <ng-container *ngIf="store$ | async as store; else loading">
       <section
-        class="packages"
+        class="marketplace-content-list"
         *ngIf="
           store.packages
             | filterPackages
               : (query$ | async)
               : (category$ | async) as filtered
-        ">
-        <ul [@itemAnimation]="filtered.length">
-          <li *ngFor="let pkg of filtered">
-            <a [routerLink]="pkg.manifest.id">
-              <marketplace-item [pkg]="pkg"></marketplace-item>
-            </a>
-          </li>
-        </ul>
+        "
+        [@itemAnimation]="filtered.length">
+        @for (pkg of filtered; track $index) {
+        <a [routerLink]="pkg.manifest.id" queryParamsHandling="merge">
+          <marketplace-item [pkg]="pkg"></marketplace-item>
+        </a>
+        }
       </section>
     </ng-container>
     <ng-template #loading>
-      <h1 class="loading-header">Loading...</h1>
+      <h1 class="loading-text">Loading<span class="loading-dots"></span></h1>
     </ng-template>
-  </main>
+  </div>
 </div>
