@@ -12,6 +12,7 @@ import { HOSTS } from '../tokens/hosts'
 import { UrlService } from '../services/url.service'
 import { MenuModule } from '@start9labs/marketplace'
 import { TuiAppearanceModule, TuiIconModule } from '@taiga-ui/experimental'
+import { Router } from '@angular/router'
 
 @Component({
   selector: 'marketplace-menu',
@@ -53,20 +54,6 @@ import { TuiAppearanceModule, TuiIconModule } from '@taiga-ui/experimental'
   `,
   styles: [
     `
-      ::ng-deep menu {
-        margin: 0;
-        padding: 0;
-      }
-
-      :host ::ng-deep .nav-desktop-container div a {
-        justify-content: unset;
-      }
-
-      ::ng-deep button {
-        background-color: transparent;
-        background-image: none;
-      }
-
       .settings-button {
         margin-top: -0.75rem;
 
@@ -136,6 +123,7 @@ export class MarketplaceMenuComponent {
 
   private readonly hosts = inject(HOSTS)
   private readonly urlService = inject(UrlService)
+  private readonly router = inject(Router)
   readonly marketplace: MarketplaceConfig = {
     start9: 'https://registry.start9.com/',
     community: 'https://community-registry.start9.com/',

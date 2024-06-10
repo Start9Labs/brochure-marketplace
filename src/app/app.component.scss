@@ -2,3 +2,15 @@ tui-root {
   height: 100%;
   overflow-y: scroll;
 }
+
+.main-content {
+  padding-left: 0;
+
+  @media (min-width: 768px) {
+    padding-left: 17rem;
+  }
+
+  @media (min-width: 1536px) {
+    padding-left: 18rem;
+  }
+}

@@ -4,21 +4,13 @@ import {
   MarketplacePkg,
 } from '@start9labs/marketplace'
 import { Observable, combineLatest, of } from 'rxjs'
-import {
-  distinctUntilChanged,
-  filter,
-  first,
-  map,
-  share,
-  shareReplay,
-  switchMap,
-  tap,
-} from 'rxjs/operators'
+import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
 import { CATEGORIES, PACKAGES, RELEASE_NOTES } from './mock'
 import markdown from 'raw-loader!@start9labs/shared/assets/markdown/md-sample.md'
 import { HOSTS } from '../tokens/hosts'
 import { UrlService } from './url.service'
 import { Router } from '@angular/router'
+import { recursiveToCamel } from './marketplace_interium'
 
 @Injectable()
 export class MarketplaceMockService extends AbstractMarketplaceService {
@@ -56,7 +48,7 @@ export class MarketplaceMockService extends AbstractMarketplaceService {
           name: name ? name : 'Unknown Registry',
           categories: CATEGORIES,
         },
-        packages: PACKAGES,
+        packages: recursiveToCamel(PACKAGES) as MarketplacePkg[],
       })),
     )
   }
@@ -70,14 +62,14 @@ export class MarketplaceMockService extends AbstractMarketplaceService {
             if (info.categories.includes('featured')) categories.add('featured')
             categories.add('all')
             info.categories.forEach((c: any) => categories.add(c))
-
+            const p = recursiveToCamel(packages) as MarketplacePkg[]
             return {
               url,
               info: {
                 ...info,
                 categories: Array.from(categories),
               },
-              packages,
+              packages: p,
             }
           }),
         ),
@@ -90,7 +82,11 @@ export class MarketplaceMockService extends AbstractMarketplaceService {
     _version: string,
     _url?: string,
   ): Observable<MarketplacePkg> {
-    return of(PACKAGES.filter(pkg => pkg.manifest.id === id)[0] || {})
+    return of(
+      (recursiveToCamel(PACKAGES) as MarketplacePkg[]).filter(
+        pkg => pkg.manifest.id === id,
+      )[0] || {},
+    )
   }
 
   fetchReleaseNotes$(id: string, url?: string) {
