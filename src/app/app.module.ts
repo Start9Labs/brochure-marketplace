@@ -22,7 +22,6 @@ import { ApiService } from './api/api.service'
 import { LiveApiService } from './api/live-api.service'
 import { MockApiService } from './api/mock-api.service'
 import { TuiRoot } from '@taiga-ui/core'
-import { RELATIVE_URL } from '@start9labs/shared'
 
 @NgModule({
   imports: [
@@ -48,10 +47,6 @@ import { RELATIVE_URL } from '@start9labs/shared'
     {
       provide: AbstractCategoryService,
       useClass: CategoryService,
-    },
-    {
-      provide: RELATIVE_URL,
-      useValue: `/rpc/v0`,
     },
   ],
   declarations: [AppComponent],
