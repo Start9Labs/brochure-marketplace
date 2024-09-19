@@ -2,8 +2,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import { getPkgId } from '@start9labs/shared'
 import { AbstractMarketplaceService } from '@start9labs/marketplace'
-import { BehaviorSubject } from 'rxjs'
-import { map, switchMap } from 'rxjs/operators'
+import { filter, map, switchMap } from 'rxjs/operators'
 import { TuiDurationOptions, tuiFadeIn } from '@taiga-ui/core'
 import { UrlService } from 'src/app/services/url.service'
 import { tuiPure } from '@taiga-ui/cdk'
@@ -22,7 +21,6 @@ export class PackageComponent {
   ) {}
   private readonly urlService = inject(UrlService)
   private readonly router = inject(Router)
-  readonly version$ = new BehaviorSubject<string>('*')
   readonly pkgId = getPkgId(this.route)
   readonly url$ = this.urlService.getUrl$().pipe(map(x => x))
   speed = 1000
@@ -32,12 +30,30 @@ export class PackageComponent {
     return { value: '', params: { duration } }
   }
 
-  readonly pkg$ = this.version$.pipe(
-    switchMap(version =>
+  readonly pkg$ = this.route.queryParamMap.pipe(
+    switchMap(paramMap =>
       this.url$.pipe(
         switchMap(url => {
-          return this.marketplaceService.getPackage$(this.pkgId, version, url)
+          return this.marketplaceService.getPackage$(
+            this.pkgId,
+            null,
+            paramMap.get('flavor'),
+            url,
+          )
         }),
+      ),
+    ),
+  )
+
+  readonly flavors$ = this.route.queryParamMap.pipe(
+    switchMap(paramMap =>
+      this.marketplaceService.getSelectedStore$().pipe(
+        map(s =>
+          s.packages.filter(
+            p => p.id === this.pkgId && p.flavor !== paramMap.get('flavor'),
+          ),
+        ),
+        filter(p => p.length > 0),
       ),
     ),
   )

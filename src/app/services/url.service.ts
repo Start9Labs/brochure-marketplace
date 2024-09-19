@@ -1,5 +1,4 @@
 import { inject, Injectable } from '@angular/core'
-import { StoreURL } from '@start9labs/marketplace'
 import { BehaviorSubject, map, Observable } from 'rxjs'
 import { HOSTS } from '../tokens/hosts'
 
@@ -9,7 +8,7 @@ import { HOSTS } from '../tokens/hosts'
 export class UrlService {
   private readonly hosts = inject(HOSTS)
 
-  private readonly url$ = new BehaviorSubject<StoreURL>(inject(HOSTS)[0].url)
+  private readonly url$ = new BehaviorSubject<string>(inject(HOSTS)[0].url)
   readonly alternative$ = this.getUrl$().pipe(
     map(current => this.hosts.find(({ url }) => url !== current)),
   )
@@ -22,7 +21,7 @@ export class UrlService {
     return this.alternative$
   }
 
-  toggle(api: StoreURL) {
+  toggle(api: string) {
     this.url$.next(api)
   }
 }

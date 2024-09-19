@@ -4,16 +4,15 @@ import { NgModule } from '@angular/core'
 import { SharedPipesModule } from '@start9labs/shared'
 
 import { PackageComponent } from './package.component'
-import { TuiButtonModule, TuiLoaderModule } from '@taiga-ui/core'
+import { TuiButton, TuiLoader, TuiAppearance, TuiIcon } from '@taiga-ui/core'
 import {
   AboutModule,
   AdditionalModule,
+  FlavorsComponent,
   MarketplaceDependenciesComponent,
   MarketplacePackageHeroComponent,
   MarketplacePackageScreenshotComponent,
-  ReleaseNotesModule,
 } from '@start9labs/marketplace'
-import { TuiAppearanceModule, TuiIconModule } from '@taiga-ui/experimental'
 
 const routes: Routes = [
   {
@@ -32,14 +31,14 @@ const routes: Routes = [
     RouterModule,
     MarketplaceDependenciesComponent,
     AdditionalModule,
-    ReleaseNotesModule,
-    TuiButtonModule,
+    TuiButton,
     AboutModule,
     MarketplacePackageScreenshotComponent,
     MarketplacePackageHeroComponent,
-    TuiLoaderModule,
-    TuiIconModule,
-    TuiAppearanceModule,
+    TuiLoader,
+    TuiIcon,
+    TuiAppearance,
+    FlavorsComponent,
   ],
 })
 export class PackageModule {}

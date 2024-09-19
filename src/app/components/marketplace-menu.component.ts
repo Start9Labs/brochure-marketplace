@@ -1,37 +1,34 @@
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core'
 import {
-  ChangeDetectionStrategy,
-  Component,
-  Inject,
-  inject,
-} from '@angular/core'
-import { TuiButtonModule, TuiDialogService } from '@taiga-ui/core'
-import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus'
+  TuiButton,
+  TuiDialogService,
+  TuiAppearance,
+  TuiIcon,
+} from '@taiga-ui/core'
 import { MarketplaceConfig } from '@start9labs/shared'
-import { RegistrySettingsComponent } from './registry-settings.component'
-import { HOSTS } from '../tokens/hosts'
-import { UrlService } from '../services/url.service'
 import { MenuModule } from '@start9labs/marketplace'
-import { TuiAppearanceModule, TuiIconModule } from '@taiga-ui/experimental'
-import { Router } from '@angular/router'
+import { MARKETPLACE_REGISTRY } from './registry-settings.component'
+const marketplace = require('../../../config.json')
+  .marketplace as MarketplaceConfig
 
 @Component({
+  standalone: true,
   selector: 'marketplace-menu',
   template: `
-    <menu [iconConfig]="marketplace">
+    <menu [iconConfig]="marketplaceConfig">
       <button
         slot="desktop"
         tuiButton
         type="button"
         appearance="icon"
-        [pseudoFocus]="false"
-        icon="tuiIconRepeatLarge"
+        iconStart="@tui.repeat"
         class="settings-button"
-        (click)="presentModalMarketplaceSettings()"></button>
+        (click)="changeRegistry()"></button>
       <a
         slot="mobile"
-        (click)="presentModalMarketplaceSettings()"
+        (click)="changeRegistry()"
         class="settings-button-mobile">
-        <tui-icon tuiAppearance="icon" icon="tuiIconRepeatLarge"></tui-icon>
+        <tui-icon tuiAppearance="icon" icon="@tui.repeat"></tui-icon>
         <span> Change Registry </span>
       </a>
       <a
@@ -112,37 +109,20 @@ import { Router } from '@angular/router'
       }
     `,
   ],
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MenuModule, TuiButtonModule, TuiIconModule, TuiAppearanceModule],
+  imports: [MenuModule, TuiButton, TuiIcon, TuiAppearance],
 })
 export class MarketplaceMenuComponent {
-  constructor(
-    @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
-  ) {}
+  constructor() {}
 
-  private readonly hosts = inject(HOSTS)
-  private readonly urlService = inject(UrlService)
-  private readonly router = inject(Router)
-  readonly marketplace: MarketplaceConfig = {
-    start9: 'https://registry.start9.com/',
-    community: 'https://community-registry.start9.com/',
-  }
+  private readonly dialogs = inject(TuiDialogService)
+  readonly marketplaceConfig = marketplace
 
-  async presentModalMarketplaceSettings() {
+  changeRegistry() {
     this.dialogs
-      .open<RegistrySettingsComponent>(
-        new PolymorpheusComponent(RegistrySettingsComponent),
-        {
-          label: 'Change Registry',
-          data: this.hosts,
-          dismissible: true,
-        },
-      )
-      .subscribe({
-        next: data => {
-          this.urlService.toggle((data as any).url)
-        },
+      .open(MARKETPLACE_REGISTRY, {
+        label: 'Change Registry',
       })
+      .subscribe()
   }
 }

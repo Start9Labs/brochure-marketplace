@@ -1,35 +1,39 @@
 <div class="package-wrapper">
   <ng-container *ngIf="pkg$ | async as pkg; else loading">
     <ng-container *ngIf="pkg | empty; else show">
-      <div class="not-found-wrapper" *ngIf="version$ | async as version">
+      <div class="not-found-wrapper">
         <div class="not-found-inner">
-          <a [routerLink]="'/'" queryParamsHandling="merge">
-            <tui-icon tuiAppearance="icon" icon="tuiIconClose" />
+          <a
+            [routerLink]="'/'"
+            queryParamsHandling="merge"
+            [queryParams]="{ id: null, flavor: null }">
+            <tui-icon tuiAppearance="icon" icon="@tui.x" />
           </a>
           <h2>Not Found</h2>
-          <!-- &#64; = @ -->
-          <p>
-            {{ version === '*' ? 'Latest version' : 'Version ' + version }} of
-            {{ pkgId }} does not exist on this registry.
-          </p>
+          <p>{{ pkgId }} does not exist on this registry.</p>
         </div>
       </div>
     </ng-container>
 
     <ng-template #show>
       <div [@tuiFadeIn]="getAnimation(speed)" class="package-container">
-        <a [routerLink]="'..'" queryParamsHandling="merge" class="button-back">
-          <tui-icon tuiAppearance="icon" icon="tuiIconCloseLarge" />
+        <a
+          [routerLink]="'..'"
+          [queryParams]="{ id: null, flavor: null }"
+          queryParamsHandling="merge"
+          class="button-back">
+          <tui-icon tuiAppearance="icon" icon="@tui.x" />
         </a>
         <marketplace-package-hero [pkg]="pkg" />
         <marketplace-package-screenshots [pkg]="pkg" />
         <div class="package-details">
           <div class="package-details-main">
             <marketplace-about [pkg]="pkg" />
-            @if (!(pkg.manifest.dependencies | empty)) {
+            @if (!(pkg.dependencyMetadata | empty)) {
             <marketplace-dependencies [pkg]="pkg" (open)="open($event)" />
+            } @if (flavors$ | async; as flavors) {
+            <marketplace-flavors [pkgs]="flavors" />
             }
-            <release-notes [pkg]="pkg"></release-notes>
           </div>
           <div class="package-details-additional">
             <marketplace-additional [pkg]="pkg" />

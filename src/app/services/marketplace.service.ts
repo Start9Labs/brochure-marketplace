@@ -1,31 +1,41 @@
-import { HttpClient } from '@angular/common/http'
 import { inject, Injectable } from '@angular/core'
 import {
   AbstractMarketplaceService,
-  Marketplace,
   MarketplacePkg,
   StoreData,
-  StoreInfo,
+  GetPackageRes,
+  StoreIdentity,
 } from '@start9labs/marketplace'
-import { combineLatest, filter, Observable, shareReplay } from 'rxjs'
-import { first, map, switchMap } from 'rxjs/operators'
-
+import { combineLatest, filter, from, Observable, of, shareReplay } from 'rxjs'
+import {
+  catchError,
+  map,
+  mergeMap,
+  scan,
+  startWith,
+  switchMap,
+} from 'rxjs/operators'
 import { HOSTS } from '../tokens/hosts'
 import { UrlService } from './url.service'
 import { Event, NavigationEnd, Router } from '@angular/router'
-import { recursiveToCamel } from './marketplace_interium'
+import { T } from '@start9labs/start-sdk'
+import { Exver } from '@start9labs/shared'
+import { ApiService } from '../api/api.service'
 
 @Injectable()
 export class MarketplaceService extends AbstractMarketplaceService {
-  constructor(private router: Router) {
+  constructor(
+    private router: Router,
+    private readonly api: ApiService,
+    private readonly exver: Exver,
+  ) {
     super()
   }
-  private readonly http = inject(HttpClient)
   private readonly hosts = inject(HOSTS)
   private readonly urlService = inject(UrlService)
   private readonly url$ = this.urlService.getUrl$()
 
-  readonly hosts$ = this.router.events.pipe(
+  readonly hosts$: Observable<StoreIdentity[]> = this.router.events.pipe(
     filter(
       (e: Event | NavigationEnd): e is NavigationEnd =>
         e instanceof NavigationEnd,
@@ -53,28 +63,6 @@ export class MarketplaceService extends AbstractMarketplaceService {
     shareReplay({ bufferSize: 1, refCount: true }),
   )
 
-  private readonly marketplace$: Observable<Marketplace> = this.hosts$
-    .pipe(
-      switchMap(hosts =>
-        combineLatest(
-          hosts.reduce(
-            (acc, { url }) => ({
-              ...acc,
-              [url]: combineLatest({
-                info: this.http.get<StoreInfo>(url + 'package/v0/info'),
-                packages: this.http.get<MarketplacePkg[]>(
-                  `${url}package/v0/index?per-page=100&page=1`,
-                ),
-              }),
-            }),
-            {},
-          ),
-        ),
-      ),
-      first(),
-    )
-    .pipe(shareReplay(1))
-
   getKnownHosts$() {
     return this.hosts$
   }
@@ -85,6 +73,25 @@ export class MarketplaceService extends AbstractMarketplaceService {
       filter(Boolean),
     )
   }
+
+  private readonly marketplace$ = this.hosts$.pipe(
+    mergeMap(hosts => hosts),
+    mergeMap(({ url }) =>
+      this.fetchStore$(url).pipe(
+        map<StoreData | null, [string, StoreData | null]>(data => [url, data]),
+        startWith<[string, StoreData | null]>([url, null]),
+      ),
+    ),
+    scan<[string, StoreData | null], Record<string, StoreData | null>>(
+      (requests, [url, store]) => {
+        requests[url] = store
+
+        return requests
+      },
+      {},
+    ),
+    shareReplay({ bufferSize: 1, refCount: true }),
+  )
 
   getMarketplace$() {
     return this.marketplace$
@@ -97,13 +104,6 @@ export class MarketplaceService extends AbstractMarketplaceService {
     }).pipe(
       map(({ url, marketplace }) => marketplace[url]),
       filter(Boolean),
-      map(m => {
-        const p = recursiveToCamel(m.packages)
-        return {
-          ...m,
-          packages: p,
-        } as StoreData
-      }),
     )
   }
 
@@ -114,20 +114,33 @@ export class MarketplaceService extends AbstractMarketplaceService {
           map(m => m[url]),
           filter(Boolean),
           map(({ info, packages }) => {
-            const categories = new Set<string>()
-            categories.add('all')
-            if (info.categories.includes('featured')) {
-              categories.add('featured')
+            const categories = new Map<string, T.Category>()
+            categories.set('all', {
+              name: 'All',
+              description: {
+                short: 'All registry packages',
+                long: 'An unfiltered list of all packages available on this registry.',
+              },
+            })
+            if (info.categories['featured']) {
+              categories.set('featured', {
+                name: 'Featured',
+                description: {
+                  short: 'Featured packages',
+                  long: 'A list of featured packages on this registry.',
+                },
+              })
             }
-            info.categories.forEach(c => categories.add(c))
-            const p = recursiveToCamel(packages) as MarketplacePkg[]
+            Object.keys(info.categories).forEach(c =>
+              categories.set(c, info.categories[c]),
+            )
             return {
               url,
               info: {
                 ...info,
-                categories: Array.from(categories),
+                categories: Object.fromEntries(categories),
               },
-              packages: p,
+              packages,
             }
           }),
         ),
@@ -135,46 +148,107 @@ export class MarketplaceService extends AbstractMarketplaceService {
     )
   }
 
-  getPackage$(id: string, version: string) {
-    if (version === '*') {
-      return this.getSelectedStore$().pipe(
-        map(
-          ({ packages }) =>
-            packages.find(({ manifest }) => manifest.id === id) ||
-            ({} as MarketplacePkg),
-        ),
-      )
-    }
-
-    return this.url$.pipe(
-      switchMap(url =>
-        this.http.get<MarketplacePkg[]>(url + 'package/v0/index', {
-          params: {
-            ids: JSON.stringify([{ id, version }]),
-          },
-        }),
-      ),
-      map(([pkg]) => pkg),
-    )
-  }
-
-  fetchReleaseNotes$(id: string) {
-    return this.url$.pipe(
-      switchMap(url =>
-        this.http.get<Record<string, string>>(
-          `${url}package/v0/release-notes/${id}`,
+  getPackage$(
+    id: string,
+    version: string | null,
+    flavor: string | null,
+  ): Observable<MarketplacePkg> {
+    return this.getSelectedStore$().pipe(
+      switchMap(({ packages }) =>
+        this.url$.pipe(
+          switchMap(url => {
+            const pkg = packages.find(
+              p =>
+                p.id === id &&
+                p.flavor === flavor &&
+                (!version || this.exver.compareExver(p.version, version) === 0),
+            )
+            return !!pkg
+              ? of(pkg)
+              : this.fetchPackage$(url, id, version, flavor)
+          }),
         ),
       ),
     )
   }
 
-  fetchStatic$(id: string, type: string) {
-    return this.url$.pipe(
-      switchMap(url =>
-        this.http.get(`${url}package/v0/${type}/${id}`, {
-          responseType: 'text',
-        }),
+  private fetchStore$(url: string): Observable<StoreData | null> {
+    return combineLatest([this.fetchInfo$(url), this.fetchPackages$(url)]).pipe(
+      map(([info, packages]) => ({ info, packages })),
+      catchError(e => {
+        console.error(e)
+        return of(null)
+      }),
+    )
+  }
+
+  fetchInfo$(url: string): Observable<T.RegistryInfo> {
+    return from(this.api.getRegistryInfo(url))
+  }
+
+  fetchStatic$(
+    pkg: MarketplacePkg,
+    type: 'LICENSE.md' | 'instructions.md',
+  ): Observable<string> {
+    return from(this.api.getStaticProxy(pkg, type))
+  }
+
+  private fetchPackage$(
+    url: string,
+    id: string,
+    version: string | null,
+    flavor: string | null,
+  ): Observable<MarketplacePkg> {
+    return from(
+      this.api.getRegistryPackage(url, id, version ? `=${version}` : null),
+    ).pipe(
+      map(pkgInfo =>
+        this.convertToMarketplacePkg(
+          id,
+          version === '*' ? null : version,
+          flavor,
+          pkgInfo,
+        ),
       ),
     )
+  }
+
+  private fetchPackages$(url: string): Observable<MarketplacePkg[]> {
+    return from(this.api.getRegistryPackages(url)).pipe(
+      map(packages => {
+        return Object.entries(packages).flatMap(([id, pkgInfo]) =>
+          Object.keys(pkgInfo.best).map(version =>
+            this.convertToMarketplacePkg(
+              id,
+              version,
+              this.exver.getFlavor(version),
+              pkgInfo,
+            ),
+          ),
+        )
+      }),
+    )
+  }
+
+  convertToMarketplacePkg(
+    id: string,
+    version: string | null,
+    flavor: string | null,
+    pkgInfo: GetPackageRes,
+  ): MarketplacePkg {
+    version =
+      version ||
+      Object.keys(pkgInfo.best).find(v => this.exver.getFlavor(v) === flavor) ||
+      null
+
+    return !version || !pkgInfo.best[version]
+      ? ({} as MarketplacePkg)
+      : {
+          id,
+          version,
+          flavor,
+          ...pkgInfo,
+          ...pkgInfo.best[version],
+        }
   }
 }
