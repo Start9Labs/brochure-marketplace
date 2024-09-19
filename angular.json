@@ -127,30 +127,6 @@
           "options": {
             "buildTarget": "brochure-marketplace:build"
           }
-        },
-        "ionic-cordova-serve": {
-          "builder": "@ionic/angular-toolkit:cordova-serve",
-          "options": {
-            "cordovaBuildTarget": "brochure-marketplace:ionic-cordova-build",
-            "devServerTarget": "brochure-marketplace:serve"
-          },
-          "configurations": {
-            "production": {
-              "cordovaBuildTarget": "brochure-marketplace:ionic-cordova-build:production",
-              "devServerTarget": "brochure-marketplace:serve:production"
-            }
-          }
-        },
-        "ionic-cordova-build": {
-          "builder": "@ionic/angular-toolkit:cordova-build",
-          "options": {
-            "buildTarget": "brochure-marketplace:build"
-          },
-          "configurations": {
-            "production": {
-              "buildTarget": "brochure-marketplace:build:production"
-            }
-          }
         }
       }
     }

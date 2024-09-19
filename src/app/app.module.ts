@@ -2,7 +2,6 @@ import { HttpClientModule } from '@angular/common/http'
 import { NgModule } from '@angular/core'
 import { BrowserModule } from '@angular/platform-browser'
 import { RouteReuseStrategy } from '@angular/router'
-import { IonicModule } from '@ionic/angular'
 import {
   AbstractCategoryService,
   AbstractMarketplaceService,
@@ -31,7 +30,6 @@ import { RELATIVE_URL } from '@start9labs/shared'
     HttpClientModule,
     AppRoutingModule,
     CommonModule,
-    IonicModule.forRoot(),
     BrowserAnimationsModule,
     MarketplaceMenuComponent,
     ScrollerDirective,
