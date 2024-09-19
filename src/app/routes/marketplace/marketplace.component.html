@@ -20,7 +20,10 @@
         "
         [@itemAnimation]="filtered.length">
         @for (pkg of filtered; track $index) {
-        <a [routerLink]="pkg.id" queryParamsHandling="merge">
+        <a
+          [routerLink]="pkg.id"
+          [queryParams]="{ id: pkg.id, flavor: pkg.flavor }"
+          queryParamsHandling="merge">
           <marketplace-item [pkg]="pkg"></marketplace-item>
         </a>
         }
