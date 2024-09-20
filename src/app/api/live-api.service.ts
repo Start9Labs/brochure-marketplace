@@ -35,11 +35,10 @@ export class LiveApiService extends ApiService {
   async getRegistryPackage(
     registryUrl: string,
     id: string,
-    versionRange: string | null,
   ): Promise<GetPackageRes> {
     const params: GetPackageReq = {
       id,
-      version: versionRange,
+      version: null,
       otherVersions: 'short',
     }
 

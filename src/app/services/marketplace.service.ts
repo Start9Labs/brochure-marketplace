@@ -14,6 +14,7 @@ import {
   scan,
   startWith,
   switchMap,
+  tap,
 } from 'rxjs/operators'
 import { HOSTS } from '../tokens/hosts'
 import { UrlService } from './url.service'
@@ -150,22 +151,15 @@ export class MarketplaceService extends AbstractMarketplaceService {
 
   getPackage$(
     id: string,
-    version: string | null,
+    _version: string | null,
     flavor: string | null,
   ): Observable<MarketplacePkg> {
     return this.getSelectedStore$().pipe(
       switchMap(({ packages }) =>
         this.url$.pipe(
           switchMap(url => {
-            const pkg = packages.find(
-              p =>
-                p.id === id &&
-                p.flavor === flavor &&
-                (!version || this.exver.compareExver(p.version, version) === 0),
-            )
-            return !!pkg
-              ? of(pkg)
-              : this.fetchPackage$(url, id, version, flavor)
+            const pkg = packages.find(p => p.id === id && p.flavor === flavor)
+            return !!pkg ? of(pkg) : this.fetchPackage$(url, id, flavor)
           }),
         ),
       ),
@@ -196,20 +190,10 @@ export class MarketplaceService extends AbstractMarketplaceService {
   private fetchPackage$(
     url: string,
     id: string,
-    version: string | null,
     flavor: string | null,
   ): Observable<MarketplacePkg> {
-    return from(
-      this.api.getRegistryPackage(url, id, version ? `=${version}` : null),
-    ).pipe(
-      map(pkgInfo =>
-        this.convertToMarketplacePkg(
-          id,
-          version === '*' ? null : version,
-          flavor,
-          pkgInfo,
-        ),
-      ),
+    return from(this.api.getRegistryPackage(url, id)).pipe(
+      map(pkgInfo => this.convertToMarketplacePkg(id, flavor, pkgInfo)),
     )
   }
 
@@ -220,7 +204,6 @@ export class MarketplaceService extends AbstractMarketplaceService {
           Object.keys(pkgInfo.best).map(version =>
             this.convertToMarketplacePkg(
               id,
-              version,
               this.exver.getFlavor(version),
               pkgInfo,
             ),
@@ -232,23 +215,18 @@ export class MarketplaceService extends AbstractMarketplaceService {
 
   convertToMarketplacePkg(
     id: string,
-    version: string | null,
     flavor: string | null,
     pkgInfo: GetPackageRes,
   ): MarketplacePkg {
-    version =
-      version ||
-      Object.keys(pkgInfo.best).find(v => this.exver.getFlavor(v) === flavor) ||
-      null
-
-    return !version || !pkgInfo.best[version]
-      ? ({} as MarketplacePkg)
-      : {
-          id,
-          version,
-          flavor,
-          ...pkgInfo,
-          ...pkgInfo.best[version],
-        }
+    const version = Object.keys(pkgInfo.best).find(
+      v => this.exver.getFlavor(v) === flavor,
+    )!
+    return {
+      id,
+      version,
+      flavor,
+      ...pkgInfo,
+      ...pkgInfo.best[version],
+    }
   }
 }

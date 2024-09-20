@@ -17,16 +17,11 @@ export class MockApiService extends ApiService {
   }
 
   async getRegistryPackage(
-    registryUrl: string,
+    _registryUrl: string,
     id: string,
-    versionRange: string | null,
   ): Promise<GetPackageRes> {
     await this.pauseFor(1000)
-    if (!versionRange || versionRange === '=*') {
-      return Mock.RegistryPackages[id]
-    } else {
-      return Mock.OtherPackageVersions[id][versionRange]
-    }
+    return Mock.RegistryPackages[id]
   }
 
   async getRegistryPackages(): Promise<GetPackagesRes> {

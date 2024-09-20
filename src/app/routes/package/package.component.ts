@@ -22,7 +22,7 @@ export class PackageComponent {
   private readonly urlService = inject(UrlService)
   private readonly router = inject(Router)
   readonly pkgId = getPkgId(this.route)
-  readonly url$ = this.urlService.getUrl$().pipe(map(x => x))
+  readonly url$ = this.urlService.getUrl$()
   speed = 1000
 
   @tuiPure
@@ -32,15 +32,10 @@ export class PackageComponent {
 
   readonly pkg$ = this.route.queryParamMap.pipe(
     switchMap(paramMap =>
-      this.url$.pipe(
-        switchMap(url => {
-          return this.marketplaceService.getPackage$(
-            this.pkgId,
-            null,
-            paramMap.get('flavor'),
-            url,
-          )
-        }),
+      this.marketplaceService.getPackage$(
+        this.pkgId,
+        null,
+        paramMap.get('flavor') || null,
       ),
     ),
   )

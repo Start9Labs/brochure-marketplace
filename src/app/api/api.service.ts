@@ -11,7 +11,6 @@ export abstract class ApiService {
   abstract getRegistryPackage(
     registryUrl: string,
     id: string,
-    versionRange: string | null,
   ): Promise<GetPackageRes>
 
   abstract getRegistryPackages(registryUrl: string): Promise<GetPackagesRes>
