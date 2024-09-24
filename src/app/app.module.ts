@@ -22,6 +22,7 @@ import { ApiService } from './api/api.service'
 import { LiveApiService } from './api/live-api.service'
 import { MockApiService } from './api/mock-api.service'
 import { TuiRoot } from '@taiga-ui/core'
+import { NG_EVENT_PLUGINS } from '@taiga-ui/event-plugins'
 
 @NgModule({
   imports: [
@@ -35,6 +36,7 @@ import { TuiRoot } from '@taiga-ui/core'
     TuiRoot,
   ],
   providers: [
+    NG_EVENT_PLUGINS,
     {
       provide: AbstractMarketplaceService,
       useClass: MarketplaceService,

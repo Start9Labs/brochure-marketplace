@@ -13,6 +13,7 @@ import {
   MarketplacePackageHeroComponent,
   MarketplacePackageScreenshotComponent,
 } from '@start9labs/marketplace'
+import { TuiLet } from '@taiga-ui/cdk'
 
 const routes: Routes = [
   {
@@ -39,6 +40,7 @@ const routes: Routes = [
     TuiIcon,
     TuiAppearance,
     FlavorsComponent,
+    TuiLet,
   ],
 })
 export class PackageModule {}

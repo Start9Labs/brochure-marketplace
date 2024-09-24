@@ -1,46 +1,44 @@
 <div class="package-wrapper">
   <ng-container *ngIf="pkg$ | async as pkg; else loading">
-    <ng-container *ngIf="pkg | empty; else show">
-      <div class="not-found-wrapper">
-        <div class="not-found-inner">
-          <a
-            [routerLink]="'/'"
-            queryParamsHandling="merge"
-            [queryParams]="{ id: null, flavor: null }">
-            <tui-icon tuiAppearance="icon" icon="@tui.x" />
-          </a>
-          <h2>Not Found</h2>
-          <p>{{ pkgId }} does not exist on this registry.</p>
-        </div>
-      </div>
-    </ng-container>
-
-    <ng-template #show>
-      <div [@tuiFadeIn]="getAnimation(speed)" class="package-container">
+    @if (pkg | empty) {
+    <div class="not-found-wrapper">
+      <div class="not-found-inner">
         <a
-          [routerLink]="'..'"
-          [queryParams]="{ id: null, flavor: null }"
+          [routerLink]="'/'"
           queryParamsHandling="merge"
-          class="button-back">
+          [queryParams]="{ id: null, flavor: null }">
           <tui-icon tuiAppearance="icon" icon="@tui.x" />
         </a>
-        <marketplace-package-hero [pkg]="pkg" />
-        <marketplace-package-screenshots [pkg]="pkg" />
-        <div class="package-details">
-          <div class="package-details-main">
-            <marketplace-about [pkg]="pkg" />
-            @if (!(pkg.dependencyMetadata | empty)) {
-            <marketplace-dependencies [pkg]="pkg" (open)="open($event)" />
-            } @if (flavors$ | async; as flavors) {
-            <marketplace-flavors [pkgs]="flavors" />
-            }
-          </div>
-          <div class="package-details-additional">
-            <marketplace-additional [pkg]="pkg" />
-          </div>
+        <h2>Not Found</h2>
+        <p>{{ pkgId }} does not exist on this registry.</p>
+      </div>
+    </div>
+    } @else {
+    <div [@tuiFadeIn]="getAnimation(speed)" class="package-container">
+      <a
+        [routerLink]="'..'"
+        [queryParams]="{ id: null, flavor: null }"
+        queryParamsHandling="merge"
+        class="button-back">
+        <tui-icon tuiAppearance="icon" icon="@tui.x" />
+      </a>
+      <marketplace-package-hero [pkg]="pkg" />
+      <marketplace-package-screenshots [pkg]="pkg" />
+      <div class="package-details">
+        <div class="package-details-main">
+          <marketplace-about [pkg]="pkg" />
+          @if (!(pkg.dependencyMetadata | empty)) {
+          <marketplace-dependencies [pkg]="pkg" (open)="open($event)" />
+          } @if (flavors$ | async; as flavors) {
+          <marketplace-flavors [pkgs]="flavors" />
+          }
+        </div>
+        <div class="package-details-additional">
+          <marketplace-additional [pkg]="pkg" />
         </div>
       </div>
-    </ng-template>
+    </div>
+    }
   </ng-container>
 
   <ng-template #loading>

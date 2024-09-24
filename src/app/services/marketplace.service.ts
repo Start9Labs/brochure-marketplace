@@ -1,174 +1,102 @@
-import { inject, Injectable } from '@angular/core'
+import { Injectable } from '@angular/core'
 import {
-  AbstractMarketplaceService,
   MarketplacePkg,
   StoreData,
   GetPackageRes,
-  StoreIdentity,
+  AbstractMarketplaceService,
 } from '@start9labs/marketplace'
-import { combineLatest, filter, from, Observable, of, shareReplay } from 'rxjs'
 import {
-  catchError,
-  map,
-  mergeMap,
-  scan,
-  startWith,
-  switchMap,
-  tap,
-} from 'rxjs/operators'
-import { HOSTS } from '../tokens/hosts'
-import { UrlService } from './url.service'
-import { Event, NavigationEnd, Router } from '@angular/router'
+  BehaviorSubject,
+  combineLatest,
+  filter,
+  from,
+  Observable,
+  of,
+  shareReplay,
+} from 'rxjs'
+import { catchError, map, pairwise, startWith, switchMap } from 'rxjs/operators'
 import { T } from '@start9labs/start-sdk'
 import { Exver } from '@start9labs/shared'
 import { ApiService } from '../api/api.service'
 
-@Injectable()
-export class MarketplaceService extends AbstractMarketplaceService {
+@Injectable({
+  providedIn: 'root',
+})
+export class MarketplaceService implements AbstractMarketplaceService {
+  private readonly registryUrl$ = new BehaviorSubject<string>('')
+  private readonly registry$ = this.getRegistryUrl$().pipe(
+    switchMap(url => this.fetchRegistry$(url)),
+    shareReplay(1),
+  )
+
   constructor(
-    private router: Router,
     private readonly api: ApiService,
     private readonly exver: Exver,
-  ) {
-    super()
+  ) {}
+
+  getRegistry$() {
+    return this.registry$
   }
-  private readonly hosts = inject(HOSTS)
-  private readonly urlService = inject(UrlService)
-  private readonly url$ = this.urlService.getUrl$()
 
-  readonly hosts$: Observable<StoreIdentity[]> = this.router.events.pipe(
-    filter(
-      (e: Event | NavigationEnd): e is NavigationEnd =>
-        e instanceof NavigationEnd,
-    ),
-    map(route => {
-      // route.url is just information after the origin, so this is a hack to create a proper URL
-      const params = new URL(`https://test.com${route.url}`).searchParams
-      // full path needed for registry
-      const url = `https://${params.get('api')}/`
-      const name = params.get('name')
+  getRegistryUrl$() {
+    return this.registryUrl$.pipe(
+      startWith(''),
+      pairwise(),
+      filter(([prev, curr]) => prev !== curr && curr !== ''),
+      map(([_, curr]) => curr),
+    )
+  }
 
-      if (name) {
-        this.urlService.toggle(url)
-        return [
-          ...this.hosts,
-          {
-            url,
-            name,
+  setRegistryUrl(url: string | null) {
+    this.registryUrl$.next(url || 'https://registry.start9.com')
+  }
+
+  getSelectedRegistry$() {
+    return this.registry$.pipe(filter(Boolean))
+  }
+
+  getSelectedRegistryWithCategories$() {
+    return this.getRegistry$().pipe(
+      filter(Boolean),
+      map(registry => {
+        const { info, packages, url } = registry
+        const categories = new Map<string, T.Category>()
+        categories.set('all', {
+          name: 'All',
+          description: {
+            short: 'All registry packages',
+            long: 'An unfiltered list of all packages available on this registry.',
           },
-        ]
-      } else {
-        return this.hosts
-      }
-    }),
-    shareReplay({ bufferSize: 1, refCount: true }),
-  )
-
-  getKnownHosts$() {
-    return this.hosts$
-  }
-
-  getSelectedHost$() {
-    return combineLatest([this.url$, this.hosts$]).pipe(
-      map(([url, hosts]) => hosts.find(host => host.url === url)),
-      filter(Boolean),
+        })
+        Object.keys(info.categories).forEach(c =>
+          categories.set(c, info.categories[c]),
+        )
+        return {
+          url,
+          info: {
+            ...info,
+            categories: Object.fromEntries(categories),
+          },
+          packages,
+        } as StoreData & { url: string }
+      }),
     )
   }
 
-  private readonly marketplace$ = this.hosts$.pipe(
-    mergeMap(hosts => hosts),
-    mergeMap(({ url }) =>
-      this.fetchStore$(url).pipe(
-        map<StoreData | null, [string, StoreData | null]>(data => [url, data]),
-        startWith<[string, StoreData | null]>([url, null]),
-      ),
-    ),
-    scan<[string, StoreData | null], Record<string, StoreData | null>>(
-      (requests, [url, store]) => {
-        requests[url] = store
-
-        return requests
-      },
-      {},
-    ),
-    shareReplay({ bufferSize: 1, refCount: true }),
-  )
-
-  getMarketplace$() {
-    return this.marketplace$
-  }
-
-  getSelectedStore$() {
-    return combineLatest({
-      url: this.url$,
-      marketplace: this.getMarketplace$(),
-    }).pipe(
-      map(({ url, marketplace }) => marketplace[url]),
-      filter(Boolean),
+  getPackage$(id: string, flavor: string | null): Observable<MarketplacePkg> {
+    return this.getRegistry$().pipe(
+      switchMap(registry => {
+        if (!registry) return of({} as MarketplacePkg)
+        const { packages, url } = registry
+        const pkg = packages.find(p => p.id === id && p.flavor === flavor)
+        return !!pkg ? of(pkg) : this.fetchPackage$(url, id, flavor)
+      }),
     )
   }
 
-  getSelectedStoreWithCategories$() {
-    return this.getSelectedHost$().pipe(
-      switchMap(({ url }) =>
-        this.marketplace$.pipe(
-          map(m => m[url]),
-          filter(Boolean),
-          map(({ info, packages }) => {
-            const categories = new Map<string, T.Category>()
-            categories.set('all', {
-              name: 'All',
-              description: {
-                short: 'All registry packages',
-                long: 'An unfiltered list of all packages available on this registry.',
-              },
-            })
-            if (info.categories['featured']) {
-              categories.set('featured', {
-                name: 'Featured',
-                description: {
-                  short: 'Featured packages',
-                  long: 'A list of featured packages on this registry.',
-                },
-              })
-            }
-            Object.keys(info.categories).forEach(c =>
-              categories.set(c, info.categories[c]),
-            )
-            return {
-              url,
-              info: {
-                ...info,
-                categories: Object.fromEntries(categories),
-              },
-              packages,
-            }
-          }),
-        ),
-      ),
-    )
-  }
-
-  getPackage$(
-    id: string,
-    _version: string | null,
-    flavor: string | null,
-  ): Observable<MarketplacePkg> {
-    return this.getSelectedStore$().pipe(
-      switchMap(({ packages }) =>
-        this.url$.pipe(
-          switchMap(url => {
-            const pkg = packages.find(p => p.id === id && p.flavor === flavor)
-            return !!pkg ? of(pkg) : this.fetchPackage$(url, id, flavor)
-          }),
-        ),
-      ),
-    )
-  }
-
-  private fetchStore$(url: string): Observable<StoreData | null> {
+  private fetchRegistry$(url: string) {
     return combineLatest([this.fetchInfo$(url), this.fetchPackages$(url)]).pipe(
-      map(([info, packages]) => ({ info, packages })),
+      map(([info, packages]) => ({ info, packages, url })),
       catchError(e => {
         console.error(e)
         return of(null)
@@ -180,7 +108,7 @@ export class MarketplaceService extends AbstractMarketplaceService {
     return from(this.api.getRegistryInfo(url))
   }
 
-  fetchStatic$(
+  getStatic$(
     pkg: MarketplacePkg,
     type: 'LICENSE.md' | 'instructions.md',
   ): Observable<string> {

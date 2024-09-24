@@ -4,11 +4,7 @@ import {
   Inject,
   inject,
 } from '@angular/core'
-import {
-  AbstractCategoryService,
-  AbstractMarketplaceService,
-  StoreData,
-} from '@start9labs/marketplace'
+import { AbstractCategoryService, StoreData } from '@start9labs/marketplace'
 import { map } from 'rxjs/operators'
 import { HOSTS } from '../../tokens/hosts'
 import { UrlService } from '../../services/url.service'
@@ -24,6 +20,8 @@ import { Observable } from 'rxjs'
 import { CategoryService } from 'src/app/services/category.service'
 import { MarketplaceService } from 'src/app/services/marketplace.service'
 import { T } from '@start9labs/start-sdk'
+import { ActivatedRoute } from '@angular/router'
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
 
 @Component({
   selector: 'app-marketplace',
@@ -52,19 +50,26 @@ import { T } from '@start9labs/start-sdk'
   ],
 })
 export class MarketplaceComponent {
+  private readonly urlService = inject(UrlService)
+  readonly hosts = inject(HOSTS)
+  readonly route = inject(ActivatedRoute)
+    .queryParamMap.pipe(takeUntilDestroyed())
+    .subscribe(params =>
+      this.marketplaceService.setRegistryUrl(params.get('registry')),
+    )
+
   constructor(
-    @Inject(AbstractMarketplaceService)
     private readonly marketplaceService: MarketplaceService,
     @Inject(AbstractCategoryService)
     private readonly categoryService: CategoryService,
   ) {}
-  private readonly urlService = inject(UrlService)
-  readonly hosts = inject(HOSTS)
 
-  readonly store$: Observable<StoreData> = this.marketplaceService
-    .getSelectedStore$()
+  readonly registry$: Observable<StoreData> = this.marketplaceService
+    .getRegistry$()
     .pipe(
-      map(({ info, packages }) => {
+      map(registry => {
+        if (!registry) return {} as StoreData
+        const { info, packages } = registry
         const categories = new Map<string, T.Category>()
         categories.set('all', {
           name: 'All',

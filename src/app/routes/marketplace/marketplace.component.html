@@ -9,11 +9,14 @@
         }}
       </h1>
     </div>
-    <ng-container *ngIf="store$ | async as store; else loading">
+    <ng-container *ngIf="registry$ | async as registry; else loading">
+      @if (registry | empty) {
+      <p>Registry not found.</p>
+      } @else {
       <section
         class="marketplace-content-list"
         *ngIf="
-          store.packages
+          registry.packages
             | filterPackages
               : (query$ | async)
               : (category$ | async) as filtered
@@ -28,6 +31,7 @@
         </a>
         }
       </section>
+      }
     </ng-container>
     <ng-template #loading>
       <h1 class="loading-text">Loading<span class="loading-dots"></span></h1>

@@ -25,7 +25,7 @@ export class MockApiService extends ApiService {
   }
 
   async getRegistryPackages(): Promise<GetPackagesRes> {
-    await this.pauseFor(2000)
+    await this.pauseFor(1000)
     return Mock.RegistryPackages
   }
 

@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core'
 import {
-  AbstractMarketplaceService,
   StoreIconComponentModule,
   MarketplaceRegistryComponent,
 } from '@start9labs/marketplace'
@@ -9,11 +8,13 @@ import {
   PolymorpheusComponent,
   POLYMORPHEUS_CONTEXT,
 } from '@taiga-ui/polymorpheus'
-import { combineLatest, map, Subscription } from 'rxjs'
+import { map, Subscription, tap } from 'rxjs'
 import { LoadingService, MarketplaceConfig } from '@start9labs/shared'
 import { CommonModule } from '@angular/common'
 import { TuiCell } from '@taiga-ui/layout'
-import { UrlService } from '../services/url.service'
+import { MarketplaceService } from '../services/marketplace.service'
+import { HOSTS } from '../tokens/hosts'
+import { ActivatedRoute, Router } from '@angular/router'
 const marketplace = require('../../../config.json')
   .marketplace as MarketplaceConfig
 
@@ -41,33 +42,36 @@ const marketplace = require('../../../config.json')
   ],
 })
 export class MarketplaceRegistryModal {
-  private readonly marketplaceService = inject(AbstractMarketplaceService)
-  private readonly urlService = inject(UrlService)
   private readonly loader = inject(LoadingService)
+  private readonly hosts = inject(HOSTS)
   private readonly context = inject<TuiDialogContext>(POLYMORPHEUS_CONTEXT)
+
   readonly marketplaceConfig = marketplace
 
-  readonly stores$ = combineLatest([
-    this.marketplaceService.getKnownHosts$(),
-    this.marketplaceService.getSelectedHost$(),
-  ]).pipe(
-    map(([stores, selected]) =>
-      stores.map(s => ({
+  readonly stores$ = this.marketplaceService.getRegistryUrl$().pipe(
+    map(url =>
+      this.hosts.map(s => ({
         ...s,
-        selected: this.sameUrl(s.url, selected.url),
+        selected: this.sameUrl(s.url, url),
       })),
     ),
   )
 
-  constructor() {}
+  constructor(
+    private readonly route: ActivatedRoute,
+    private readonly router: Router,
+    private readonly marketplaceService: MarketplaceService,
+  ) {}
 
   async connect(
-    url: string,
+    registry: string,
     loader: Subscription = new Subscription(),
   ): Promise<void> {
     loader.add(this.loader.open('Changing Registry...').subscribe())
     setTimeout(() => {
-      this.urlService.toggle(url)
+      this.router.navigate(['/'], {
+        queryParams: { registry },
+      })
       loader.unsubscribe()
       this.context.$implicit.complete()
     }, 800)
