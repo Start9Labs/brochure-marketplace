@@ -24,7 +24,7 @@
     "@noble/hashes": "^1.5.0",
     "@start9labs/argon2": "^0.1.0",
     "@start9labs/emver": "^0.1.5",
-    "@start9labs/marketplace": "0.3.33",
+    "@start9labs/marketplace": "file:../start-os/web/dist/marketplace",
     "@start9labs/shared": "0.3.15",
     "@start9labs/start-sdk": "0.3.6-alpha8",
     "@taiga-ui/addon-charts": "^4.7.0",

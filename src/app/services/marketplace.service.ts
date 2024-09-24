@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core'
 import {
   MarketplacePkg,
   GetPackageRes,
-  AbstractMarketplaceService,
   StoreData,
 } from '@start9labs/marketplace'
 import {
@@ -27,7 +26,7 @@ import { ApiService } from '../api/api.service'
 @Injectable({
   providedIn: 'root',
 })
-export class MarketplaceService implements AbstractMarketplaceService {
+export class MarketplaceService {
   private readonly registryUrlSubject$ = new ReplaySubject<string>(1)
   private readonly registryUrl$ = this.registryUrlSubject$.pipe(
     distinctUntilChanged(),
@@ -53,12 +52,12 @@ export class MarketplaceService implements AbstractMarketplaceService {
     private readonly exver: Exver,
   ) {}
 
-  getRegistry$(): Observable<StoreDataWithUrl> {
-    return this.registry$
-  }
-
   getRegistryUrl$() {
     return this.registryUrl$
+  }
+
+  getRegistry$(): Observable<StoreDataWithUrl> {
+    return this.registry$
   }
 
   setRegistryUrl(url: string | null) {
@@ -80,16 +79,6 @@ export class MarketplaceService implements AbstractMarketplaceService {
     type: 'LICENSE.md' | 'instructions.md',
   ): Observable<string> {
     return from(this.api.getStaticProxy(pkg, type))
-  }
-
-  // @TODO unused/duplicate. delete when abstract marketplace updated
-  getSelectedRegistry$() {
-    return this.registry$
-  }
-  // @TODO unused/duplicate. delete when abstract marketplace updated
-  getSelectedRegistryWithCategories$() {
-    console.log('HERE')
-    return this.registry$
   }
 
   private fetchRegistry$(url: string) {

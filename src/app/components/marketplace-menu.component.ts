@@ -29,7 +29,6 @@ import { MARKETPLACE_REGISTRY } from './registry-settings.component'
         <tui-icon tuiAppearance="icon" icon="@tui.repeat"></tui-icon>
         <span> Change Registry </span>
       </a>
-      <!-- @TODO These buttons are the same for desktop and mobile, no reason to duplicate -->
       <a
         slot="store"
         target="_blank"
