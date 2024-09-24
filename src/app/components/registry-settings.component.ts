@@ -8,15 +8,14 @@ import {
   PolymorpheusComponent,
   POLYMORPHEUS_CONTEXT,
 } from '@taiga-ui/polymorpheus'
-import { map, Subscription, tap } from 'rxjs'
+import { map, Subscription } from 'rxjs'
 import { LoadingService, MarketplaceConfig } from '@start9labs/shared'
 import { CommonModule } from '@angular/common'
 import { TuiCell } from '@taiga-ui/layout'
 import { MarketplaceService } from '../services/marketplace.service'
-import { HOSTS } from '../tokens/hosts'
-import { ActivatedRoute, Router } from '@angular/router'
-const marketplace = require('../../../config.json')
-  .marketplace as MarketplaceConfig
+import { Router } from '@angular/router'
+import { InjectionToken } from '@angular/core'
+import { StoreIdentity } from '@start9labs/marketplace'
 
 @Component({
   standalone: true,
@@ -43,10 +42,13 @@ const marketplace = require('../../../config.json')
 })
 export class MarketplaceRegistryModal {
   private readonly loader = inject(LoadingService)
+  private readonly router = inject(Router)
   private readonly hosts = inject(HOSTS)
   private readonly context = inject<TuiDialogContext>(POLYMORPHEUS_CONTEXT)
+  private readonly marketplaceService = inject(MarketplaceService)
 
-  readonly marketplaceConfig = marketplace
+  readonly marketplaceConfig = require('../../../config.json')
+    .marketplace as MarketplaceConfig
 
   readonly stores$ = this.marketplaceService.getRegistryUrl$().pipe(
     map(url =>
@@ -56,12 +58,6 @@ export class MarketplaceRegistryModal {
       })),
     ),
   )
-
-  constructor(
-    private readonly route: ActivatedRoute,
-    private readonly router: Router,
-    private readonly marketplaceService: MarketplaceService,
-  ) {}
 
   async connect(
     registry: string,
@@ -97,3 +93,17 @@ export class MarketplaceRegistryModal {
 export const MARKETPLACE_REGISTRY = new PolymorpheusComponent(
   MarketplaceRegistryModal,
 )
+
+// @TODO can we just switch to a const?
+const HOSTS = new InjectionToken<StoreIdentity[]>('Marketplace hosts', {
+  factory: () => [
+    {
+      url: 'https://registry.start9.com/',
+      name: 'Start9 Registry',
+    },
+    {
+      url: 'https://community-registry.start9.com/',
+      name: 'Community Registry',
+    },
+  ],
+})

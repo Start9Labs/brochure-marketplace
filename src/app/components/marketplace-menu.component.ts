@@ -8,8 +8,6 @@ import {
 import { MarketplaceConfig } from '@start9labs/shared'
 import { MenuModule } from '@start9labs/marketplace'
 import { MARKETPLACE_REGISTRY } from './registry-settings.component'
-const marketplace = require('../../../config.json')
-  .marketplace as MarketplaceConfig
 
 @Component({
   standalone: true,
@@ -31,6 +29,7 @@ const marketplace = require('../../../config.json')
         <tui-icon tuiAppearance="icon" icon="@tui.repeat"></tui-icon>
         <span> Change Registry </span>
       </a>
+      <!-- @TODO These buttons are the same for desktop and mobile, no reason to duplicate -->
       <a
         slot="store"
         target="_blank"
@@ -113,10 +112,9 @@ const marketplace = require('../../../config.json')
   imports: [MenuModule, TuiButton, TuiIcon, TuiAppearance],
 })
 export class MarketplaceMenuComponent {
-  constructor() {}
-
   private readonly dialogs = inject(TuiDialogService)
-  readonly marketplaceConfig = marketplace
+  readonly marketplaceConfig = require('../../../config.json')
+    .marketplace as MarketplaceConfig
 
   changeRegistry() {
     this.dialogs

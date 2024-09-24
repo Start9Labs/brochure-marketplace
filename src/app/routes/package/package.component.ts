@@ -1,9 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import { getPkgId } from '@start9labs/shared'
-import { filter, map, pairwise, switchMap } from 'rxjs/operators'
+import { filter, map, switchMap } from 'rxjs/operators'
 import { TuiDurationOptions, tuiFadeIn } from '@taiga-ui/core'
-import { UrlService } from 'src/app/services/url.service'
 import { tuiPure } from '@taiga-ui/cdk'
 import { MarketplaceService } from 'src/app/services/marketplace.service'
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
@@ -16,16 +15,9 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
   animations: [tuiFadeIn],
 })
 export class PackageComponent {
-  private readonly urlService = inject(UrlService)
   private readonly router = inject(Router)
-  readonly route_ = inject(ActivatedRoute)
-    .queryParamMap.pipe(takeUntilDestroyed())
-    .subscribe(params =>
-      this.marketplaceService.setRegistryUrl(params.get('registry')),
-    )
-
   readonly pkgId = getPkgId(this.route)
-  readonly url$ = this.urlService.getUrl$()
+
   speed = 1000
 
   constructor(
@@ -33,15 +25,9 @@ export class PackageComponent {
     private readonly route: ActivatedRoute,
   ) {
     this.route.queryParamMap
-      .pipe(
-        pairwise(),
-        filter(([prev, curr]) => prev.get('registry') !== curr.get('registry')),
-        map(([_, curr]) => curr.get('registry')),
-      )
-      .subscribe(url =>
-        this.marketplaceService.setRegistryUrl(
-          url || 'https://registry.start9.com',
-        ),
+      .pipe(takeUntilDestroyed())
+      .subscribe(params =>
+        this.marketplaceService.setRegistryUrl(params.get('registry')),
       )
   }
 
@@ -52,17 +38,13 @@ export class PackageComponent {
 
   readonly pkg$ = this.route.queryParamMap.pipe(
     switchMap(paramMap =>
-      this.marketplaceService.getPackage$(
-        this.pkgId,
-        paramMap.get('flavor') || null,
-      ),
+      this.marketplaceService.getPackage$(this.pkgId, paramMap.get('flavor')),
     ),
   )
 
   readonly flavors$ = this.route.queryParamMap.pipe(
     switchMap(paramMap =>
       this.marketplaceService.getRegistry$().pipe(
-        filter(Boolean),
         map(s =>
           s.packages.filter(
             p => p.id === this.pkgId && p.flavor !== paramMap.get('flavor'),

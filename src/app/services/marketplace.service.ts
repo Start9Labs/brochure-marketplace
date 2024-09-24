@@ -1,20 +1,25 @@
 import { Injectable } from '@angular/core'
 import {
   MarketplacePkg,
-  StoreData,
   GetPackageRes,
   AbstractMarketplaceService,
+  StoreData,
 } from '@start9labs/marketplace'
 import {
-  BehaviorSubject,
   combineLatest,
   filter,
   from,
   Observable,
   of,
-  shareReplay,
+  ReplaySubject,
 } from 'rxjs'
-import { catchError, map, pairwise, startWith, switchMap } from 'rxjs/operators'
+import {
+  catchError,
+  distinctUntilChanged,
+  map,
+  shareReplay,
+  switchMap,
+} from 'rxjs/operators'
 import { T } from '@start9labs/start-sdk'
 import { Exver } from '@start9labs/shared'
 import { ApiService } from '../api/api.service'
@@ -23,9 +28,23 @@ import { ApiService } from '../api/api.service'
   providedIn: 'root',
 })
 export class MarketplaceService implements AbstractMarketplaceService {
-  private readonly registryUrl$ = new BehaviorSubject<string>('')
-  private readonly registry$ = this.getRegistryUrl$().pipe(
+  private readonly registryUrlSubject$ = new ReplaySubject<string>(1)
+  private readonly registryUrl$ = this.registryUrlSubject$.pipe(
+    distinctUntilChanged(),
+  )
+  private readonly registry$ = this.registryUrl$.pipe(
     switchMap(url => this.fetchRegistry$(url)),
+    filter(Boolean),
+    map(registry => {
+      registry.info.categories['all'] = {
+        name: 'All',
+        description: {
+          short: 'All registry packages',
+          long: 'An unfiltered list of all packages available on this registry.',
+        },
+      }
+      return registry
+    }),
     shareReplay(1),
   )
 
@@ -34,59 +53,21 @@ export class MarketplaceService implements AbstractMarketplaceService {
     private readonly exver: Exver,
   ) {}
 
-  getRegistry$() {
+  getRegistry$(): Observable<StoreDataWithUrl> {
     return this.registry$
   }
 
   getRegistryUrl$() {
-    return this.registryUrl$.pipe(
-      startWith(''),
-      pairwise(),
-      filter(([prev, curr]) => prev !== curr && curr !== ''),
-      map(([_, curr]) => curr),
-    )
+    return this.registryUrl$
   }
 
   setRegistryUrl(url: string | null) {
-    this.registryUrl$.next(url || 'https://registry.start9.com')
-  }
-
-  getSelectedRegistry$() {
-    return this.registry$.pipe(filter(Boolean))
-  }
-
-  getSelectedRegistryWithCategories$() {
-    return this.getRegistry$().pipe(
-      filter(Boolean),
-      map(registry => {
-        const { info, packages, url } = registry
-        const categories = new Map<string, T.Category>()
-        categories.set('all', {
-          name: 'All',
-          description: {
-            short: 'All registry packages',
-            long: 'An unfiltered list of all packages available on this registry.',
-          },
-        })
-        Object.keys(info.categories).forEach(c =>
-          categories.set(c, info.categories[c]),
-        )
-        return {
-          url,
-          info: {
-            ...info,
-            categories: Object.fromEntries(categories),
-          },
-          packages,
-        } as StoreData & { url: string }
-      }),
-    )
+    this.registryUrlSubject$.next(url || 'https://registry.start9.com')
   }
 
   getPackage$(id: string, flavor: string | null): Observable<MarketplacePkg> {
-    return this.getRegistry$().pipe(
+    return this.registry$.pipe(
       switchMap(registry => {
-        if (!registry) return of({} as MarketplacePkg)
         const { packages, url } = registry
         const pkg = packages.find(p => p.id === id && p.flavor === flavor)
         return !!pkg ? of(pkg) : this.fetchPackage$(url, id, flavor)
@@ -94,7 +75,25 @@ export class MarketplaceService implements AbstractMarketplaceService {
     )
   }
 
+  getStatic$(
+    pkg: MarketplacePkg,
+    type: 'LICENSE.md' | 'instructions.md',
+  ): Observable<string> {
+    return from(this.api.getStaticProxy(pkg, type))
+  }
+
+  // @TODO unused/duplicate. delete when abstract marketplace updated
+  getSelectedRegistry$() {
+    return this.registry$
+  }
+  // @TODO unused/duplicate. delete when abstract marketplace updated
+  getSelectedRegistryWithCategories$() {
+    console.log('HERE')
+    return this.registry$
+  }
+
   private fetchRegistry$(url: string) {
+    console.log('FETCHING REGISTRY: ', url)
     return combineLatest([this.fetchInfo$(url), this.fetchPackages$(url)]).pipe(
       map(([info, packages]) => ({ info, packages, url })),
       catchError(e => {
@@ -104,15 +103,8 @@ export class MarketplaceService implements AbstractMarketplaceService {
     )
   }
 
-  fetchInfo$(url: string): Observable<T.RegistryInfo> {
+  private fetchInfo$(url: string): Observable<T.RegistryInfo> {
     return from(this.api.getRegistryInfo(url))
-  }
-
-  getStatic$(
-    pkg: MarketplacePkg,
-    type: 'LICENSE.md' | 'instructions.md',
-  ): Observable<string> {
-    return from(this.api.getStaticProxy(pkg, type))
   }
 
   private fetchPackage$(
@@ -141,7 +133,7 @@ export class MarketplaceService implements AbstractMarketplaceService {
     )
   }
 
-  convertToMarketplacePkg(
+  private convertToMarketplacePkg(
     id: string,
     flavor: string | null,
     pkgInfo: GetPackageRes,
@@ -158,3 +150,5 @@ export class MarketplaceService implements AbstractMarketplaceService {
     }
   }
 }
+
+export type StoreDataWithUrl = StoreData & { url: string }
