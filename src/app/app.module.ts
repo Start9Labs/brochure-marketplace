@@ -39,7 +39,7 @@ import { NG_EVENT_PLUGINS } from '@taiga-ui/event-plugins'
     NG_EVENT_PLUGINS,
     {
       provide: AbstractMarketplaceService,
-      useClass: MarketplaceService,
+      useExisting: MarketplaceService,
     },
     {
       provide: ApiService,
