@@ -8,12 +8,14 @@ import {
 import { MarketplaceConfig } from '@start9labs/shared'
 import { MenuModule } from '@start9labs/marketplace'
 import { MARKETPLACE_REGISTRY } from './registry-settings.component'
+import { MarketplaceService } from '../services/marketplace.service'
+import { AsyncPipe } from '@angular/common'
 
 @Component({
   standalone: true,
   selector: 'marketplace-menu',
   template: `
-    <menu [iconConfig]="marketplaceConfig">
+    <menu [iconConfig]="marketplaceConfig" [registry]="registry$ | async">
       <button
         slot="desktop"
         tuiButton
@@ -108,12 +110,14 @@ import { MARKETPLACE_REGISTRY } from './registry-settings.component'
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MenuModule, TuiButton, TuiIcon, TuiAppearance],
+  imports: [MenuModule, TuiButton, TuiIcon, TuiAppearance, AsyncPipe],
 })
 export class MarketplaceMenuComponent {
   private readonly dialogs = inject(TuiDialogService)
   readonly marketplaceConfig = require('../../../config.json')
     .marketplace as MarketplaceConfig
+
+  readonly registry$ = inject(MarketplaceService).getRegistry$()
 
   changeRegistry() {
     this.dialogs

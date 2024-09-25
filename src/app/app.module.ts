@@ -2,14 +2,10 @@ import { HttpClientModule } from '@angular/common/http'
 import { NgModule } from '@angular/core'
 import { BrowserModule } from '@angular/platform-browser'
 import { RouteReuseStrategy } from '@angular/router'
-import {
-  AbstractCategoryService,
-  AbstractMarketplaceService,
-} from '@start9labs/marketplace'
+import { AbstractCategoryService } from '@start9labs/marketplace'
 
 import { AppRoutingModule } from './app-routing.module'
 import { AppComponent } from './app.component'
-import { MarketplaceService } from './services/marketplace.service'
 import { RouteReuseStrategyService } from './services/route-reuse-strategy.service'
 import { environment } from '../environments/environment'
 
@@ -37,10 +33,6 @@ import { NG_EVENT_PLUGINS } from '@taiga-ui/event-plugins'
   ],
   providers: [
     NG_EVENT_PLUGINS,
-    {
-      provide: AbstractMarketplaceService,
-      useExisting: MarketplaceService,
-    },
     {
       provide: ApiService,
       useClass: environment.production ? LiveApiService : MockApiService,
