@@ -1,11 +1,13 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
-import { getPkgId } from '@start9labs/shared'
+import { getPkgId, MarkdownComponent } from '@start9labs/shared'
 import { filter, map, switchMap } from 'rxjs/operators'
-import { TuiDurationOptions, tuiFadeIn } from '@taiga-ui/core'
+import { TuiDialogService, TuiDurationOptions, tuiFadeIn } from '@taiga-ui/core'
 import { tuiPure } from '@taiga-ui/cdk'
 import { MarketplaceService } from 'src/app/services/marketplace.service'
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
+import { PolymorpheusComponent } from '@taiga-ui/polymorpheus'
+import { MarketplacePkg } from '@start9labs/marketplace'
 
 @Component({
   selector: 'marketplace-package',
@@ -15,6 +17,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
   animations: [tuiFadeIn],
 })
 export class PackageComponent {
+  private readonly dialogs = inject(TuiDialogService)
   private readonly router = inject(Router)
   readonly pkgId = getPkgId(this.route)
 
@@ -57,5 +60,20 @@ export class PackageComponent {
 
   open(id: string) {
     this.router.navigate(['/', id])
+  }
+
+  onStatic(label: string, pkg: MarketplacePkg) {
+    this.dialogs
+      .open(new PolymorpheusComponent(MarkdownComponent), {
+        label,
+        size: 'l',
+        data: {
+          content: this.marketplaceService.getStatic$(
+            pkg,
+            label === 'License' ? 'LICENSE.md' : 'instructions.md',
+          ),
+        },
+      })
+      .subscribe()
   }
 }
