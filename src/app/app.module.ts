@@ -19,6 +19,7 @@ import { LiveApiService } from './api/live-api.service'
 import { MockApiService } from './api/mock-api.service'
 import { TuiRoot } from '@taiga-ui/core'
 import { NG_EVENT_PLUGINS } from '@taiga-ui/event-plugins'
+import { RELATIVE_URL } from '@start9labs/shared'
 
 @NgModule({
   imports: [
@@ -33,6 +34,10 @@ import { NG_EVENT_PLUGINS } from '@taiga-ui/event-plugins'
   ],
   providers: [
     NG_EVENT_PLUGINS,
+    {
+      provide: RELATIVE_URL,
+      useValue: `/rpc/v0`,
+    },
     {
       provide: ApiService,
       useClass: environment.production ? LiveApiService : MockApiService,

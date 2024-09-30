@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core'
 import {
   MarketplacePkg,
   GetPackageRes,
-  StoreData,
+  StoreDataWithUrl,
 } from '@start9labs/marketplace'
 import {
   combineLatest,
@@ -20,13 +20,15 @@ import {
   switchMap,
 } from 'rxjs/operators'
 import { T } from '@start9labs/start-sdk'
-import { Exver } from '@start9labs/shared'
+import { Exver, MarketplaceConfig } from '@start9labs/shared'
 import { ApiService } from '../api/api.service'
 
 @Injectable({
   providedIn: 'root',
 })
 export class MarketplaceService {
+  readonly marketplaceConfig = require('../../../config.json')
+    .marketplace as MarketplaceConfig
   private readonly registryUrlSubject$ = new ReplaySubject<string>(1)
   private readonly registryUrl$ = this.registryUrlSubject$.pipe(
     distinctUntilChanged(),
@@ -65,7 +67,7 @@ export class MarketplaceService {
   }
 
   setRegistryUrl(url: string | null) {
-    this.registryUrlSubject$.next(url || 'https://registry.start9.com')
+    this.registryUrlSubject$.next(url || this.marketplaceConfig.start9)
   }
 
   getPackage$(id: string, flavor: string | null): Observable<MarketplacePkg> {
@@ -143,5 +145,3 @@ export class MarketplaceService {
     }
   }
 }
-
-export type StoreDataWithUrl = StoreData & { url: string }
