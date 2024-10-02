@@ -9,18 +9,21 @@
         }}
       </h1>
     </div>
-    <ng-container *ngIf="store$ | async as store; else loading">
+    <ng-container *ngIf="registry$ | async as registry; else loading">
       <section
         class="marketplace-content-list"
         *ngIf="
-          store.packages
+          registry.packages
             | filterPackages
               : (query$ | async)
               : (category$ | async) as filtered
         "
         [@itemAnimation]="filtered.length">
         @for (pkg of filtered; track $index) {
-        <a [routerLink]="pkg.manifest.id" queryParamsHandling="merge">
+        <a
+          [routerLink]="pkg.id"
+          [queryParams]="{ id: pkg.id, flavor: pkg.flavor }"
+          queryParamsHandling="merge">
           <marketplace-item [pkg]="pkg"></marketplace-item>
         </a>
         }

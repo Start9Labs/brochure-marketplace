@@ -1,170 +1,109 @@
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core'
 import {
-  ChangeDetectionStrategy,
-  Component,
-  Inject,
-  inject,
-  OnDestroy,
-} from '@angular/core'
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms'
-import {
-  AbstractMarketplaceService,
   StoreIconComponentModule,
-  StoreIdentity,
+  MarketplaceRegistryComponent,
 } from '@start9labs/marketplace'
+import { TuiButton, TuiDialogContext } from '@taiga-ui/core'
 import {
-  TuiButtonModule,
-  TuiDataListModule,
-  TuiDialogContext,
-  TuiLoaderModule,
-} from '@taiga-ui/core'
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus'
-import { BehaviorSubject, Subject, takeUntil, tap } from 'rxjs'
-import { MarketplaceConfig } from '@start9labs/shared'
-import { Router } from '@angular/router'
+  PolymorpheusComponent,
+  POLYMORPHEUS_CONTEXT,
+} from '@taiga-ui/polymorpheus'
+import { map, Subscription } from 'rxjs'
+import { LoadingService, MarketplaceConfig } from '@start9labs/shared'
 import { CommonModule } from '@angular/common'
-import { TuiDataListWrapperModule, TuiSelectModule } from '@taiga-ui/kit'
+import { TuiCell } from '@taiga-ui/layout'
+import { MarketplaceService } from '../services/marketplace.service'
+import { Router } from '@angular/router'
+import { InjectionToken } from '@angular/core'
+import { StoreIdentity } from '@start9labs/marketplace'
 
 @Component({
-  selector: 'registry-settings',
-  template: `
-    <div class="registry-settings">
-      <h3>Connect to another registry to explore more services.</h3>
-      <tui-select
-        *ngIf="control"
-        [formControl]="control"
-        [stringify]="getName()">
-        Options
-        <input tuiTextfield placeholder="Select a registry" />
-        <ng-template #value let-item>
-          <store-icon
-            size="24px"
-            [url]="item.url"
-            [marketplace]="marketplace"></store-icon>
-          <span>{{ item.name }}</span>
-        </ng-template>
-        <ng-template tuiDataList>
-          <tui-data-list>
-            <button *ngFor="let item of data" tuiOption [value]="item">
-              <store-icon
-                size="24px"
-                [url]="item.url"
-                [marketplace]="marketplace"></store-icon>
-              <span>{{ item.name }}</span>
-            </button>
-          </tui-data-list>
-        </ng-template>
-      </tui-select>
-      <div class="action-buttons">
-        <button
-          tuiButton
-          size="l"
-          type="button"
-          appearance="flat"
-          class="tui-form__button"
-          (click)="cancel()">
-          Cancel
-        </button>
-        <button
-          tuiButton
-          size="l"
-          type="submit"
-          class="tui-form__button"
-          [disabled]="!control?.dirty"
-          [showLoader]="!!(loading$ | async)"
-          (click)="submit()">
-          Submit
-        </button>
-      </div>
-    </div>
-  `,
-  styles: [
-    `
-      .registry-settings {
-        display: flex;
-        flex-direction: column;
-        h3 {
-          padding-bottom: 1.25rem;
-          font-size: 1rem;
-        }
-        tui-select {
-          padding-bottom: 1.25rem;
-        }
-      }
-
-      store-icon {
-        margin-right: 0.5rem;
-      }
-
-      .action-buttons {
-        display: flex;
-        justify-content: space-between;
-      }
-    `,
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
+  template: `
+    @if (stores$ | async; as stores) { @for (registry of stores; track $index) {
+    <button
+      tuiCell
+      [disabled]="registry.selected"
+      [registry]="registry"
+      [marketplace]="marketplaceConfig"
+      [style.width]="'-webkit-fill-available'"
+      (click)="connect(registry.url)"></button>
+    } }
+  `,
+  styles: [``],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
-    TuiButtonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    TuiSelectModule,
-    TuiDataListModule,
-    TuiDataListWrapperModule,
-    TuiLoaderModule,
+    TuiCell,
+    TuiButton,
+    MarketplaceRegistryComponent,
     StoreIconComponentModule,
   ],
 })
-export class RegistrySettingsComponent implements OnDestroy {
-  loading$ = new BehaviorSubject(false)
-  private destroy$ = new Subject<void>()
-  private readonly marketplaceService = inject(AbstractMarketplaceService)
+export class MarketplaceRegistryModal {
+  private readonly loader = inject(LoadingService)
   private readonly router = inject(Router)
-  control?: FormControl<StoreIdentity | null>
-  readonly marketplace: MarketplaceConfig = {
-    start9: 'https://registry.start9.com/',
-    community: 'https://community-registry.start9.com/',
-  }
+  private readonly hosts = inject(HOSTS)
+  private readonly context = inject<TuiDialogContext>(POLYMORPHEUS_CONTEXT)
+  private readonly marketplaceService = inject(MarketplaceService)
 
-  ngOnInit() {
-    this.marketplaceService
-      .getSelectedHost$()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(val => {
-        this.control = new FormControl(val)
-      })
-  }
+  readonly marketplaceConfig = require('../../../config.json')
+    .marketplace as MarketplaceConfig
 
-  constructor(
-    @Inject(POLYMORPHEUS_CONTEXT)
-    private readonly context: TuiDialogContext<StoreIdentity>,
-  ) {}
+  readonly stores$ = this.marketplaceService.getRegistryUrl$().pipe(
+    map(url =>
+      this.hosts.map(s => ({
+        ...s,
+        selected: this.sameUrl(s.url, url),
+      })),
+    ),
+  )
 
-  get data(): StoreIdentity[] {
-    return this.context.data!
-  }
-
-  getName() {
-    return (item: StoreIdentity) => item.name!
-  }
-
-  submit() {
-    this.loading$.next(true)
+  async connect(
+    registry: string,
+    loader: Subscription = new Subscription(),
+  ): Promise<void> {
+    loader.add(this.loader.open('Changing Registry...').subscribe())
     setTimeout(() => {
-      this.context.completeWith(this.control?.value!)
-      this.loading$.next(false)
-      this.router.navigate(['/'])
+      this.router.navigate(['/'], {
+        queryParams: { registry },
+      })
+      loader.unsubscribe()
+      this.context.$implicit.complete()
     }, 800)
   }
 
-  cancel() {
-    setTimeout(() => {
-      this.context.$implicit.complete()
-    }, 100)
+  sameUrl(
+    u1: string | null | undefined,
+    u2: string | null | undefined,
+  ): boolean {
+    return this.toUrl(u1) === this.toUrl(u2)
   }
 
-  ngOnDestroy(): void {
-    this.destroy$.next()
-    this.destroy$.complete()
+  toUrl(text: string | null | undefined): string {
+    try {
+      const url = new URL(text as string)
+      return url.toString()
+    } catch {
+      return ''
+    }
   }
 }
+
+export const MARKETPLACE_REGISTRY = new PolymorpheusComponent(
+  MarketplaceRegistryModal,
+)
+
+// @TODO can we just switch to a const?
+const HOSTS = new InjectionToken<StoreIdentity[]>('Marketplace hosts', {
+  factory: () => [
+    {
+      url: 'https://registry.start9.com/',
+      name: 'Start9 Registry',
+    },
+    {
+      url: 'https://community-registry.start9.com/',
+      name: 'Community Registry',
+    },
+  ],
+})

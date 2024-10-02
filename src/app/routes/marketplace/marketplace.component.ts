@@ -4,14 +4,7 @@ import {
   Inject,
   inject,
 } from '@angular/core'
-import {
-  AbstractCategoryService,
-  AbstractMarketplaceService,
-  StoreData,
-} from '@start9labs/marketplace'
-import { map } from 'rxjs/operators'
-import { HOSTS } from '../../tokens/hosts'
-import { UrlService } from '../../services/url.service'
+import { AbstractCategoryService, StoreData } from '@start9labs/marketplace'
 import {
   animate,
   query,
@@ -20,16 +13,16 @@ import {
   transition,
   trigger,
 } from '@angular/animations'
-import { TuiDestroyService } from '@taiga-ui/cdk'
 import { Observable } from 'rxjs'
 import { CategoryService } from 'src/app/services/category.service'
 import { MarketplaceService } from 'src/app/services/marketplace.service'
+import { ActivatedRoute } from '@angular/router'
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
 
 @Component({
   selector: 'app-marketplace',
   templateUrl: './marketplace.component.html',
   styleUrls: ['./marketplace.component.scss'],
-  providers: [TuiDestroyService],
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('itemAnimation', [
@@ -52,33 +45,21 @@ import { MarketplaceService } from 'src/app/services/marketplace.service'
   ],
 })
 export class MarketplaceComponent {
+  private readonly marketplaceService = inject(MarketplaceService)
+
+  readonly route = inject(ActivatedRoute)
+    .queryParamMap.pipe(takeUntilDestroyed())
+    .subscribe(params =>
+      this.marketplaceService.setRegistryUrl(params.get('registry')),
+    )
+
+  readonly registry$: Observable<StoreData> =
+    this.marketplaceService.getRegistry$()
+  readonly category$ = this.categoryService.getCategory$()
+  readonly query$ = this.categoryService.getQuery$()
+
   constructor(
-    @Inject(AbstractMarketplaceService)
-    private readonly marketplaceService: MarketplaceService,
     @Inject(AbstractCategoryService)
     private readonly categoryService: CategoryService,
   ) {}
-  private readonly urlService = inject(UrlService)
-  readonly hosts = inject(HOSTS)
-
-  readonly store$: Observable<StoreData> = this.marketplaceService
-    .getSelectedStore$()
-    .pipe(
-      map(({ info, packages }) => {
-        const categories = new Set<string>()
-        categories.add('all')
-        info.categories.forEach(c => categories.add(c))
-
-        return {
-          info: {
-            ...info,
-            categories: Array.from(categories),
-          },
-          packages,
-        }
-      }),
-    )
-  readonly alternative$ = this.urlService.getAlt$()
-  readonly category$ = this.categoryService.getCategory$()
-  readonly query$ = this.categoryService.getQuery$()
 }

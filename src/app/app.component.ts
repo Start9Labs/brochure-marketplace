@@ -8,4 +8,6 @@ import { slideInAnimation } from './route-animation'
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [slideInAnimation],
 })
-export class AppComponent {}
+export class AppComponent {
+  constructor() {}
+}

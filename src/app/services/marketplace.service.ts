@@ -1,180 +1,147 @@
-import { HttpClient } from '@angular/common/http'
-import { inject, Injectable } from '@angular/core'
+import { Injectable } from '@angular/core'
 import {
-  AbstractMarketplaceService,
-  Marketplace,
   MarketplacePkg,
-  StoreData,
-  StoreInfo,
+  GetPackageRes,
+  StoreDataWithUrl,
 } from '@start9labs/marketplace'
-import { combineLatest, filter, Observable, shareReplay } from 'rxjs'
-import { first, map, switchMap } from 'rxjs/operators'
+import {
+  combineLatest,
+  filter,
+  from,
+  Observable,
+  of,
+  ReplaySubject,
+} from 'rxjs'
+import {
+  catchError,
+  distinctUntilChanged,
+  map,
+  shareReplay,
+  switchMap,
+} from 'rxjs/operators'
+import { T } from '@start9labs/start-sdk'
+import { Exver, MarketplaceConfig } from '@start9labs/shared'
+import { ApiService } from '../api/api.service'
 
-import { HOSTS } from '../tokens/hosts'
-import { UrlService } from './url.service'
-import { Event, NavigationEnd, Router } from '@angular/router'
-import { recursiveToCamel } from './marketplace_interium'
-
-@Injectable()
-export class MarketplaceService extends AbstractMarketplaceService {
-  constructor(private router: Router) {
-    super()
-  }
-  private readonly http = inject(HttpClient)
-  private readonly hosts = inject(HOSTS)
-  private readonly urlService = inject(UrlService)
-  private readonly url$ = this.urlService.getUrl$()
-
-  readonly hosts$ = this.router.events.pipe(
-    filter(
-      (e: Event | NavigationEnd): e is NavigationEnd =>
-        e instanceof NavigationEnd,
-    ),
-    map(route => {
-      // route.url is just information after the origin, so this is a hack to create a proper URL
-      const params = new URL(`https://test.com${route.url}`).searchParams
-      // full path needed for registry
-      const url = `https://${params.get('api')}/`
-      const name = params.get('name')
-
-      if (name) {
-        this.urlService.toggle(url)
-        return [
-          ...this.hosts,
-          {
-            url,
-            name,
+@Injectable({
+  providedIn: 'root',
+})
+export class MarketplaceService {
+  readonly marketplaceConfig = require('../../../config.json')
+    .marketplace as MarketplaceConfig
+  private readonly registryUrlSubject$ = new ReplaySubject<string>(1)
+  private readonly registryUrl$ = this.registryUrlSubject$.pipe(
+    distinctUntilChanged(),
+  )
+  private readonly registry$ = this.registryUrl$.pipe(
+    switchMap(url => this.fetchRegistry$(url)),
+    filter(Boolean),
+    map(registry => {
+      registry.info.categories = {
+        all: {
+          name: 'All',
+          description: {
+            short: 'All registry packages',
+            long: 'An unfiltered list of all packages available on this registry.',
           },
-        ]
-      } else {
-        return this.hosts
+        },
+        ...registry.info.categories,
       }
+
+      return registry
     }),
-    shareReplay({ bufferSize: 1, refCount: true }),
+    shareReplay(1),
   )
 
-  private readonly marketplace$: Observable<Marketplace> = this.hosts$
-    .pipe(
-      switchMap(hosts =>
-        combineLatest(
-          hosts.reduce(
-            (acc, { url }) => ({
-              ...acc,
-              [url]: combineLatest({
-                info: this.http.get<StoreInfo>(url + 'package/v0/info'),
-                packages: this.http.get<MarketplacePkg[]>(
-                  `${url}package/v0/index?per-page=100&page=1`,
-                ),
-              }),
-            }),
-            {},
-          ),
-        ),
-      ),
-      first(),
-    )
-    .pipe(shareReplay(1))
+  constructor(
+    private readonly api: ApiService,
+    private readonly exver: Exver,
+  ) {}
 
-  getKnownHosts$() {
-    return this.hosts$
+  getRegistryUrl$() {
+    return this.registryUrl$
   }
 
-  getSelectedHost$() {
-    return combineLatest([this.url$, this.hosts$]).pipe(
-      map(([url, hosts]) => hosts.find(host => host.url === url)),
-      filter(Boolean),
-    )
+  getRegistry$(): Observable<StoreDataWithUrl> {
+    return this.registry$
   }
 
-  getMarketplace$() {
-    return this.marketplace$
+  setRegistryUrl(url: string | null) {
+    this.registryUrlSubject$.next(url || this.marketplaceConfig.start9)
   }
 
-  getSelectedStore$() {
-    return combineLatest({
-      url: this.url$,
-      marketplace: this.getMarketplace$(),
-    }).pipe(
-      map(({ url, marketplace }) => marketplace[url]),
-      filter(Boolean),
-      map(m => {
-        const p = recursiveToCamel(m.packages)
-        return {
-          ...m,
-          packages: p,
-        } as StoreData
+  getPackage$(id: string, flavor: string | null): Observable<MarketplacePkg> {
+    return this.registry$.pipe(
+      switchMap(registry => {
+        const { packages, url } = registry
+        const pkg = packages.find(p => p.id === id && p.flavor === flavor)
+        return !!pkg ? of(pkg) : this.fetchPackage$(url, id, flavor)
       }),
     )
   }
 
-  getSelectedStoreWithCategories$() {
-    return this.getSelectedHost$().pipe(
-      switchMap(({ url }) =>
-        this.marketplace$.pipe(
-          map(m => m[url]),
-          filter(Boolean),
-          map(({ info, packages }) => {
-            const categories = new Set<string>()
-            categories.add('all')
-            if (info.categories.includes('featured')) {
-              categories.add('featured')
-            }
-            info.categories.forEach(c => categories.add(c))
-            const p = recursiveToCamel(packages) as MarketplacePkg[]
-            return {
-              url,
-              info: {
-                ...info,
-                categories: Array.from(categories),
-              },
-              packages: p,
-            }
-          }),
-        ),
-      ),
+  getStatic$(
+    pkg: MarketplacePkg,
+    type: 'LICENSE.md' | 'instructions.md',
+  ): Observable<string> {
+    return from(this.api.getStaticProxy(pkg, type))
+  }
+
+  private fetchRegistry$(url: string) {
+    console.log('FETCHING REGISTRY: ', url)
+    return combineLatest([this.fetchInfo$(url), this.fetchPackages$(url)]).pipe(
+      map(([info, packages]) => ({ info, packages, url })),
+      catchError(e => {
+        console.error(e)
+        return of(null)
+      }),
     )
   }
 
-  getPackage$(id: string, version: string) {
-    if (version === '*') {
-      return this.getSelectedStore$().pipe(
-        map(
-          ({ packages }) =>
-            packages.find(({ manifest }) => manifest.id === id) ||
-            ({} as MarketplacePkg),
-        ),
-      )
+  private fetchInfo$(url: string): Observable<T.RegistryInfo> {
+    return from(this.api.getRegistryInfo(url))
+  }
+
+  private fetchPackage$(
+    url: string,
+    id: string,
+    flavor: string | null,
+  ): Observable<MarketplacePkg> {
+    return from(this.api.getRegistryPackage(url, id)).pipe(
+      map(pkgInfo => this.convertToMarketplacePkg(id, flavor, pkgInfo)),
+    )
+  }
+
+  private fetchPackages$(url: string): Observable<MarketplacePkg[]> {
+    return from(this.api.getRegistryPackages(url)).pipe(
+      map(packages => {
+        return Object.entries(packages).flatMap(([id, pkgInfo]) =>
+          Object.keys(pkgInfo.best).map(version =>
+            this.convertToMarketplacePkg(
+              id,
+              this.exver.getFlavor(version),
+              pkgInfo,
+            ),
+          ),
+        )
+      }),
+    )
+  }
+
+  private convertToMarketplacePkg(
+    id: string,
+    flavor: string | null,
+    pkgInfo: GetPackageRes,
+  ): MarketplacePkg {
+    const version = Object.keys(pkgInfo.best).find(
+      v => this.exver.getFlavor(v) === flavor,
+    )!
+    return {
+      id,
+      version,
+      flavor,
+      ...pkgInfo,
+      ...pkgInfo.best[version],
     }
-
-    return this.url$.pipe(
-      switchMap(url =>
-        this.http.get<MarketplacePkg[]>(url + 'package/v0/index', {
-          params: {
-            ids: JSON.stringify([{ id, version }]),
-          },
-        }),
-      ),
-      map(([pkg]) => pkg),
-    )
-  }
-
-  fetchReleaseNotes$(id: string) {
-    return this.url$.pipe(
-      switchMap(url =>
-        this.http.get<Record<string, string>>(
-          `${url}package/v0/release-notes/${id}`,
-        ),
-      ),
-    )
-  }
-
-  fetchStatic$(id: string, type: string) {
-    return this.url$.pipe(
-      switchMap(url =>
-        this.http.get(`${url}package/v0/${type}/${id}`, {
-          responseType: 'text',
-        }),
-      ),
-    )
   }
 }

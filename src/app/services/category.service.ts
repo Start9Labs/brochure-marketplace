@@ -28,6 +28,9 @@ export class CategoryService extends AbstractCategoryService {
   }
 
   handleNavigation() {
-    this.router.navigate(['..'], { queryParamsHandling: 'merge' })
+    this.router.navigate(['..'], {
+      queryParamsHandling: 'merge',
+      queryParams: { id: null, flavor: null },
+    })
   }
 }
