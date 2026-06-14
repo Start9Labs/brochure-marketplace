@@ -3,7 +3,8 @@ import { ApiService } from './api.service'
 import { T } from '@start9labs/start-sdk'
 import { GetPackageRes, GetPackagesRes } from '@start9labs/marketplace'
 import { Mock } from './api.fixures'
-import markdown from 'raw-loader!../../assets/md-sample.md'
+
+import markdown from './md-sample.md'
 
 @Injectable()
 export class MockApiService extends ApiService {

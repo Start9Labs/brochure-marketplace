@@ -12,7 +12,6 @@ import { MarketplaceService } from '../services/marketplace.service'
 import { AsyncPipe } from '@angular/common'
 
 @Component({
-  standalone: true,
   selector: 'marketplace-menu',
   template: `
     <menu [iconConfig]="marketplaceConfig" [registry]="registry$ | async">
