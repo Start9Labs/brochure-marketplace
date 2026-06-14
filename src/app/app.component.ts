@@ -3,14 +3,19 @@ import { RouterOutlet } from '@angular/router'
 import { TuiRoot } from '@taiga-ui/core'
 import { MarketplaceMenuComponent } from 'src/app/components/marketplace-menu.component'
 import { ScrollerDirective } from 'src/app/scroller.directive'
-import { slideInAnimation } from './route-animation'
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html',
+  template: `
+    <tui-root tuiTheme="dark" appScroller>
+      <marketplace-menu></marketplace-menu>
+      <div class="main-content">
+        <router-outlet #o="outlet"></router-outlet>
+      </div>
+    </tui-root>
+  `,
   styleUrls: ['app.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [slideInAnimation],
   imports: [MarketplaceMenuComponent, ScrollerDirective, TuiRoot, RouterOutlet],
 })
 export class AppComponent {}

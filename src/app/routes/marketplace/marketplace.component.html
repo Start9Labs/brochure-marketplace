@@ -17,9 +17,7 @@
           | filterPackages: (query$ | async) : (category$ | async);
         as filtered
       ) {
-        <section
-          class="marketplace-content-list"
-          [@itemAnimation]="filtered.length">
+        <section class="marketplace-content-list">
           @for (pkg of filtered; track $index) {
             <a
               [routerLink]="pkg.id"

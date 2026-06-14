@@ -16,12 +16,9 @@ import {
   MarkdownComponent,
   SharedPipesModule,
 } from '@start9labs/shared'
-import { tuiPure } from '@taiga-ui/cdk'
 import {
   TuiAppearance,
   TuiDialogService,
-  TuiDurationOptions,
-  tuiFadeIn,
   TuiIcon,
   TuiLoader,
 } from '@taiga-ui/core'
@@ -34,7 +31,6 @@ import { MarketplaceService } from 'src/app/services/marketplace.service'
   templateUrl: './package.component.html',
   styleUrls: ['./package.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [tuiFadeIn],
   imports: [
     CommonModule,
     SharedPipesModule,
@@ -55,8 +51,6 @@ export class PackageComponent {
   private readonly router = inject(Router)
   readonly pkgId = getPkgId(this.route)
 
-  speed = 1000
-
   constructor(
     private readonly marketplaceService: MarketplaceService,
     private readonly route: ActivatedRoute,
@@ -66,11 +60,6 @@ export class PackageComponent {
       .subscribe(params =>
         this.marketplaceService.setRegistryUrl(params.get('registry')),
       )
-  }
-
-  @tuiPure
-  getAnimation(duration: number): TuiDurationOptions {
-    return { value: '', params: { duration } }
   }
 
   readonly pkg$ = this.route.queryParamMap.pipe(
