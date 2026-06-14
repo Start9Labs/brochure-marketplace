@@ -1,11 +1,4 @@
 import {
-  ChangeDetectionStrategy,
-  Component,
-  Inject,
-  inject,
-} from '@angular/core'
-import { AbstractCategoryService, StoreData } from '@start9labs/marketplace'
-import {
   animate,
   query,
   stagger,
@@ -13,11 +6,25 @@ import {
   transition,
   trigger,
 } from '@angular/animations'
+import { CommonModule } from '@angular/common'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  inject,
+} from '@angular/core'
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
+import { ActivatedRoute, RouterLink } from '@angular/router'
+import {
+  AbstractCategoryService,
+  FilterPackagesPipeModule,
+  ItemModule,
+  StoreData,
+} from '@start9labs/marketplace'
+import { SharedPipesModule } from '@start9labs/shared'
 import { Observable } from 'rxjs'
 import { CategoryService } from 'src/app/services/category.service'
 import { MarketplaceService } from 'src/app/services/marketplace.service'
-import { ActivatedRoute } from '@angular/router'
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
 
 @Component({
   selector: 'app-marketplace',
@@ -42,6 +49,13 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
         ),
       ]),
     ]),
+  ],
+  imports: [
+    CommonModule,
+    FilterPackagesPipeModule,
+    SharedPipesModule,
+    ItemModule,
+    RouterLink,
   ],
 })
 export class MarketplaceComponent {

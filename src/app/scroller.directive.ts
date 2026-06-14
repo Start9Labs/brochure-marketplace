@@ -1,11 +1,10 @@
-import { Directive, ElementRef, inject } from '@angular/core'
+import { Directive, ElementRef, inject, OnInit } from '@angular/core'
 import { ViewportScroller } from '@angular/common'
 
 @Directive({
-  standalone: true,
   selector: 'tui-root[appScroller]',
 })
-export class ScrollerDirective {
+export class ScrollerDirective implements OnInit {
   private readonly el: HTMLElement = inject(ElementRef).nativeElement
   private readonly scroller = inject(ViewportScroller)
 

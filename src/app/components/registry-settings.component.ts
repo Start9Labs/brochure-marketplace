@@ -3,7 +3,7 @@ import {
   StoreIconComponentModule,
   MarketplaceRegistryComponent,
 } from '@start9labs/marketplace'
-import { TuiButton, TuiDialogContext } from '@taiga-ui/core'
+import { TuiDialogContext } from '@taiga-ui/core'
 import {
   PolymorpheusComponent,
   POLYMORPHEUS_CONTEXT,
@@ -18,24 +18,23 @@ import { InjectionToken } from '@angular/core'
 import { StoreIdentity } from '@start9labs/marketplace'
 
 @Component({
-  standalone: true,
   template: `
-    @if (stores$ | async; as stores) { @for (registry of stores; track $index) {
-    <button
-      tuiCell
-      [disabled]="registry.selected"
-      [registry]="registry"
-      [marketplace]="marketplaceConfig"
-      [style.width]="'-webkit-fill-available'"
-      (click)="connect(registry.url)"></button>
-    } }
+    @if (stores$ | async; as stores) {
+      @for (registry of stores; track $index) {
+        <button
+          tuiCell
+          [disabled]="registry.selected"
+          [registry]="registry"
+          [marketplace]="marketplaceConfig"
+          [style.width]="'-webkit-fill-available'"
+          (click)="connect(registry.url)"></button>
+      }
+    }
   `,
-  styles: [``],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
     TuiCell,
-    TuiButton,
     MarketplaceRegistryComponent,
     StoreIconComponentModule,
   ],

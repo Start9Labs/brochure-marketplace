@@ -1,13 +1,33 @@
+import { CommonModule } from '@angular/common'
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core'
-import { ActivatedRoute, Router } from '@angular/router'
-import { getPkgId, MarkdownComponent } from '@start9labs/shared'
-import { filter, map, switchMap } from 'rxjs/operators'
-import { TuiDialogService, TuiDurationOptions, tuiFadeIn } from '@taiga-ui/core'
-import { tuiPure } from '@taiga-ui/cdk'
-import { MarketplaceService } from 'src/app/services/marketplace.service'
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
+import { ActivatedRoute, Router, RouterModule } from '@angular/router'
+import {
+  AboutModule,
+  AdditionalModule,
+  FlavorsComponent,
+  MarketplaceDependenciesComponent,
+  MarketplacePackageHeroComponent,
+  MarketplacePackageScreenshotComponent,
+  MarketplacePkg,
+} from '@start9labs/marketplace'
+import {
+  getPkgId,
+  MarkdownComponent,
+  SharedPipesModule,
+} from '@start9labs/shared'
+import { tuiPure } from '@taiga-ui/cdk'
+import {
+  TuiAppearance,
+  TuiDialogService,
+  TuiDurationOptions,
+  tuiFadeIn,
+  TuiIcon,
+  TuiLoader,
+} from '@taiga-ui/core'
 import { PolymorpheusComponent } from '@taiga-ui/polymorpheus'
-import { MarketplacePkg } from '@start9labs/marketplace'
+import { filter, map, switchMap } from 'rxjs/operators'
+import { MarketplaceService } from 'src/app/services/marketplace.service'
 
 @Component({
   selector: 'marketplace-package',
@@ -15,6 +35,20 @@ import { MarketplacePkg } from '@start9labs/marketplace'
   styleUrls: ['./package.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [tuiFadeIn],
+  imports: [
+    CommonModule,
+    SharedPipesModule,
+    RouterModule,
+    MarketplaceDependenciesComponent,
+    AdditionalModule,
+    AboutModule,
+    MarketplacePackageScreenshotComponent,
+    MarketplacePackageHeroComponent,
+    TuiLoader,
+    TuiIcon,
+    TuiAppearance,
+    FlavorsComponent,
+  ],
 })
 export class PackageComponent {
   private readonly dialogs = inject(TuiDialogService)
