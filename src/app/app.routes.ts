@@ -1,19 +1,21 @@
 import { Routes } from '@angular/router'
+import path from 'node:path'
 
 export const ROUTES: Routes = [
   {
+    // matcher: consumed => ({
+    //   consumed,
+    //   posParams: consumed.reduce(
+    //     (params, param, index) => ({
+    //       ...params,
+    //       [index ? 'flavor' : 'id']: param,
+    //     }),
+    //     {},
+    //   ),
+    // }),
     path: '',
     loadComponent: () =>
-      import('./routes/marketplace/marketplace.component').then(
-        m => m.MarketplaceComponent,
-      ),
-  },
-  {
-    path: ':pkgId',
-    loadComponent: () =>
-      import('./routes/package/package.component').then(
-        m => m.PackageComponent,
-      ),
+      import('./components/main.component').then(m => m.MainComponent),
   },
   {
     path: '**',

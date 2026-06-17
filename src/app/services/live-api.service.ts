@@ -1,14 +1,5 @@
 import { Injectable } from '@angular/core'
-import { ApiService } from './api.service'
-import {
-  HttpOptions,
-  HttpService,
-  isRpcError,
-  Method,
-  RpcError,
-  RPCOptions,
-} from '@start9labs/shared'
-import { T } from '@start9labs/start-sdk'
+import { blake3 } from '@noble/hashes/blake3'
 import {
   GetPackageReq,
   GetPackageRes,
@@ -16,13 +7,23 @@ import {
   GetPackagesRes,
   MarketplacePkg,
 } from '@start9labs/marketplace'
-import { blake3 } from '@noble/hashes/blake3'
+import {
+  HttpOptions,
+  HttpService,
+  isRpcError,
+  RpcError,
+  RPCOptions,
+} from '@start9labs/shared'
+import { T } from '@start9labs/start-sdk'
+import { ApiService } from './api.service'
 
 @Injectable()
 export class LiveApiService extends ApiService {
   constructor(private readonly http: HttpService) {
     super()
-    ; (window as any).rpcClient = this
+
+    // @ts-ignore
+    window.rpcClient = this
   }
 
   async getRegistryInfo(registryUrl: string): Promise<T.RegistryInfo> {
@@ -38,7 +39,8 @@ export class LiveApiService extends ApiService {
   ): Promise<GetPackageRes> {
     const params: GetPackageReq = {
       id,
-      version: null,
+      targetVersion: null,
+      sourceVersion: null,
       otherVersions: 'short',
     }
 
@@ -51,7 +53,8 @@ export class LiveApiService extends ApiService {
   async getRegistryPackages(registryUrl: string): Promise<GetPackagesRes> {
     const params: GetPackagesReq = {
       id: null,
-      version: null,
+      targetVersion: null,
+      sourceVersion: null,
       otherVersions: 'short',
     }
 
@@ -65,14 +68,14 @@ export class LiveApiService extends ApiService {
     pkg: MarketplacePkg,
     path: 'LICENSE.md' | 'instructions.md',
   ): Promise<string> {
-    const encodedUrl = encodeURIComponent(pkg.s9pk.url)
+    const encodedUrl = encodeURIComponent(pkg.s9pks[0]?.[1]?.urls[0] || '')
 
     return this.httpRequest({
-      method: Method.GET,
+      method: 'GET',
       url: `/s9pk/proxy/${encodedUrl}/${path}`,
       params: {
-        rootSighash: pkg.s9pk.commitment.rootSighash,
-        rootMaxsize: pkg.s9pk.commitment.rootMaxsize,
+        rootSighash: pkg.s9pks[0]?.[1]?.commitment.rootSighash || '',
+        rootMaxsize: pkg.s9pks[0]?.[1]?.commitment.rootMaxsize || '',
       },
       responseType: 'text',
     })

@@ -1,50 +1,12 @@
-:root {
-  --tui-base-01: rgb(var(--tw-color-zinc-800)) !important;
-  --tui-text-01: rgb(var(--tw-color-zinc-100)) !important;
-  --tui-carousel-padding: 0.5rem;
-  --tui-font-heading: 'Open Sans';
-  --tui-font-text: 'Open Sans';
-  --portal-header-height: 0px;
-  --mobile-header-height: 88px;
+[tuiTheme='dark'] {
+  --tui-background-base: #1c1d26;
+  --tui-text-action: #3880ff;
+  --tui-text-action-hover: #4e8dff;
+  --tui-stroke-width: 1.5px;
 }
 
-html, body {
-  background: rgb(var(--tw-color-zinc-800)) url('/assets/img/background_marketplace.png') no-repeat center center fixed !important;
-  background-size: cover !important;
-  -webkit-background-size: cover !important;
-  -moz-background-size: cover !important;
-  -o-background-size: cover !important;
-  background-attachment: fixed;
+html,
+body {
   margin: 0;
   height: 100%;
-  overflow: hidden;
-}
-
-.externalLink {
-  color: #3dc2ff;
-}
-
-ul {
-  padding-left: 40px;
-  list-style-type: disc;
-}
-
-.small-caps {
-  font-variant: all-small-caps;
-}
-
-a {
-  color: inherit;
-  text-decoration: inherit;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-hr,
-p {
-  margin: 0;
 }

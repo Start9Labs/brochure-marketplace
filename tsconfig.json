@@ -2,7 +2,6 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
@@ -11,6 +10,8 @@
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "skipLibCheck": true,
     "sourceMap": true,
     "declaration": false,
     "experimentalDecorators": true,
@@ -20,8 +21,9 @@
     "useDefineForClassFields": false,
     "module": "es2020",
     "types": ["node"],
-    "preserveSymlinks": true,
+    "typeRoots": ["node_modules/@types"],
     "paths": {
+      "*": ["./*"],
       "@start9labs/shared": ["./node_modules/@start9labs/shared"],
       "@start9labs/marketplace": ["./node_modules/@start9labs/marketplace"]
     }

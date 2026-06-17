@@ -1,16 +1,18 @@
 import { Injectable } from '@angular/core'
 import {
-  MarketplacePkg,
   GetPackageRes,
+  MarketplacePkg,
   StoreDataWithUrl,
 } from '@start9labs/marketplace'
+import { Exver } from '@start9labs/shared'
+import { T } from '@start9labs/start-sdk'
 import {
+  BehaviorSubject,
   combineLatest,
   filter,
   from,
   Observable,
   of,
-  ReplaySubject,
 } from 'rxjs'
 import {
   catchError,
@@ -19,17 +21,17 @@ import {
   shareReplay,
   switchMap,
 } from 'rxjs/operators'
-import { T } from '@start9labs/start-sdk'
-import { Exver, MarketplaceConfig } from '@start9labs/shared'
-import { ApiService } from '../api/api.service'
+import { ApiService } from './api.service'
 
 @Injectable({
   providedIn: 'root',
 })
 export class MarketplaceService {
   readonly marketplaceConfig = require('../../../config.json')
-    .marketplace as MarketplaceConfig
-  private readonly registryUrlSubject$ = new ReplaySubject<string>(1)
+    .marketplace as Record<string, string>
+  private readonly registryUrlSubject$ = new BehaviorSubject(
+    this.marketplaceConfig['start9'] || '',
+  )
   private readonly registryUrl$ = this.registryUrlSubject$.pipe(
     distinctUntilChanged(),
   )
@@ -38,13 +40,7 @@ export class MarketplaceService {
     filter(Boolean),
     map(registry => {
       registry.info.categories = {
-        all: {
-          name: 'All',
-          description: {
-            short: 'All registry packages',
-            long: 'An unfiltered list of all packages available on this registry.',
-          },
-        },
+        all: { name: 'All' },
         ...registry.info.categories,
       }
 
@@ -67,7 +63,7 @@ export class MarketplaceService {
   }
 
   setRegistryUrl(url: string | null) {
-    this.registryUrlSubject$.next(url || this.marketplaceConfig.start9)
+    this.registryUrlSubject$.next(url || this.marketplaceConfig['start9'] || '')
   }
 
   getPackage$(id: string, flavor: string | null): Observable<MarketplacePkg> {
@@ -136,6 +132,8 @@ export class MarketplaceService {
     const version = Object.keys(pkgInfo.best).find(
       v => this.exver.getFlavor(v) === flavor,
     )!
+
+    // @ts-ignore TODO fix types
     return {
       id,
       version,

@@ -22,7 +22,7 @@ export class MockApiService extends ApiService {
     id: string,
   ): Promise<GetPackageRes> {
     await this.pauseFor(1000)
-    return Mock.RegistryPackages[id]
+    return Mock.RegistryPackages[id]!
   }
 
   async getRegistryPackages(): Promise<GetPackagesRes> {
