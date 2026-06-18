@@ -2,6 +2,12 @@ import { GetPackagesRes } from '@start9labs/marketplace'
 import { T } from '@start9labs/start-sdk'
 import { BTC_ICON, LND_ICON, PROXY_ICON, REGISTRY_ICON } from './api-icons'
 
+// INTERIM (until @start9labs/start-sdk 2.0): these fixtures pin to the published
+// SDK 1.5.3, whose PackageVersionInfo uses the single `nestedRuntime` flag. SDK 2.0
+// removes it and splits it into `userspaceFilesystems` + `virtualNetworking`. When
+// brochure moves to the 2.0 SDK (the monorepo baseDist, at port time), revert the
+// `nestedRuntime: false` lines below back to those two flags.
+
 const mockMerkleArchiveCommitment: T.MerkleArchiveCommitment = {
   rootSighash: 'fakehash',
   rootMaxsize: 0,
@@ -153,8 +159,7 @@ For the full changelog, see https://github.com/bitcoin/bitcoin/blob/v27.0.0/doc/
             ],
           ],
           hardwareAcceleration: false,
-          userspaceFilesystems: false,
-          virtualNetworking: false,
+          nestedRuntime: false,
           plugins: [],
         },
         '#knots:27.1.0:0': {
@@ -197,8 +202,7 @@ For the full changelog, see https://github.com/bitcoin/bitcoin/blob/v27.0.0/doc/
             ],
           ],
           hardwareAcceleration: false,
-          userspaceFilesystems: false,
-          virtualNetworking: false,
+          nestedRuntime: false,
           plugins: [],
         },
       },
@@ -254,8 +258,7 @@ For the full changelog, see https://github.com/bitcoin/bitcoin/blob/v27.0.0/doc/
             ],
           ],
           hardwareAcceleration: false,
-          userspaceFilesystems: false,
-          virtualNetworking: false,
+          nestedRuntime: false,
           plugins: [],
         },
       },
@@ -310,8 +313,7 @@ For the full changelog, see https://github.com/bitcoin/bitcoin/blob/v27.0.0/doc/
             ],
           ],
           hardwareAcceleration: false,
-          userspaceFilesystems: false,
-          virtualNetworking: false,
+          nestedRuntime: false,
           plugins: [],
         },
         '#test:0.5.0:0': {
@@ -353,8 +355,7 @@ For the full changelog, see https://github.com/bitcoin/bitcoin/blob/v27.0.0/doc/
             ],
           ],
           hardwareAcceleration: false,
-          userspaceFilesystems: false,
-          virtualNetworking: false,
+          nestedRuntime: false,
           plugins: [],
         },
       },
