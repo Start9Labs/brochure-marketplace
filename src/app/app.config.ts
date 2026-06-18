@@ -1,31 +1,28 @@
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
-import { ApplicationConfig } from '@angular/core'
-import { provideAnimations } from '@angular/platform-browser/animations'
 import {
-  provideRouter,
-  RouteReuseStrategy,
-  withInMemoryScrolling,
-} from '@angular/router'
-import { AbstractCategoryService } from '@start9labs/marketplace'
-import { RELATIVE_URL } from '@start9labs/shared'
-import { provideEventPlugins } from '@taiga-ui/event-plugins'
-import { ApiService } from 'src/app/api/api.service'
-import { LiveApiService } from 'src/app/api/live-api.service'
-import { MockApiService } from 'src/app/api/mock-api.service'
+  provideHttpClient,
+  withInterceptorsFromDi,
+  withXhr,
+} from '@angular/common/http'
+import { ApplicationConfig } from '@angular/core'
+import { provideRouter, withInMemoryScrolling } from '@angular/router'
+import { I18N_PROVIDERS, i18nPipe, RELATIVE_URL } from '@start9labs/shared'
+import { provideTaiga } from '@taiga-ui/core'
+import { ApiService } from 'src/app/services/api.service'
+import { LiveApiService } from 'src/app/services/live-api.service'
+import { MockApiService } from 'src/app/services/mock-api.service'
 import { ROUTES } from 'src/app/app.routes'
-import { CategoryService } from 'src/app/services/category.service'
-import { RouteReuseStrategyService } from 'src/app/services/route-reuse-strategy.service'
 import { environment } from 'src/environments/environment'
 
 export const APP_CONFIG: ApplicationConfig = {
   providers: [
-    provideAnimations(),
-    provideHttpClient(withInterceptorsFromDi()),
+    provideHttpClient(withXhr(), withInterceptorsFromDi()),
     provideRouter(
       ROUTES,
       withInMemoryScrolling({ scrollPositionRestoration: 'enabled' }),
     ),
-    provideEventPlugins(),
+    provideTaiga({ mode: 'dark' }),
+    I18N_PROVIDERS,
+    i18nPipe,
     {
       provide: RELATIVE_URL,
       useValue: `/rpc/v0`,
@@ -33,11 +30,6 @@ export const APP_CONFIG: ApplicationConfig = {
     {
       provide: ApiService,
       useClass: environment.production ? LiveApiService : MockApiService,
-    },
-    { provide: RouteReuseStrategy, useClass: RouteReuseStrategyService },
-    {
-      provide: AbstractCategoryService,
-      useClass: CategoryService,
     },
   ],
 }
